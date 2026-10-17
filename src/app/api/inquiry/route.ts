@@ -38,11 +38,11 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfterSeconds: numb
 
   // Clean old expired entries if map grows
   if (rateLimitMap.size > 2000) {
-    for (const [key, value] of rateLimitMap.entries()) {
-      if (now > value.resetTime) {
+    rateLimitMap.forEach((val, key) => {
+      if (now > val.resetTime) {
         rateLimitMap.delete(key);
       }
-    }
+    });
   }
 
   if (!record || now > record.resetTime) {
