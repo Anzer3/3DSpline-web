@@ -9,6 +9,7 @@ import Materials from "@/components/Materials";
 import Process from "@/components/Process";
 import InquiryForm from "@/components/InquiryForm";
 import Footer from "@/components/Footer";
+import MobileFloatingCta from "@/components/MobileFloatingCta";
 
 export default function Home() {
   return (
@@ -44,6 +45,9 @@ export default function Home() {
         {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
         <InquiryForm />
       </main>
+
+      {/* Floating CTA bar on mobile */}
+      <MobileFloatingCta />
 
       {/* SECTION H: Footer */}
       <Footer />

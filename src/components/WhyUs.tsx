@@ -36,7 +36,7 @@ export default function WhyUs() {
               alt="3D Spline Logo"
               width={64}
               height={64}
-              className="w-14 h-14 sm:w-16 sm:h-16 object-contain shrink-0"
+              className="hidden sm:block w-14 h-14 sm:w-16 sm:h-16 object-contain shrink-0"
             />
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">

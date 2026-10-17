@@ -51,6 +51,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "3D Spline | Funkční 3D tisk a CAD konstrukce dílů pro firmy",
+    description: "Zakázkový 3D tisk a CAD modelování funkčních dílů pro firmy i průmysl. Rychlé doručení po celé ČR.",
+    images: ["/images/hero-cad.jpg"],
+  },
   icons: {
     icon: "/images/logo.png",
     apple: "/images/logo.png",
@@ -68,8 +74,42 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "3D Spline",
+    image: "https://3dspline.cz/images/hero-cad.jpg",
+    description: "Zakázkový 3D tisk a CAD modelování funkčních dílů pro firmy i průmysl.",
+    url: "https://3dspline.cz",
+    email: "info@3dspline.cz",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Olomouc",
+      addressCountry: "CZ",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Česká republika",
+    },
+    priceRange: "$$",
+    knowsAbout: [
+      "Zakázkový 3D tisk",
+      "CAD modelování",
+      "Konstrukce dílů",
+      "Výrobní přípravky",
+      "Náhradní díly",
+      "DFAM",
+    ],
+  };
+
   return (
     <html lang="cs" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="font-sans antialiased text-slate-900 bg-white min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
         {children}
       </body>

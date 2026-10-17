@@ -59,8 +59,8 @@ export default function CadModelingSection() {
           </p>
         </div>
 
-        {/* Progression Indicator Bar */}
-        <div className="relative mb-8">
+        {/* Progression Indicator Bar - Desktop/Tablet Horizontal View */}
+        <div className="hidden sm:block relative mb-8 sm:mb-10">
           <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-700 px-1 pb-3">
             <span className="flex items-center gap-1.5 text-blue-700">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
@@ -70,19 +70,73 @@ export default function CadModelingSection() {
               až po různě vypadající tvary
             </span>
           </div>
-          {/* Subtle gradient line */}
+          {/* Subtle horizontal gradient line */}
           <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-600 rounded-full" />
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {/* Gallery - Mobile with continuous vertical progression line on the left, standard grid on sm+ */}
+        <div className="sm:hidden relative pl-7">
+          {/* Continuous vertical gradient line spanning precisely between top dot center and bottom dot center */}
+          <div className="absolute left-[7px] top-2.5 bottom-2 w-1 -translate-x-1/2 bg-gradient-to-b from-blue-600 via-sky-400 to-indigo-600 rounded-full" />
+
+          {/* Top start label above cards */}
+          <div className="relative flex items-center mb-4">
+            <span className="absolute left-[-21px] -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-blue-600 border-2 border-white shadow-xs z-10 shrink-0" />
+            <div className="text-xs font-bold text-blue-700 uppercase tracking-wide">
+              Od nejjednodušších dílů
+            </div>
+          </div>
+
+          {/* Vertical list of model cards on mobile */}
+          <div className="space-y-3.5">
+            {models.map((item, idx) => {
+              return (
+                <div key={idx} className="relative">
+                  <div className="bg-white rounded-xl p-2.5 flex items-center gap-3.5">
+                    {/* Image - completely clean without gray background or extra border */}
+                    <div className="relative w-16 h-16 overflow-hidden flex items-center justify-center shrink-0">
+                      <Image
+                        src={item.src}
+                        alt={item.title}
+                        width={120}
+                        height={120}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+
+                    {/* Text Content - exactly matching desktop styling */}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-bold text-slate-900 leading-snug">
+                        {item.title}
+                      </div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        {item.caption}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Bottom end label below the 5th card */}
+          <div className="relative flex items-center mt-4">
+            <span className="absolute left-[-21px] -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-indigo-600 border-2 border-white shadow-xs z-10 shrink-0" />
+            <div className="text-xs font-bold text-indigo-700 uppercase tracking-wide">
+              až po různě vypadající tvary
+            </div>
+          </div>
+        </div>
+
+        {/* Gallery Grid - Desktop & Tablet (sm+) */}
+        <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {models.map((item, idx) => {
             return (
               <div
                 key={idx}
                 className="group relative bg-white rounded-xl border border-slate-200 hover:border-slate-300 p-3 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1"
               >
-                {/* Image Container - clean white without gray background box */}
+                {/* Image Container */}
                 <div className="relative w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center p-2 mb-3">
                   <Image
                     src={item.src}

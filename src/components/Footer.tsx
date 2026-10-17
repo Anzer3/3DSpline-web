@@ -90,7 +90,7 @@ export default function Footer() {
             </h4>
             <div className="space-y-1.5 text-xs text-slate-300 font-tech">
               <div className="text-white font-semibold">
-                Tomáš Řezníček • 3D Spline
+                3D Spline
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
@@ -112,7 +112,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-tech text-slate-500">
           <p>
-            &copy; {new Date().getFullYear()} 3D Spline • Tomáš Řezníček • Všechna práva vyhrazena
+            &copy; {new Date().getFullYear()} 3D Spline • Všechna práva vyhrazena
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-[11px]">

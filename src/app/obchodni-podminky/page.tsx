@@ -68,7 +68,7 @@ export default function TermsAndConditionsPage() {
                 Tyto Všeobecné obchodní podmínky (dále jen <strong>„VOP“</strong>) upravují práva a povinnosti smluvních stran vznikající v souvislosti se zakázkovým 3D tiskem a CAD konstrukcí dílů poskytovanými zhotovitelem:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800 mb-3">
-                <div><strong>Zhotovitel:</strong> Tomáš Řezníček (3D Spline)</div>
+                <div><strong>Zhotovitel:</strong> 3D Spline</div>
                 <div><strong>Sídlo:</strong> Olomouc, Česká republika</div>
                 <div><strong>IČO:</strong> V procesu zápisu (bude doplněno po přidělení)</div>
                 <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
@@ -209,7 +209,7 @@ export default function TermsAndConditionsPage() {
       {/* Footer */}
       <footer className="bg-slate-50 border-t border-slate-200 py-6 text-center text-xs text-slate-500">
         <div className="max-w-4xl mx-auto px-4">
-          &copy; {new Date().getFullYear()} 3D Spline • Tomáš Řezníček • Olomouc
+          &copy; {new Date().getFullYear()} 3D Spline • Olomouc
         </div>
       </footer>
     </div>

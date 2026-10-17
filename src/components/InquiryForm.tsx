@@ -16,6 +16,9 @@ import {
   Lock,
   ArrowRight,
   Sparkles,
+  Image as ImageIcon,
+  FileBox,
+  FileText,
 } from "lucide-react";
 
 type InquiryTab = "model" | "drawing";
@@ -23,6 +26,7 @@ type InquiryTab = "model" | "drawing";
 interface UploadedFile {
   file: File;
   id: string;
+  previewUrl?: string;
 }
 
 export default function InquiryForm() {
@@ -94,9 +98,11 @@ export default function InquiryForm() {
         break;
       }
       currentTotal += file.size;
+      const isImg = file.type.startsWith("image/");
       newFiles.push({
         file,
         id: `${file.name}-${file.size}-${Date.now()}-${i}`,
+        previewUrl: isImg ? URL.createObjectURL(file) : undefined,
       });
     }
 
@@ -104,7 +110,13 @@ export default function InquiryForm() {
   };
 
   const removeFile = (id: string) => {
-    setUploadedFiles((prev) => prev.filter((item) => item.id !== id));
+    setUploadedFiles((prev) => {
+      const target = prev.find((item) => item.id === id);
+      if (target?.previewUrl) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      return prev.filter((item) => item.id !== id);
+    });
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -403,8 +415,7 @@ export default function InquiryForm() {
 
                     <UploadCloud className="w-6 h-6 text-slate-400 mx-auto mb-1.5" />
                     <p className="text-xs font-semibold text-slate-800 mb-0.5">
-                      Přetáhněte soubory sem, nebo{" "}
-                      <span className="text-blue-600 underline">vyberte z disku</span>
+                      Přetáhněte soubory sem, <span className="text-blue-600 underline">vyberte z disku</span> nebo <span className="text-blue-600 underline sm:hidden">vyfoťte mobilem</span>
                     </p>
                     <p className="text-[11px] text-slate-500">
                       Podporované formáty: {acceptedFormats} (max. 25 MB celkem)
@@ -418,12 +429,39 @@ export default function InquiryForm() {
                           key={item.id}
                           className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm text-xs"
                         >
-                          <div className="flex items-center gap-2 overflow-hidden pr-2">
-                            <FileCheck2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                            <span className="truncate text-slate-800">{item.file.name}</span>
-                            <span className="text-slate-400 shrink-0">
-                              ({(item.file.size / 1024).toFixed(1)} KB)
-                            </span>
+                          <div className="flex items-center gap-2.5 overflow-hidden pr-2">
+                            {/* File Preview Thumbnail / Icon */}
+                            {item.previewUrl ? (
+                              <div className="w-8 h-8 rounded border border-slate-200 overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={item.previewUrl}
+                                  alt={item.file.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ) : item.file.name.match(/\.(step|stp|stl|3mf)$/i) ? (
+                              <div className="w-8 h-8 rounded bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0">
+                                <FileBox className="w-4 h-4" />
+                              </div>
+                            ) : item.file.name.match(/\.(pdf|dwg|dxf)$/i) ? (
+                              <div className="w-8 h-8 rounded bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0">
+                                <FileText className="w-4 h-4" />
+                              </div>
+                            ) : (
+                              <div className="w-8 h-8 rounded bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
+                                <FileCheck2 className="w-4 h-4" />
+                              </div>
+                            )}
+
+                            <div className="truncate">
+                              <span className="truncate text-slate-800 font-medium block">
+                                {item.file.name}
+                              </span>
+                              <span className="text-slate-400 text-[10px] block">
+                                {(item.file.size / 1024).toFixed(1)} KB
+                              </span>
+                            </div>
                           </div>
                           <button
                             type="button"

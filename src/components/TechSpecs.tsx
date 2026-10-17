@@ -40,13 +40,16 @@ export default function TechSpecs() {
   return (
     <section className="bg-slate-900 border-b border-slate-800 text-white py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-5">
           {specs.map((item, index) => {
             const Icon = item.icon;
+            const isLast = index === specs.length - 1;
             return (
               <div
                 key={index}
-                className="flex flex-col justify-between p-3.5 rounded-lg bg-slate-800/60 border border-slate-700/60"
+                className={`flex flex-col justify-between p-3.5 rounded-lg bg-slate-800/60 border border-slate-700/60 ${
+                  isLast ? "col-span-2 sm:col-span-1" : ""
+                }`}
               >
                 <div>
                   <div className="flex items-center gap-2 mb-2">

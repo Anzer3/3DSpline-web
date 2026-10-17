@@ -52,10 +52,16 @@ export default function HasModelSection() {
           <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
             Máte hotový soubor ve formátu STEP, STL nebo 3MF? Postaráme se o spolehlivou kusovou i sériovou výrobu. Zkontrolujeme geometrii, nastavíme optimální parametry tisku a dodáme díly v požadované kvalitě i množství.
           </p>
+          <div className="flex flex-wrap items-center gap-2 mt-4">
+            <span className="text-xs font-semibold text-slate-300">Podporované formáty:</span>
+            <span className="px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-bold">.STEP</span>
+            <span className="px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-bold">.STL</span>
+            <span className="px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-bold">.3MF</span>
+          </div>
         </div>
 
-        {/* Gallery Grid: Real Series Showcase without border boxes */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Gallery Grid: 2 columns on mobile for compact viewing, 4 on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {seriesItems.map((item, idx) => {
             return (
               <div
@@ -63,22 +69,22 @@ export default function HasModelSection() {
                 className="group flex flex-col transition-all duration-300"
               >
                 {/* Image Container */}
-                <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden flex items-center justify-center mb-3 bg-[#152536]">
+                <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden flex items-center justify-center mb-2.5 bg-[#152536]">
                   <Image
                     src={item.src}
                     alt={item.title}
                     width={400}
                     height={300}
-                    className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-contain p-1.5 sm:p-2 transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
 
                 {/* Text Content */}
                 <div className="text-left">
-                  <div className="text-sm font-bold text-white leading-snug group-hover:text-blue-400 transition-colors">
+                  <div className="text-xs sm:text-sm font-bold text-white leading-snug group-hover:text-blue-400 transition-colors">
                     {item.title}
                   </div>
-                  <div className="text-xs text-slate-400 mt-1">
+                  <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5 sm:mt-1">
                     {item.caption}
                   </div>
                 </div>
