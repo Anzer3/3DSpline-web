@@ -407,9 +407,8 @@ export async function POST(req: NextRequest) {
             <div class="highlight">
               <strong>Jaký je další postup?</strong>
               <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-                <li>Projdeme zaslané podklady a ověříme tisknutelnost a orientaci vrstev (DFAM).</li>
-                <li>Zpracujeme pro vás transparentní cenovou kalkulaci a navrhneme optimální materiál.</li>
-                <li>Odpověď s nabídkou obdržíte obratem, nejpozději do 24 hodin.</li>
+                <li>Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev (DFAM).</li>
+                <li>Ozveme se vám zpět nejpozději do 24 hodin s technickým posouzením a dalšími možnostmi.</li>
               </ul>
             </div>
 
@@ -450,8 +449,7 @@ děkujeme za zaslání vaší poptávky na zakázkový 3D tisk a CAD konstrukci 
 
 Jaký je další postup?
 - Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev.
-- Zpracujeme pro vás cenovou kalkulaci a navrhneme optimální materiál.
-- Odpověď s nabídkou obdržíte obratem, nejpozději do 24 hodin.
+- Ozveme se vám zpět nejpozději do 24 hodin s posouzením a dalšími možnostmi.
 
 S pozdravem,
 Tým 3D Spline
@@ -481,7 +479,7 @@ info@3dspline.cz
     return NextResponse.json({
       success: true,
       message:
-        "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme.",
+        "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme zpět.",
     });
   } catch (error: unknown) {
     const errMessage = error instanceof Error ? error.message : String(error);

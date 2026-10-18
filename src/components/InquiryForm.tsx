@@ -168,7 +168,7 @@ export default function InquiryForm() {
       setStatus("success");
       setSuccessMessage(
         data.message ||
-          "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme s kalkulací."
+          "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme zpět."
       );
     } catch (err: unknown) {
       setStatus("error");
@@ -253,7 +253,7 @@ export default function InquiryForm() {
                 </p>
                 <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-600 max-w-md mx-auto mb-6 text-left space-y-1.5">
                   <div><strong>Potvrzení:</strong> Odesláno na e-mail {email}</div>
-                  <div><strong>Další krok:</strong> Posouzení v dílně a nacenění do 24 h</div>
+                  <div><strong>Další krok:</strong> Posouzení podkladů a odpověď do 24 h</div>
                   <div><strong>Doručení:</strong> Rychlý kurýr po celé ČR</div>
                 </div>
                 <button

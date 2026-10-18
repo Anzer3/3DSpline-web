@@ -126,7 +126,7 @@ export default function Navbar() {
             </a>
             <div className="flex items-center gap-2 px-2 text-[11px] text-slate-400">
               <Clock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>Nacenění obvykle do 24 hodin</span>
+              <span>Odpovídáme obvykle do 24 hodin</span>
             </div>
           </div>
 

@@ -89,7 +89,7 @@ export default function TermsAndConditionsPage() {
                   Odeslání poptávky prostřednictvím webového formuláře na 3dspline.cz nebo e-mailem je nezávazné.
                 </li>
                 <li>
-                  Zhotovitel na základě posouzení zaslaných podkladů (3D model, výkres, nákres či popis) vypracuje individuální cenovou a termínovou nabídku, kterou zašle objednateli e-mailem (obvykle do 24 hodin).
+                  Zhotovitel na základě posouzení zaslaných podkladů (3D model, výkres, nákres či popis) vypracuje individuální cenovou a termínovou nabídku, kterou zašle objednateli e-mailem. Zhotovitel kontaktuje objednatele zpět obvykle do 24 hodin.
                 </li>
                 <li>
                   Cenová nabídka má platnost 14 kalendářních dnů od jejího odeslání, pokud není uvedeno jinak.

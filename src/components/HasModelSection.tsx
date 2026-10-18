@@ -100,7 +100,7 @@ export default function HasModelSection() {
               Máte připravený 3D soubor (.STEP, .STL nebo .3MF)?
             </div>
             <div className="text-xs text-slate-400 mt-0.5">
-              Nahrajte ho do formuláře. Cenovou nabídku pro vaši sérii vám zašleme obvykle do několika hodin.
+              Nahrajte ho do formuláře. Ozveme se vám zpět s posouzením modelu a možnostmi výroby.
             </div>
           </div>
 
