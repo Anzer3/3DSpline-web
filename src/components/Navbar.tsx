@@ -54,6 +54,13 @@ export default function Navbar() {
               Materiály
             </a>
             <a
+              href="#caste-dotazy"
+              onClick={(e) => scrollToSection(e, "#caste-dotazy")}
+              className="hover:text-white transition-colors"
+            >
+              Časté dotazy
+            </a>
+            <a
               href="#kontakt"
               onClick={(e) => scrollToSection(e, "#kontakt")}
               className="hover:text-white transition-colors"
@@ -105,6 +112,13 @@ export default function Navbar() {
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Materiály
+            </a>
+            <a
+              href="#caste-dotazy"
+              onClick={(e) => scrollToSection(e, "#caste-dotazy")}
+              className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
+            >
+              Časté dotazy &amp; Limity
             </a>
             <a
               href="#kontakt"

@@ -19,6 +19,7 @@ import {
   Image as ImageIcon,
   FileBox,
   FileText,
+  ShieldAlert,
 } from "lucide-react";
 
 type InquiryTab = "model" | "drawing";
@@ -40,6 +41,7 @@ export default function InquiryForm() {
   const [note, setNote] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [licenseConfirmed, setLicenseConfirmed] = useState(false);
 
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -139,6 +141,12 @@ export default function InquiryForm() {
     setStatus("submitting");
     setErrorMessage("");
 
+    if (!licenseConfirmed) {
+      setStatus("error");
+      setErrorMessage("Pro odeslání prosím potvrďte, že disponujete autorskými právy nebo licencí k dodaným podkladům.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("tab", activeTab);
@@ -148,6 +156,7 @@ export default function InquiryForm() {
       formData.append("quantity", quantity);
       formData.append("material", material);
       formData.append("prototypePackage", prototypePackage ? "true" : "false");
+      formData.append("licenseConfirmed", "true");
       formData.append("note", note);
 
       uploadedFiles.forEach((item) => {
@@ -422,6 +431,11 @@ export default function InquiryForm() {
                     </p>
                   </div>
 
+                  <div className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-500">
+                    <ShieldAlert className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <span>Netiskneme komponenty zbraní, tlumiče ani cizí chráněné značky/loga bez licenčního oprávnění.</span>
+                  </div>
+
                   {uploadedFiles.length > 0 && (
                     <div className="mt-2 space-y-1.5">
                       {uploadedFiles.map((item) => (
@@ -500,6 +514,22 @@ export default function InquiryForm() {
                   </div>
                 )}
 
+                {/* License and IP declaration checkbox */}
+                <div className="pt-2">
+                  <label className="flex items-start gap-2.5 cursor-pointer select-none group">
+                    <input
+                      type="checkbox"
+                      checked={licenseConfirmed}
+                      onChange={(e) => setLicenseConfirmed(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      required
+                    />
+                    <span className="text-xs text-slate-700 leading-snug">
+                      Prohlašuji, že k zaslaným podkladům vlastním autorská práva nebo oprávnění (licenci) k jejich zakázkové výrobě.
+                    </span>
+                  </label>
+                </div>
+
                 <div className="pt-2">
                   <button
                     type="submit"
@@ -518,8 +548,8 @@ export default function InquiryForm() {
                       </>
                     )}
                   </button>
-                  <p className="mt-2.5 text-center text-[11px] text-slate-500">
-                    Odesláním poptávky berete na vědomí{" "}
+                  <p className="mt-2.5 text-center text-[11px] text-slate-500 leading-relaxed">
+                    Výrobky jsou zhotoveny technologií FDM 3D tisku pro technické a prototypové účely. Otestování vhodnosti dílu v ostrém provozu je na odpovědnosti zákazníka. Odesláním poptávky berete na vědomí{" "}
                     <a
                       href="/ochrana-osobnich-udaju"
                       className="text-slate-600 hover:text-blue-600 underline underline-offset-2 transition-colors"

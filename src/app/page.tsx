@@ -4,9 +4,10 @@ import TechSpecs from "@/components/TechSpecs";
 import CadModelingSection from "@/components/CadModelingSection";
 import HasModelSection from "@/components/HasModelSection";
 import PrototypeBeforeSeries from "@/components/PrototypeBeforeSeries";
-import WhyUs from "@/components/WhyUs";
 import Materials from "@/components/Materials";
 import Process from "@/components/Process";
+import WhyUs from "@/components/WhyUs";
+import FaqSection from "@/components/FaqSection";
 import InquiryForm from "@/components/InquiryForm";
 import Footer from "@/components/Footer";
 import MobileFloatingCta from "@/components/MobileFloatingCta";
@@ -41,6 +42,9 @@ export default function Home() {
 
         {/* SECTION D: Why Choose 3dspline.cz */}
         <WhyUs />
+
+        {/* SECTION FAQ: Často kladené otázky a limity FDM tisku (#caste-dotazy) */}
+        <FaqSection />
 
         {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
         <InquiryForm />

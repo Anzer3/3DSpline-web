@@ -76,6 +76,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="#caste-dotazy" className="hover:text-white transition-colors">
+                  Časté dotazy &amp; Limity
+                </a>
+              </li>
+              <li>
                 <a href="#poptavka" className="hover:text-white transition-colors">
                   Poptávka výroby
                 </a>

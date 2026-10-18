@@ -138,6 +138,9 @@ export async function POST(req: NextRequest) {
     const prototypePackage =
       formData.get("prototypePackage") === "true" || formData.get("sampleApproval") === "true";
 
+    const licenseConfirmed =
+      formData.get("licenseConfirmed") === "true" || formData.get("licenseConfirmed") === "on";
+
     const note = sanitizeText((formData.get("note") as string) || "", 4000) || "Bez další poznámky";
 
     // 3. VALIDATION
@@ -223,6 +226,9 @@ export async function POST(req: NextRequest) {
       prototypePackage: prototypePackage
         ? "ANO (požadován Prototypovací balíček / zkušební vzorek před sérií)"
         : "NE (rovnou výroba dle zadání)",
+      licenseConfirmed: licenseConfirmed
+        ? "ANO (klient potvrdil vlastnictví práv či komerční licenci k modelu)"
+        : "NEPOTVRZENO",
       note,
       filesCount: attachments.length,
       fileList: fileListForLog,
@@ -348,6 +354,10 @@ export async function POST(req: NextRequest) {
                 <td><strong>${safePrototypePackageHtml}</strong></td>
               </tr>
               <tr>
+                <th>Autorská práva &amp; licence:</th>
+                <td><span style="color: #16a34a; font-weight: 600;">✓ Potvrzeno klientem</span> (vlastník dat / platná licence)</td>
+              </tr>
+              <tr>
                 <th>Přiložené soubory:</th>
                 <td>
                   ${
@@ -436,6 +446,7 @@ Telefon: ${phone}
 Počet kusů: ${quantity}
 Preferovaný materiál: ${material}
 Prototypovací balíček: ${inquiryDetails.prototypePackage}
+Autorská práva k datům: ${inquiryDetails.licenseConfirmed}
 Přiložené soubory: ${attachments.length > 0 ? fileListForLog.map((f) => f.name).join(", ") : "Žádné"}
 
 Popis zadání:

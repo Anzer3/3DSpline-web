@@ -132,7 +132,10 @@ export default function TermsAndConditionsPage() {
                   <strong>Výrobní tolerance:</strong> Běžná rozměrová přesnost FDM tisku se pohybuje v toleranci přibližně ±0,2 mm nebo ±0,5 % jmenovitého rozměru (v závislosti na geometrii, orientaci a smrštění materiálu). Požadavky na přesnější lícování je nutné konzultovat předem.
                 </li>
                 <li>
-                  <strong>Teplotní odolnost:</strong> Objednatel je povinen respektovat mezní provozní teploty zvolených plastů (např. běžné PLA do cca 55 °C, PETG do cca 75–80 °C).
+                  <strong>Teplotní odolnost:</strong> Objednatel je povinen respektovat mezní provozní teploty zvolených plastů (např. běžné PLA do cca 50–55 °C, PETG do cca 75–80 °C, ASA do cca 95 °C).
+                </li>
+                <li>
+                  <strong>Styk s potravinami a hygienické limity:</strong> Běžný FDM 3D tisk není technologií certifikovanou pro přímý styk s potravinami (food-safe). Mikrospáry mezi jednotlivými tiskovými vrstvami mohou zadržovat nečistoty a bakterie. Výrobky nejsou určeny pro přímý stravovací kontakt ani jako hračky pro děti do 3 let.
                 </li>
               </ul>
             </section>
@@ -145,6 +148,9 @@ export default function TermsAndConditionsPage() {
               <ul className="list-disc pl-5 space-y-1.5 text-slate-600 text-xs sm:text-sm">
                 <li>
                   Objednatel odesláním podkladů (3D model, výkres) prohlašuje, že je oprávněn s těmito daty nakládat a že jejich výrobou nedochází k porušení autorských práv, patentů, průmyslových vzorů ani práv třetích stran.
+                </li>
+                <li>
+                  <strong>Nekomerční licence a ochranné známky:</strong> Zhotovitel neprovádí zakázkový tisk modelů šířených pod nekomerční licencí (např. Creative Commons Non-Commercial – CC-NC) ani tisk předmětů s chráněnými logy či ochrannými známkami třetích stran bez doloženého oprávnění držitele práv.
                 </li>
                 <li>
                   V případě, že zhotovitel pro objednatele provádí CAD modelování či konstrukční návrh, přechází nevýhradní licence k užití vytvořeného 3D modelu na objednatele okamžikem úplného zaplacení ceny díla.
@@ -186,6 +192,8 @@ export default function TermsAndConditionsPage() {
                 <li>Objednatel je povinen zkontrolovat dodané díly bez zbytečného odkladu po jejich doručení.</li>
                 <li>Zjevné vady (poškození při přepravě, chybějící kusy či zásadní geometrická neshoda s odsouhlaseným modelem) je objednatel povinen vytknout písemně na e-mail info@3dspline.cz do 5 pracovních dnů od převzetí dílů, včetně fotodokumentace.</li>
                 <li>Zhotovitel neodpovídá za vady vzniklé nesprávným užíváním dílu, přetížením nad rámec vlastností materiálu nebo vystavením vyšším teplotám, než pro jaké je materiál určen.</li>
+                <li><strong>Odpovědnost za vhodné použití a otestování:</strong> Objednatel bere na vědomí, že díly jsou dodávány pro prototypové a technické účely. Finální ověření funkčnosti, nosnosti a bezpečnosti v reálném zařízení je v odpovědnosti objednatele před ostrým nasazením do provozu.</li>
+                <li><strong>Vyloučené a kritické aplikace:</strong> Zhotovitel nenese odpovědnost za škody způsobené použitím dílů v kritických aplikacích (zdravotnictví, implantáty, letectví, kritické bezpečnostní systémy motorových vozidel apod.). Zhotovitel z bezpečnostních a zákonných důvodů v žádném případě nepřijímá zakázky na zbraně, tlumiče či součásti zbraňových mechanismů.</li>
                 <li>V případě oprávněné reklamace zhotovitel přednostně zajistí bezplatnou opravu nebo zhotovení náhradního kusu v nejkratším možném termínu.</li>
               </ul>
             </section>
