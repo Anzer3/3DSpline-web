@@ -72,7 +72,7 @@ export default function Hero() {
                   <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
                 </div>
                 <span>
-                  <strong>Doručení po celé ČR:</strong> spolehlivé odeslání hotových dílů a fakturace se splatností
+                  <strong>Doručení po celé ČR</strong>
                 </span>
               </div>
             </div>
@@ -96,7 +96,7 @@ export default function Hero() {
             <div className="pt-1 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-500">
               <span className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                Rychlé doručení po celé ČR
+                Doručení po celé ČR
               </span>
             </div>
           </div>
