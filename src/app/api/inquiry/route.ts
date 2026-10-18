@@ -273,15 +273,23 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Configure Nodemailer transporter
+    // Configure Nodemailer transporter (robust configuration for Seznam / Vercel)
+    const isSecure = process.env.SMTP_SECURE === "true" || smtpPort === 465;
     const transporter = nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
-      secure: process.env.SMTP_SECURE === "true" || smtpPort === 465,
+      secure: isSecure,
       auth: {
         user: smtpUser,
         pass: smtpPass,
       },
+      tls: {
+        // Do not fail on invalid certs and allow proper TLS negotiation
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
     });
 
     // 1. Email to Site Owner / Engineer (with escaped HTML)
@@ -476,11 +484,12 @@ info@3dspline.cz
         "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme.",
     });
   } catch (error: unknown) {
-    console.error("❌ CHYBA PŘI ZPRACOVÁNÍ POPTÁVKY:", error);
+    const errMessage = error instanceof Error ? error.message : String(error);
+    console.error("❌ CHYBA PŘI ZPRACOVÁNÍ POPTÁVKY:", errMessage);
     return NextResponse.json(
       {
         success: false,
-        error: "Došlo k neočekávané chybě při odesílání poptávky. Zkuste to prosím znovu.",
+        error: `Chyba při odesílání e-mailu: ${errMessage}`,
       },
       { status: 500 }
     );
