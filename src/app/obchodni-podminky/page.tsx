@@ -55,7 +55,7 @@ export default function TermsAndConditionsPage() {
             Obchodní podmínky zakázkové výroby
           </h1>
           <p className="text-xs text-slate-500 mb-8">
-            Platné a účinné od 17. října 2026 • Web 3dspline.cz
+            Platné a účinné od 17. října 2026
           </p>
 
           <div className="space-y-8 text-sm leading-relaxed text-slate-700">
@@ -68,14 +68,15 @@ export default function TermsAndConditionsPage() {
                 Tyto Všeobecné obchodní podmínky (dále jen <strong>„VOP“</strong>) upravují práva a povinnosti smluvních stran vznikající v souvislosti se zakázkovým 3D tiskem a CAD konstrukcí dílů poskytovanými zhotovitelem:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800 mb-3">
-                <div><strong>Zhotovitel:</strong> 3D Spline</div>
-                <div><strong>Sídlo:</strong> Olomouc, Česká republika</div>
-                <div><strong>IČO:</strong> V procesu zápisu (bude doplněno po přidělení)</div>
+                <div><strong>Zhotovitel:</strong> [Tvé Jméno a Příjmení] (podnikající pod značkou 3D Spline)</div>
+                <div><strong>Sídlo:</strong> [Ulice a č.p.], [PSČ] Olomouc, Česká republika</div>
+                <div><strong>IČO:</strong> [Doplň 8místné číslo po přidělení]</div>
+                <div><strong>Zápis v evidenci:</strong> Fyzická osoba zapsaná v živnostenském rejstříku vedeném Magistrátem města Olomouce. Zhotovitel není plátcem DPH.</div>
                 <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
                 <div><strong>Web:</strong> https://3dspline.cz</div>
               </div>
               <p className="text-xs text-slate-600">
-                <strong>Objednatelem</strong> je fyzická nebo právnická osoba, která si u zhotovitele objednává výrobu 3D dílů nebo konstrukční práce v CAD.
+                <strong>Objednatelem</strong> je fyzická osoba – spotřebitel (osoba jednající mimo rámec své podnikatelské činnosti) nebo podnikatel (fyzická či právnická osoba jednající v rámci své podnikatelské činnosti), která si u zhotovitele objednává zhotovení 3D dílů nebo konstrukční práce v CAD.
               </p>
             </section>
 
@@ -89,7 +90,7 @@ export default function TermsAndConditionsPage() {
                   Odeslání poptávky prostřednictvím webového formuláře na 3dspline.cz nebo e-mailem je nezávazné.
                 </li>
                 <li>
-                  Zhotovitel na základě posouzení zaslaných podkladů (3D model, výkres, nákres či popis) vypracuje individuální cenovou a termínovou nabídku, kterou zašle objednateli e-mailem. Zhotovitel kontaktuje objednatele zpět obvykle do 24 hodin.
+                  Zhotovitel na základě posouzení zaslaných podkladů kontaktuje objednatele zpět obvykle do 24 hodin. Poté na základě posouzení a domluvy stran bude zhotovitelem vypracována cenová nabídka a termín předběžného dodání.
                 </li>
                 <li>
                   Cenová nabídka má platnost 14 kalendářních dnů od jejího odeslání, pokud není uvedeno jinak.
@@ -123,7 +124,7 @@ export default function TermsAndConditionsPage() {
               </h2>
               <ul className="list-disc pl-5 space-y-1.5 text-slate-600 text-xs sm:text-sm">
                 <li>
-                  Díly jsou vyráběny aditivní technologií FDM (nanášení roztaveného termoplastického vlákna po vrstvách, např. PETG, PLA, ASA).
+                  Díly jsou vyráběny aditivní technologií FDM (nanášení roztaveného termoplastického vlákna po vrstvách, standardně z materiálů PLA a PETG).
                 </li>
                 <li>
                   <strong>Přirozené vlastnosti:</strong> Viditelnost tiskových vrstev, drobná povrchová mikrostruktura či stopy po tiskových podpěrách jsou běžnou technologickou vlastností FDM technologie a nepředstavují vadu dílu.
@@ -132,7 +133,7 @@ export default function TermsAndConditionsPage() {
                   <strong>Výrobní tolerance:</strong> Běžná rozměrová přesnost FDM tisku se pohybuje v toleranci přibližně ±0,2 mm nebo ±0,5 % jmenovitého rozměru (v závislosti na geometrii, orientaci a smrštění materiálu). Požadavky na přesnější lícování je nutné konzultovat předem.
                 </li>
                 <li>
-                  <strong>Teplotní odolnost:</strong> Objednatel je povinen respektovat mezní provozní teploty zvolených plastů (např. běžné PLA do cca 50–55 °C, PETG do cca 75–80 °C, ASA do cca 95 °C).
+                  <strong>Teplotní odolnost:</strong> Objednatel je povinen respektovat mezní provozní teploty zvolených plastů (např. u běžného PLA dochází k měknutí již okolo 50–55 °C, u PETG okolo 75–80 °C).
                 </li>
                 <li>
                   <strong>Styk s potravinami a hygienické limity:</strong> Běžný FDM 3D tisk není technologií certifikovanou pro přímý styk s potravinami (food-safe). Mikrospáry mezi jednotlivými tiskovými vrstvami mohou zadržovat nečistoty a bakterie. Výrobky nejsou určeny pro přímý stravovací kontakt ani jako hračky pro děti do 3 let.
@@ -176,25 +177,45 @@ export default function TermsAndConditionsPage() {
             {/* 7. Right of Withdrawal for Consumers */}
             <section className="border-b border-slate-100 pb-6">
               <h2 className="text-base font-bold text-slate-900 mb-2">
-                7. Poučení o nemožnosti odstoupení od smlouvy u zakázkového zboží
+                7. Poučení o nemožnosti odstoupení od smlouvy (pro spotřebitele)
               </h2>
-              <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-4 text-xs text-amber-950 leading-relaxed">
-                <strong>Upozornění pro spotřebitele:</strong> Podle ustanovení § 1837 písm. d) zákona č. 89/2012 Sb., občanský zákoník, <strong>nemá spotřebitel právo odstoupit od smlouvy bez udání důvodu ve lhůtě 14 dnů</strong>, jelikož se jedná o dodávku zboží, které bylo vyrobeno podle požadavků spotřebitele nebo přizpůsobeno jeho osobním potřebám (zakázkový 3D tisk a CAD modelování na míru).
+              <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-4 text-xs text-amber-950 leading-relaxed space-y-2">
+                <p>
+                  <strong>Upozornění pro spotřebitele:</strong> Podle ustanovení § 1837 písm. d) zákona č. 89/2012 Sb., občanský zákoník, nemá spotřebitel právo odstoupit od smlouvy bez udání důvodu ve lhůtě 14 dnů u dodávky zboží, které bylo vyrobeno podle požadavků spotřebitele nebo přizpůsobeno jeho osobním potřebám (zakázkový 3D tisk na míru).
+                </p>
+                <p>
+                  V případě zakázkového CAD modelování bez fyzického tisku spotřebitel akceptací cenové nabídky výslovně žádá, aby zhotovitel započal s plněním před uplynutím lhůty pro odstoupení od smlouvy, a bere na vědomí, že úplným poskytnutím služby nebo dodáním digitálního obsahu jeho právo na odstoupení od smlouvy zaniká (§ 1837 písm. a) a l) občanského zákoníku).
+                </p>
               </div>
             </section>
 
             {/* 8. Warranty & Complaints */}
             <section className="border-b border-slate-100 pb-6">
               <h2 className="text-base font-bold text-slate-900 mb-2">
-                8. Odpovědnost za vady a reklamace
+                8. Odpovědnost za vady a reklamace (rozděleno na B2B a B2C)
               </h2>
-              <ul className="list-disc pl-5 space-y-1.5 text-slate-600 text-xs sm:text-sm">
-                <li>Objednatel je povinen zkontrolovat dodané díly bez zbytečného odkladu po jejich doručení.</li>
-                <li>Zjevné vady (poškození při přepravě, chybějící kusy či zásadní geometrická neshoda s odsouhlaseným modelem) je objednatel povinen vytknout písemně na e-mail info@3dspline.cz do 5 pracovních dnů od převzetí dílů, včetně fotodokumentace.</li>
-                <li>Zhotovitel neodpovídá za vady vzniklé nesprávným užíváním dílu, přetížením nad rámec vlastností materiálu nebo vystavením vyšším teplotám, než pro jaké je materiál určen.</li>
-                <li><strong>Odpovědnost za vhodné použití a otestování:</strong> Objednatel bere na vědomí, že díly jsou dodávány pro prototypové a technické účely. Finální ověření funkčnosti, nosnosti a bezpečnosti v reálném zařízení je v odpovědnosti objednatele před ostrým nasazením do provozu.</li>
-                <li><strong>Vyloučené a kritické aplikace:</strong> Zhotovitel nenese odpovědnost za škody způsobené použitím dílů v kritických aplikacích (zdravotnictví, implantáty, letectví, kritické bezpečnostní systémy motorových vozidel apod.). Zhotovitel z bezpečnostních a zákonných důvodů v žádném případě nepřijímá zakázky na zbraně, tlumiče či součásti zbraňových mechanismů.</li>
-                <li>V případě oprávněné reklamace zhotovitel přednostně zajistí bezplatnou opravu nebo zhotovení náhradního kusu v nejkratším možném termínu.</li>
+              <ul className="list-disc pl-5 space-y-2 text-slate-600 text-xs sm:text-sm">
+                <li>
+                  Objednatel je povinen zkontrolovat dodané díly a obal zásilky bezprostředně při převzetí od přepravce.
+                </li>
+                <li>
+                  <strong>Reklamace u podnikatelů (B2B):</strong> Je-li objednatelem podnikatel, je povinen zjevné vady (poškození při přepravě, chybějící kusy, rozměrová neshoda mimo toleranci) vytknout písemně na e-mail info@3dspline.cz nejpozději do 5 pracovních dnů od převzetí dílů, včetně fotodokumentace, jinak právo z odpovědnosti za tyto vady zaniká.
+                </li>
+                <li>
+                  <strong>Reklamace u spotřebitelů (B2C):</strong> Je-li objednatelem spotřebitel, může vytknout vadu, která se na věci projeví v době 24 měsíců od převzetí. Zhotovitel vydá spotřebiteli písemné potvrzení o tom, kdy právo uplatnil, co je obsahem reklamace a jaký způsob vyřízení požaduje. Reklamace včetně odstranění vady bude vyřízena a spotřebitel o tom bude informován nejpozději do 30 dnů ode dne uplatnění reklamace, pokud se strany nedohodnou na delší lhůtě.
+                </li>
+                <li>
+                  Zhotovitel neodpovídá za vady vzniklé běžným opotřebením, nesprávným užíváním dílu, mechanickým přetížením nad rámec vlastností materiálu nebo vystavením vyšším teplotám, než pro jaké je daný polymer určen.
+                </li>
+                <li>
+                  <strong>Odpovědnost za vhodné použití a otestování:</strong> Objednatel bere na vědomí, že díly jsou dodávány pro prototypové a technické účely. Finální ověření funkčnosti, nosnosti a bezpečnosti v reálném zařízení před ostrým nasazením do provozu je plně v odpovědnosti objednatele.
+                </li>
+                <li>
+                  <strong>Vyloučené a kritické aplikace:</strong> Zhotovitel nenese odpovědnost za škody způsobené použitím dílů v kritických aplikacích (zdravotnictví, implantáty, letectví, kritické bezpečnostní systémy motorových vozidel apod.). Zhotovitel z bezpečnostních a zákonných důvodů v žádném případě nepřijímá zakázky na zbraně, tlumiče či hlavní části střelných zbraní.
+                </li>
+                <li>
+                  V případě oprávněné reklamace zhotovitel přednostně zajistí bezplatnou opravu nebo zhotovení náhradního kusu v nejkratším možném termínu.
+                </li>
               </ul>
             </section>
 
