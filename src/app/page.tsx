@@ -25,6 +25,9 @@ export default function Home() {
         {/* SECTION A2: Technical Capabilities & Specs */}
         <TechSpecs />
 
+        {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
+        <InquiryForm />
+
         {/* SECTION B2: Zakázkové CAD modelování od jednoduchých po atypické díly ("Nemám model") */}
         <CadModelingSection />
 
@@ -45,9 +48,6 @@ export default function Home() {
 
         {/* SECTION FAQ: Často kladené otázky a limity FDM tisku (#caste-dotazy) */}
         <FaqSection />
-
-        {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
-        <InquiryForm />
       </main>
 
       {/* Floating CTA bar on mobile */}

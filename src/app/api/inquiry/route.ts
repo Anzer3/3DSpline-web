@@ -134,6 +134,8 @@ export async function POST(req: NextRequest) {
     const quantity = sanitizeText((formData.get("quantity") as string) || "", 100) || "Neuvedeno";
     const rawMaterial = sanitizeText((formData.get("material") as string) || "", 100);
     const material = rawMaterial || "Nechám si poradit";
+    const rawColor = sanitizeText((formData.get("color") as string) || "", 100);
+    const color = rawColor || "Černá";
 
     const prototypePackage =
       formData.get("prototypePackage") === "true" || formData.get("sampleApproval") === "true";
@@ -223,6 +225,7 @@ export async function POST(req: NextRequest) {
       phone,
       quantity,
       material,
+      color,
       prototypePackage: prototypePackage
         ? "ANO (požadován Prototypovací balíček / zkušební vzorek před sérií)"
         : "NE (rovnou výroba dle zadání)",
@@ -246,6 +249,7 @@ export async function POST(req: NextRequest) {
     const safePhoneHtml = sanitizeHtml(phone);
     const safeQuantityHtml = sanitizeHtml(quantity);
     const safeMaterialHtml = sanitizeHtml(material);
+    const safeColorHtml = sanitizeHtml(color);
     const safePrototypePackageHtml = sanitizeHtml(inquiryDetails.prototypePackage);
     const safeTabLabelHtml = sanitizeHtml(tabLabel);
     const safeNoteHtml = sanitizeHtml(note).replace(/\n/g, "<br/>");
@@ -350,6 +354,10 @@ export async function POST(req: NextRequest) {
                 <td>${safeMaterialHtml}</td>
               </tr>
               <tr>
+                <th>Preferovaná barva:</th>
+                <td>${safeColorHtml}</td>
+              </tr>
+              <tr>
                 <th>Prototypovací balíček:</th>
                 <td><strong>${safePrototypePackageHtml}</strong></td>
               </tr>
@@ -445,6 +453,7 @@ E-mail: ${email}
 Telefon: ${phone}
 Počet kusů: ${quantity}
 Preferovaný materiál: ${material}
+Preferovaná barva: ${color}
 Prototypovací balíček: ${inquiryDetails.prototypePackage}
 Autorská práva k datům: ${inquiryDetails.licenseConfirmed}
 Přiložené soubory: ${attachments.length > 0 ? fileListForLog.map((f) => f.name).join(", ") : "Žádné"}
