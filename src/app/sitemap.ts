@@ -12,13 +12,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/obchodni-podminky`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-10-22"),
       changeFrequency: "monthly",
       priority: 0.3,
     },
     {
       url: `${baseUrl}/ochrana-osobnich-udaju`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-10-22"),
       changeFrequency: "monthly",
       priority: 0.3,
     },
