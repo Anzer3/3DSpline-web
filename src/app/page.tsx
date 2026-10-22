@@ -25,9 +25,6 @@ export default function Home() {
         {/* SECTION A2: Technical Capabilities & Specs */}
         <TechSpecs />
 
-        {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
-        <InquiryForm />
-
         {/* SECTION B2: Zakázkové CAD modelování od jednoduchých po atypické díly ("Nemám model") */}
         <CadModelingSection />
 
@@ -37,11 +34,14 @@ export default function Home() {
         {/* SECTION F: How Collaboration & Pricing Works (#jak-to-funguje) */}
         <Process />
 
-        {/* SECTION B4: Nejprve prototyp a potom sériovka */}
-        <PrototypeBeforeSeries />
-
         {/* SECTION E: Materials (#materialy) */}
         <Materials />
+
+        {/* SECTION B4: Nejprve prototyp a potom sériovka (#prototyp-balicek) */}
+        <PrototypeBeforeSeries />
+
+        {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
+        <InquiryForm />
 
         {/* SECTION D: Why Choose 3dspline.cz */}
         <WhyUs />

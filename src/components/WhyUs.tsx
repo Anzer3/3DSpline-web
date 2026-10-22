@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
 import { Layers, ShieldCheck, Handshake } from "lucide-react";
@@ -36,6 +34,7 @@ export default function WhyUs() {
               alt="3D Spline Logo"
               width={64}
               height={64}
+              sizes="64px"
               className="hidden sm:block w-14 h-14 sm:w-16 sm:h-16 object-contain shrink-0"
             />
             <div>

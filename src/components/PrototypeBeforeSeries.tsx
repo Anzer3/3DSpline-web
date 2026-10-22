@@ -20,7 +20,7 @@ export default function PrototypeBeforeSeries() {
   };
 
   return (
-    <section id="prototyp-balicek" className="py-16 bg-slate-50 border-b border-slate-200 overflow-hidden scroll-mt-24">
+    <section id="prototyp-balicek" className="py-16 bg-slate-50 border-b border-slate-200 overflow-hidden scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Column: Explanatory Text */}
@@ -104,6 +104,7 @@ export default function PrototypeBeforeSeries() {
                     alt="Zkušební prototyp"
                     width={400}
                     height={400}
+                    sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, 280px"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <span className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-medium px-2.5 py-0.5 rounded-md">
@@ -120,6 +121,7 @@ export default function PrototypeBeforeSeries() {
                     alt="Finální sériová výroba"
                     width={400}
                     height={400}
+                    sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, 280px"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <span className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-medium px-2.5 py-0.5 rounded-md">

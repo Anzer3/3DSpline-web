@@ -1,7 +1,5 @@
-"use client";
-
 import React from "react";
-import { Cpu, Maximize2, Boxes, Layers, FileText, CheckCircle2 } from "lucide-react";
+import { Cpu, Maximize2, Boxes, Layers, CheckCircle2 } from "lucide-react";
 
 export default function TechSpecs() {
   const specs = [

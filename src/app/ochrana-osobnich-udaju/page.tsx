@@ -1,13 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ShieldCheck, Mail, MapPin } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Zásady ochrany osobních údajů (GDPR) | 3D Spline",
   description:
     "Informace o zpracování a ochraně osobních údajů v souladu s nařízením GDPR pro web 3dspline.cz.",
+  alternates: {
+    canonical: "/ochrana-osobnich-udaju",
+  },
 };
 
 export default function PrivacyPolicyPage() {
@@ -23,6 +26,7 @@ export default function PrivacyPolicyPage() {
                 alt="3D Spline"
                 width={32}
                 height={32}
+                sizes="32px"
                 className="w-full h-full object-contain"
               />
             </div>

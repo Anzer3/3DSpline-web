@@ -2,14 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import {
-  ArrowRight,
-  Check,
-  MapPin,
-  Clock,
-  Layers,
-  FileCheck2,
-} from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 export default function Hero() {
   const scrollTo = (href: string) => {
@@ -22,31 +15,35 @@ export default function Hero() {
   return (
     <section className="relative bg-white border-b border-slate-200 py-8 sm:py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-center">
-          {/* Left Column: Direct, Honest Engineering Value */}
-          <div className="lg:col-span-7 space-y-5 sm:space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-5 sm:gap-y-6 lg:gap-x-12 items-center">
+          {/* Left Top: Heading & Intro */}
+          <div className="lg:col-span-7 lg:col-start-1 space-y-5 sm:space-y-6">
             <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.2]">
-              Funkční 3D tisk a CAD modelování dílů
+              3D tisk a modelování na míru
             </h1>
 
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl">
               Zakázková výroba pro firmy i jednotlivce. Od náhrady poškozeného kusu po stovkové série podle vašich potřeb.
             </p>
+          </div>
 
-            {/* Mobile visual showcase: displayed compactly on mobile right after intro text */}
-            <div className="lg:hidden w-full flex justify-center py-2">
-              <div className="relative w-full max-w-[260px] aspect-square flex items-center justify-center">
-                <Image
-                  src="/portfolio/pohar.png"
-                  alt="CAD modelování komplexních dílů - 3D Spline"
-                  width={300}
-                  height={300}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </div>
+          {/* Single Hero Image: placed right after intro on mobile, and in right column on desktop */}
+          <div className="lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 w-full flex justify-center py-2 lg:py-0">
+            <div className="relative w-full max-w-[260px] lg:max-w-none aspect-square lg:max-h-[440px] mx-auto flex items-center justify-center group lg:p-2">
+              <Image
+                src="/portfolio/pohar.png"
+                alt="CAD modelování komplexních dílů - 3D Spline"
+                width={600}
+                height={600}
+                sizes="(max-width: 1023px) 260px, 440px"
+                className="w-full h-full object-contain lg:group-hover:scale-105 transition-transform duration-500"
+                priority
+              />
             </div>
+          </div>
 
+          {/* Left Bottom: 3 Core Points & CTA */}
+          <div className="lg:col-span-7 lg:col-start-1 space-y-5 sm:space-y-6">
             {/* 3 Core Points - concise */}
             <div className="space-y-2 sm:space-y-2.5 pt-0.5 sm:pt-1">
               <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 text-slate-700 text-xs sm:text-sm">
@@ -90,28 +87,6 @@ export default function Hero() {
                 <span>Nezávazně poptat výrobu</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
-            </div>
-
-            {/* Trust Coordinates */}
-            <div className="pt-1 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-500">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                Doručení po celé ČR
-              </span>
-            </div>
-          </div>
-
-          {/* Right Column: Hero Visual Showcase on Desktop */}
-          <div className="hidden lg:block lg:col-span-5">
-            <div className="relative w-full aspect-square max-h-[440px] mx-auto flex items-center justify-center group p-2">
-              <Image
-                src="/portfolio/pohar.png"
-                alt="CAD modelování komplexních dílů - 3D Spline"
-                width={600}
-                height={600}
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-                priority
-              />
             </div>
           </div>
         </div>

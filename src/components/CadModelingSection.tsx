@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { ArrowRight, Sparkles, DraftingCompass } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function CadModelingSection() {
   const models = [
@@ -29,7 +29,7 @@ export default function CadModelingSection() {
     {
       src: "/portfolio/pohar.png",
       title: "Atypická organická geometrie",
-      caption: "Spirálovity pohár",
+      caption: "Spirálovitý pohár",
     },
   ];
 
@@ -100,6 +100,7 @@ export default function CadModelingSection() {
                         alt={item.title}
                         width={120}
                         height={120}
+                        sizes="64px"
                         className="w-full h-full object-contain"
                       />
                     </div>
@@ -143,6 +144,7 @@ export default function CadModelingSection() {
                     alt={item.title}
                     width={280}
                     height={280}
+                    sizes="(max-width: 1023px) 30vw, 220px"
                     className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>

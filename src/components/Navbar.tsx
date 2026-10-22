@@ -28,6 +28,7 @@ export default function Navbar() {
                 alt="3D Spline"
                 width={32}
                 height={32}
+                sizes="32px"
                 className="w-full h-full object-contain"
                 priority
               />

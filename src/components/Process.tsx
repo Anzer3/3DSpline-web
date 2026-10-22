@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { ArrowRight } from "lucide-react";
 
@@ -36,7 +34,7 @@ export default function Process() {
   ];
 
   return (
-    <section id="jak-to-funguje" className="py-16 bg-slate-50 border-b border-slate-200">
+    <section id="jak-to-funguje" className="py-16 bg-slate-50 border-b border-slate-200 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mb-10">

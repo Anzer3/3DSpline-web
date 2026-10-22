@@ -50,7 +50,7 @@ export default function FaqSection() {
   };
 
   return (
-    <section id="caste-dotazy" className="py-14 bg-slate-50 border-b border-slate-200">
+    <section id="caste-dotazy" className="py-14 bg-slate-50 border-b border-slate-200 scroll-mt-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-100 text-blue-700 text-xs font-semibold uppercase tracking-wider mb-2">
@@ -76,6 +76,7 @@ export default function FaqSection() {
               >
                 <button
                   type="button"
+                  aria-expanded={isOpen}
                   onClick={() => toggleFaq(index)}
                   className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors"
                 >
@@ -94,11 +95,20 @@ export default function FaqSection() {
                   />
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 pb-4 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/30">
-                    <p className="pl-11">{faq.answer}</p>
+                {/* Answer kept in SSR DOM for search engines & AI crawlers */}
+                <div
+                  className={`grid transition-all duration-200 ease-in-out ${
+                    isOpen
+                      ? "grid-rows-[1fr] opacity-100 border-t border-slate-100 bg-slate-50/30"
+                      : "grid-rows-[0fr] opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-5 pb-4 pt-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      <p className="pl-11">{faq.answer}</p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Instagram, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
+import { Instagram, Mail, MapPin, ArrowUp } from "lucide-react";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -10,8 +10,8 @@ export default function Footer() {
   };
 
   return (
-    <footer id="kontakt" className="bg-[#0F1E2E] text-slate-400 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10">
+    <footer id="kontakt" className="bg-[#0F1E2E] text-slate-400 border-t border-slate-800 scroll-mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 sm:pb-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 pb-10 border-b border-slate-800">
           {/* Brand Info with Official Logo */}
           <div className="lg:col-span-5 space-y-3">
@@ -22,6 +22,7 @@ export default function Footer() {
                   alt="3D Spline"
                   width={32}
                   height={32}
+                  sizes="32px"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -61,13 +62,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-1.5 text-xs font-tech text-slate-400">
               <li>
-                <a href="#realizace" className="hover:text-white transition-colors">
-                  Reference &amp; Realizace
+                <a href="#jak-to-funguje" className="hover:text-white transition-colors">
+                  Průběh spolupráce
                 </a>
               </li>
               <li>
-                <a href="#jak-to-funguje" className="hover:text-white transition-colors">
-                  Průběh spolupráce
+                <a href="#prototyp-balicek" className="hover:text-white transition-colors">
+                  Zkušební prototyp
                 </a>
               </li>
               <li>

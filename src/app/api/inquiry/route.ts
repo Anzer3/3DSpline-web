@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-// Maximum total payload size: 25 MB
-const MAX_TOTAL_SIZE = 25 * 1024 * 1024;
+// Maximum total payload size: 4 MB (serverless-safe limit)
+const MAX_TOTAL_SIZE = 4 * 1024 * 1024;
 
 // Allowed file extensions
 const ALLOWED_EXTENSIONS = new Set([
@@ -124,6 +124,17 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
 
+    // 1b. HONEYPOT ANTI-SPAM CHECK
+    const honeypot = (formData.get("website") as string) || "";
+    if (honeypot.trim().length > 0) {
+      console.warn(`🤖 Zablokován spam bot (honeypot vyplněn) z IP: ${clientIp}`);
+      return NextResponse.json({
+        success: true,
+        message:
+          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením do 24 hodin.",
+      });
+    }
+
     // 2. INPUT SANITIZATION & LENGTH LIMITS
     const rawTab = (formData.get("tab") as string) || "drawing";
     const tab = rawTab === "model" ? "model" : "drawing";
@@ -149,6 +160,13 @@ export async function POST(req: NextRequest) {
     if (!name || !email) {
       return NextResponse.json(
         { success: false, error: "Jméno a příjmení a Váš e-mail jsou povinná pole." },
+        { status: 400 }
+      );
+    }
+
+    if (!note || note === "Bez další poznámky") {
+      return NextResponse.json(
+        { success: false, error: "Podrobný popis je povinné pole." },
         { status: 400 }
       );
     }
@@ -179,7 +197,8 @@ export async function POST(req: NextRequest) {
           return NextResponse.json(
             {
               success: false,
-              error: "Celková velikost přiložených souborů přesahuje povolený limit 25 MB.",
+              error:
+                "Celková velikost přiložených souborů přesahuje limit 4 MB. Větší soubory nám prosím pošlete přímo na e-mail info@3dspline.cz.",
             },
             { status: 400 }
           );

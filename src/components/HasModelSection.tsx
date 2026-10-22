@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function HasModelSection() {
   const seriesItems = [
@@ -75,6 +75,7 @@ export default function HasModelSection() {
                     alt={item.title}
                     width={400}
                     height={300}
+                    sizes="(max-width: 1023px) 46vw, 280px"
                     className="w-full h-full object-contain p-1.5 sm:p-2 transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
