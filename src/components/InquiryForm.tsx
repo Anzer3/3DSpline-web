@@ -323,9 +323,6 @@ export default function InquiryForm() {
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
             Rychlá nezávazná poptávka
           </h2>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-600">
-            Odpovídáme obvykle do 24 hodin s technickým posouzením a cenovou kalkulací.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
@@ -925,10 +922,6 @@ export default function InquiryForm() {
                     </div>
                   )}
 
-                  <div className="flex items-center gap-1.5 mt-1 text-[10px] text-slate-400">
-                    <ShieldAlert className="w-3 h-3 text-slate-400 shrink-0" />
-                    <span>Netiskneme komponenty zbraní, tlumiče ani cizí chráněné značky bez licence.</span>
-                  </div>
 
                   {uploadedFiles.length > 0 && (
                     <div className="mt-2 space-y-1.5">

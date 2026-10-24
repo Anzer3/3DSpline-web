@@ -62,27 +62,47 @@ export default function Footer() {
             </h4>
             <ul className="space-y-1.5 text-xs font-tech text-slate-400">
               <li>
-                <a href="#jak-to-funguje" className="hover:text-white transition-colors">
+                <a href="/#jak-to-funguje" className="hover:text-white transition-colors">
                   Průběh spolupráce
                 </a>
               </li>
               <li>
-                <a href="#prototyp-balicek" className="hover:text-white transition-colors">
+                <a href="/3d-tisk-na-zakazku" className="hover:text-white transition-colors">
+                  3D tisk na zakázku
+                </a>
+              </li>
+              <li>
+                <a href="/cad-modelovani-na-miru" className="hover:text-white transition-colors">
+                  3D modelování na míru
+                </a>
+              </li>
+              <li>
+                <a href="/3d-tisk-nahradnich-dilu" className="hover:text-white transition-colors">
+                  Náhradní díly
+                </a>
+              </li>
+              <li>
+                <a href="/#pripadove-studie" className="hover:text-white transition-colors">
+                  Případové studie
+                </a>
+              </li>
+              <li>
+                <a href="/#prototyp-balicek" className="hover:text-white transition-colors">
                   Zkušební prototyp
                 </a>
               </li>
               <li>
-                <a href="#materialy" className="hover:text-white transition-colors">
+                <a href="/#materialy" className="hover:text-white transition-colors">
                   Materiály (PETG, PLA, ASA)
                 </a>
               </li>
               <li>
-                <a href="#caste-dotazy" className="hover:text-white transition-colors">
+                <a href="/#caste-dotazy" className="hover:text-white transition-colors">
                   Časté dotazy &amp; Limity
                 </a>
               </li>
               <li>
-                <a href="#poptavka" className="hover:text-white transition-colors">
+                <a href="/#poptavka" className="hover:text-white transition-colors">
                   Poptávka výroby
                 </a>
               </li>

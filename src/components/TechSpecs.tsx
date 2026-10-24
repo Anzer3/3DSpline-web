@@ -17,9 +17,9 @@ export default function TechSpecs() {
     },
     {
       icon: Boxes,
-      label: "Materiály skladem",
-      value: "PETG, PLA, ASA, TPU",
-      sub: "Odolné i flexibilní polymery",
+      label: "Používané materiály",
+      value: "PETG, PLA, ASA",
+      sub: "Odolné a konstrukční polymery",
     },
     {
       icon: Cpu,

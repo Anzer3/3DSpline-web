@@ -2,10 +2,12 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Menu, X, ArrowRight, Mail, Clock } from "lucide-react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -13,6 +15,9 @@ export default function Navbar() {
     const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // Na podstránkách sekce neexistuje - přejdeme na hlavní stránku
+      router.push(`/${href}`);
     }
   };
 
@@ -21,7 +26,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Official Logo */}
-          <a href="#" className="flex items-center gap-2.5 group">
+          <a href="/" className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 flex items-center justify-center shrink-0">
               <Image
                 src="/images/logo.png"
@@ -41,11 +46,25 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-7 text-xs font-tech text-slate-300">
             <a
+              href="#sluzby"
+              onClick={(e) => scrollToSection(e, "#sluzby")}
+              className="hover:text-white transition-colors"
+            >
+              Služby
+            </a>
+            <a
               href="#jak-to-funguje"
               onClick={(e) => scrollToSection(e, "#jak-to-funguje")}
               className="hover:text-white transition-colors"
             >
               Jak to funguje
+            </a>
+            <a
+              href="#pripadove-studie"
+              onClick={(e) => scrollToSection(e, "#pripadove-studie")}
+              className="hover:text-white transition-colors"
+            >
+              Případové studie
             </a>
             <a
               href="#materialy"
@@ -101,11 +120,25 @@ export default function Navbar() {
         <div className="md:hidden border-b border-slate-800 bg-[#0F1E2E] px-4 pt-3 pb-5 space-y-4 font-tech text-xs shadow-2xl">
           <nav className="space-y-1">
             <a
+              href="#sluzby"
+              onClick={(e) => scrollToSection(e, "#sluzby")}
+              className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
+            >
+              Služby
+            </a>
+            <a
               href="#jak-to-funguje"
               onClick={(e) => scrollToSection(e, "#jak-to-funguje")}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Jak to funguje
+            </a>
+            <a
+              href="#pripadove-studie"
+              onClick={(e) => scrollToSection(e, "#pripadove-studie")}
+              className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
+            >
+              Případové studie
             </a>
             <a
               href="#materialy"

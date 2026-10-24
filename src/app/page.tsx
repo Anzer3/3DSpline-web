@@ -1,20 +1,27 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TechSpecs from "@/components/TechSpecs";
+import { faqJsonLd } from "@/lib/faqJsonLd";
 import CadModelingSection from "@/components/CadModelingSection";
 import HasModelSection from "@/components/HasModelSection";
-import PrototypeBeforeSeries from "@/components/PrototypeBeforeSeries";
-import Materials from "@/components/Materials";
+import Portfolio from "@/components/Portfolio";
 import Process from "@/components/Process";
+import Materials from "@/components/Materials";
+import PrototypeBeforeSeries from "@/components/PrototypeBeforeSeries";
+import InquiryForm from "@/components/InquiryForm";
 import WhyUs from "@/components/WhyUs";
 import FaqSection from "@/components/FaqSection";
-import InquiryForm from "@/components/InquiryForm";
 import Footer from "@/components/Footer";
 import MobileFloatingCta from "@/components/MobileFloatingCta";
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* Sticky Top Navigation */}
       <Navbar />
 
@@ -30,6 +37,9 @@ export default function Home() {
 
         {/* SECTION B3: Výroba z dodaných dat ("Mám model. Potřebuji jen tisk") */}
         <HasModelSection />
+
+        {/* SECTION C: Případové studie a ukázky realizací (#pripadove-studie) */}
+        <Portfolio />
 
         {/* SECTION F: How Collaboration & Pricing Works (#jak-to-funguje) */}
         <Process />

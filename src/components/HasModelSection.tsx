@@ -2,7 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export default function HasModelSection() {
   const seriesItems = [
@@ -58,6 +59,15 @@ export default function HasModelSection() {
             <span className="px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-bold">.STL</span>
             <span className="px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-bold">.3MF</span>
           </div>
+          <div className="mt-3">
+            <Link
+              href="/3d-tisk-na-zakazku"
+              className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              <span>Více podrobností o zakázkovém 3D tisku</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
 
         {/* Gallery Grid: 2 columns on mobile for compact viewing, 4 on desktop */}
@@ -105,14 +115,24 @@ export default function HasModelSection() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleInquiry}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold transition-colors shrink-0 shadow-md"
-          >
-            <span>Nahrát model a poptat tisk</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-2.5 shrink-0">
+            <Link
+              href="/3d-tisk-na-zakazku"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-slate-600 hover:bg-slate-800 text-slate-200 text-xs sm:text-sm font-semibold transition-colors shrink-0"
+            >
+              <span>Více o 3D tisku</span>
+              <ArrowUpRight className="w-4 h-4 text-slate-400" />
+            </Link>
+
+            <button
+              type="button"
+              onClick={handleInquiry}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold transition-colors shrink-0 shadow-md"
+            >
+              <span>Nahrát model a poptat tisk</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
