@@ -13,28 +13,28 @@ export interface CaseStudy {
   href: string;
 }
 
-// Data případových studií z reálné praxe
+// Data příběhů z dílny z reálné praxe
 const caseStudies: CaseStudy[] = [
   {
     id: 1,
     title: "Madla na pokličky",
     tag: "Náhradní díly",
     image: "/portfolio/poklicky.jpg",
-    href: "/pripadove-studie/madla-na-poklicky",
+    href: "/pribehy-z-dilny/madla-na-poklicky",
   },
   {
     id: 2,
     title: "Model formule (vícebarevný tisk)",
     tag: "Barevný 3D tisk",
     image: "/portfolio/vice_barev.jpg",
-    href: "/pripadove-studie/model-formule",
+    href: "/pribehy-z-dilny/model-formule",
   },
   {
     id: 3,
     title: "Knoflíky pro staré rádio",
     tag: "Reverzní inženýrství",
-    image: "/images/pripadove%20studie/radio%20knofliky/knofliky_nove_vs_stare.jpg",
-    href: "/pripadove-studie/knofliky-pro-stare-radio",
+    image: "/images/pribehy-z-dilny/radio%20knofliky/knofliky_nove_vs_stare.jpg",
+    href: "/pribehy-z-dilny/knofliky-pro-stare-radio",
   },
 ];
 
@@ -47,18 +47,15 @@ export default function Portfolio() {
   };
 
   return (
-    <section id="pripadove-studie" className="py-16 bg-white border-b border-slate-200 scroll-mt-16 overflow-hidden">
+    <section id="pribehy-z-dilny" className="py-16 bg-white border-b border-slate-200 scroll-mt-16 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mb-10">
-          <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
-            Z naší dílny
-          </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
-            Ukázky reálných zakázek
+            Příběhy z dílny
           </h2>
           <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            Příklady toho, co v praxi vyrábíme – od náhrady nedostupných součástek přes vícebarevné modely až po reverzní inženýrství.
+            Ukázky reálných zakázek – od náhrady nedostupných součástek přes vícebarevné modely až po reverzní inženýrství.
           </p>
         </div>
 

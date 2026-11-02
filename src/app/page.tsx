@@ -38,7 +38,7 @@ export default function Home() {
         {/* SECTION B3: Výroba z dodaných dat ("Mám model. Potřebuji jen tisk") */}
         <HasModelSection />
 
-        {/* SECTION C: Případové studie a ukázky realizací (#pripadove-studie) */}
+        {/* SECTION C: Příběhy z dílny a ukázky realizací (#pribehy-z-dilny) */}
         <Portfolio />
 
         {/* SECTION F: How Collaboration & Pricing Works (#jak-to-funguje) */}

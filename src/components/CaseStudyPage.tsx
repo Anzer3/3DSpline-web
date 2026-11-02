@@ -3,10 +3,14 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Quote, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { caseStudiesData, type CaseStudyData } from "@/lib/caseStudies";
 
 export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
+  const currentIndex = caseStudiesData.findIndex((s) => s.slug === study.slug);
+  const nextStudy =
+    caseStudiesData[(currentIndex + 1) % caseStudiesData.length] ||
+    caseStudiesData[0];
   const otherStudies = caseStudiesData.filter((s) => s.slug !== study.slug);
   const [activeImage, setActiveImage] = useState<string>(study.heroImage);
 
@@ -42,8 +46,8 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
               3D Spline
             </Link>
             <span className="mx-1.5">/</span>
-            <Link href="/#pripadove-studie" className="hover:text-slate-900 transition-colors">
-              Příběhy zakázek
+            <Link href="/#pribehy-z-dilny" className="hover:text-slate-900 transition-colors">
+              Příběhy z dílny
             </Link>
             <span className="mx-1.5">/</span>
             <span className="text-slate-700 font-medium">{study.title}</span>
@@ -52,10 +56,6 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left: Heading and Lead */}
             <div className="lg:col-span-7 space-y-4 sm:space-y-5">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/70">
-                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                <span>Storytime z dílny</span>
-              </div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.15]">
                 {study.h1}
               </h1>
@@ -73,10 +73,11 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <Link
-                  href="/#pripadove-studie"
-                  className="inline-flex items-center gap-1.5 px-4 py-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-sm transition-colors"
+                  href={`/pribehy-z-dilny/${nextStudy.slug}`}
+                  className="inline-flex items-center gap-2 px-4 py-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-sm transition-colors"
                 >
-                  <span>Všechny příběhy z dílny</span>
+                  <span>Další příběh</span>
+                  <ArrowRight className="w-4 h-4 text-slate-500" />
                 </Link>
               </div>
             </div>
@@ -144,60 +145,83 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
       </section>
 
       {/* Storytime Section */}
-      <section className="py-14 sm:py-20 bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24 bg-slate-50/60 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Story Header */}
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs font-mono font-bold text-blue-600 uppercase tracking-widest block mb-2">
-              Příběh zakázky
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Jak to probíhalo od prvního kontaktu
+          <div className="max-w-2xl mb-14 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+              Jak probíhala zakázka
             </h2>
             <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-              Žádné teoretické tabulky – podívejte se, jak zakázka vypadala krok za krokem v praxi.
+              Konkrétní postup od prvního posouzení původních dílů až po finální osazení hotových výrobků.
             </p>
           </div>
 
           {/* Story Steps */}
           <div className="space-y-12 sm:space-y-16">
-            {storySteps.map((step) => (
-              <div
-                key={step.number}
-                className="relative grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 p-6 sm:p-8 rounded-2xl bg-slate-50 border border-slate-200"
-              >
-                {/* Left Step Column */}
-                <div className="md:col-span-4">
-                  <span className="text-xs font-mono font-bold text-blue-600 uppercase tracking-wider block mb-1.5">
-                    Kapitola {step.number}
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
-                    {step.data.title}
-                  </h3>
-                  {step.data.subtitle && (
-                    <p className="text-xs font-medium text-slate-500 mt-1">
-                      {step.data.subtitle}
-                    </p>
-                  )}
-                </div>
+            {storySteps.map((step, idx) => {
+              const hasImage = !!step.data.image;
+              const isEven = idx % 2 === 1;
 
-                {/* Right Text Column */}
-                <div className="md:col-span-8 space-y-3.5 text-slate-700 text-sm sm:text-base leading-relaxed">
-                  {step.data.paragraphs.map((p, idx) => (
-                    <p key={idx}>{p}</p>
-                  ))}
+              return (
+                <div
+                  key={step.number}
+                  className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 lg:p-10 shadow-sm"
+                >
+                  <div className={`grid grid-cols-1 ${hasImage ? "lg:grid-cols-12 gap-8 lg:gap-12 items-center" : "max-w-3xl"}`}>
+                    {/* Text content column */}
+                    <div className={hasImage ? `lg:col-span-7 ${isEven ? "lg:order-2" : ""}` : ""}>
+                      <div className="text-xs font-mono font-bold text-blue-600 mb-2">
+                        {step.number}
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
+                        {step.data.title}
+                      </h3>
+                      {step.data.subtitle && (
+                        <p className="text-sm font-medium text-slate-500 mt-1 mb-4 sm:mb-5">
+                          {step.data.subtitle}
+                        </p>
+                      )}
+                      <div className="space-y-3.5 text-slate-700 text-sm sm:text-base leading-relaxed">
+                        {step.data.paragraphs.map((p, pIdx) => (
+                          <p key={pIdx}>{p}</p>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Image column */}
+                    {hasImage && step.data.image && (
+                      <div className={`lg:col-span-5 ${isEven ? "lg:order-1" : ""}`}>
+                        <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm">
+                          <div className="relative aspect-[4/3] w-full">
+                            <Image
+                              src={step.data.image.src}
+                              alt={step.data.image.alt}
+                              fill
+                              sizes="(max-width: 1024px) 100vw, 450px"
+                              className="object-cover hover:scale-105 transition-transform duration-500"
+                            />
+                          </div>
+                          {step.data.image.caption && (
+                            <p className="p-3 text-xs text-slate-600 bg-white border-t border-slate-100 font-medium">
+                              {step.data.image.caption}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Quote Card */}
-          <div className="mt-14 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/50 border border-blue-200/60 relative">
-            <Quote className="w-8 h-8 text-blue-400/50 mb-3" />
-            <blockquote className="text-base sm:text-lg font-medium text-slate-800 italic leading-relaxed">
+          <div className="mt-14 max-w-4xl p-6 sm:p-8 rounded-2xl bg-white border-l-4 border-l-blue-600 border border-slate-200 shadow-sm">
+            <blockquote className="text-base sm:text-lg font-medium text-slate-800 leading-relaxed">
               „{study.story.quote.text}“
             </blockquote>
-            <div className="mt-4 text-xs font-bold text-slate-900 uppercase tracking-wider">
+            <div className="mt-3 text-xs font-bold text-slate-600 uppercase tracking-wider">
               — {study.story.quote.author}
             </div>
           </div>
@@ -271,12 +295,12 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
       {/* Other case studies */}
       <section className="py-12 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-lg font-bold text-slate-900 mb-6">Další příběhy z naší dílny</h2>
+          <h2 className="text-lg font-bold text-slate-900 mb-6">Další příběhy z dílny</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {otherStudies.map((s) => (
               <Link
                 key={s.slug}
-                href={`/pripadove-studie/${s.slug}`}
+                href={`/pribehy-z-dilny/${s.slug}`}
                 className="group relative rounded-xl border border-slate-300 overflow-hidden flex flex-col justify-between min-h-[260px] shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <Image

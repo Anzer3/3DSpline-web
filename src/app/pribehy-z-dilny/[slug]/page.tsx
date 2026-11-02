@@ -21,7 +21,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const study = getCaseStudy(params.slug);
   if (!study) return {};
 
-  const url = `https://3dspline.cz/pripadove-studie/${study.slug}`;
+  const url = `https://3dspline.cz/pribehy-z-dilny/${study.slug}`;
   return {
     title: study.metaTitle,
     description: study.metaDescription,

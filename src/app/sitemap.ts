@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })),
     ...caseStudiesData.map((study) => ({
-      url: `${baseUrl}/pripadove-studie/${study.slug}`,
+      url: `${baseUrl}/pribehy-z-dilny/${study.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,

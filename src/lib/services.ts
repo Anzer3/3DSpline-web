@@ -463,7 +463,7 @@ export const services: Service[] = [
     lead: "Ulomená páčka, prasklé ozubené kolečko, chybějící krytka, nožka nebo úchyt. Pošlete nám původní kus (klidně v úlomcích) nebo fotku s rozměry. Původní geometrii zrekonstruujeme, namáhaná místa konstrukčně zesílíme a nový díl vytiskneme z odolného technického plastu.",
     image: "/portfolio/poklicky.jpg",
     imageAlt: "Vytištěné náhradní plastové díly a krytky na míru",
-    heroImage: "/images/pripadove%20studie/radio%20knofliky/knofliky_nove_vs_stare.jpg",
+    heroImage: "/images/pribehy-z-dilny/radio%20knofliky/knofliky_nove_vs_stare.jpg",
     heroImageAlt:
       "Původní starý díl vedle nově vymodelovaného a vytištěného knoflíku",
     tab: "drawing",

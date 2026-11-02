@@ -82,8 +82,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#pripadove-studie" className="hover:text-white transition-colors">
-                  Případové studie
+                <a href="/#pribehy-z-dilny" className="hover:text-white transition-colors">
+                  Příběhy z dílny
                 </a>
               </li>
               <li>

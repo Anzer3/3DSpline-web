@@ -60,11 +60,11 @@ export default function Navbar() {
               Jak to funguje
             </a>
             <a
-              href="#pripadove-studie"
-              onClick={(e) => scrollToSection(e, "#pripadove-studie")}
+              href="#pribehy-z-dilny"
+              onClick={(e) => scrollToSection(e, "#pribehy-z-dilny")}
               className="hover:text-white transition-colors"
             >
-              Případové studie
+              Příběhy z dílny
             </a>
             <a
               href="#materialy"
@@ -134,11 +134,11 @@ export default function Navbar() {
               Jak to funguje
             </a>
             <a
-              href="#pripadove-studie"
-              onClick={(e) => scrollToSection(e, "#pripadove-studie")}
+              href="#pribehy-z-dilny"
+              onClick={(e) => scrollToSection(e, "#pribehy-z-dilny")}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
-              Případové studie
+              Příběhy z dílny
             </a>
             <a
               href="#materialy"
