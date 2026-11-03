@@ -96,7 +96,7 @@ export default function ServiceRoute({ params }: PageProps) {
       <Navbar />
       <main className="flex-grow">
         <ServicePage service={service} />
-        <InquiryForm />
+        <InquiryForm defaultTab={service.tab} />
       </main>
       <MobileFloatingCta />
       <Footer />

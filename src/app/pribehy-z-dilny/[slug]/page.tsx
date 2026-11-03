@@ -64,7 +64,7 @@ export default function Page({ params }: PageProps) {
       <Navbar />
       <main className="flex-grow">
         <CaseStudyPage study={study} />
-        <InquiryForm />
+        <InquiryForm defaultTab={study.inquiryTab} />
       </main>
       <MobileFloatingCta />
       <Footer />

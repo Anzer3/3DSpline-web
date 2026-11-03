@@ -35,7 +35,7 @@ export default function Materials() {
           </div>
 
           {/* Right: 3 Compact Spool Badges */}
-          <div className="flex items-center gap-5 sm:gap-7 shrink-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-7 shrink-0">
             {/* PETG */}
             <div className="flex items-center gap-2.5 text-left">
               <div className="w-9 h-9 relative flex items-center justify-center shrink-0">

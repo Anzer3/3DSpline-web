@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message:
-          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením do 24 hodin.",
+          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením.",
       });
     }
 
@@ -147,6 +147,7 @@ export async function POST(req: NextRequest) {
     const material = rawMaterial || "Nechám si poradit";
     const rawColor = sanitizeText((formData.get("color") as string) || "", 100);
     const color = rawColor || "Černá";
+    const modelUrl = sanitizeText((formData.get("modelUrl") as string) || "", 500);
 
     const prototypePackage =
       formData.get("prototypePackage") === "true" || formData.get("sampleApproval") === "true";
@@ -251,6 +252,7 @@ export async function POST(req: NextRequest) {
       licenseConfirmed: licenseConfirmed
         ? "ANO (klient potvrdil vlastnictví práv či komerční licenci k modelu)"
         : "NEPOTVRZENO",
+      modelUrl: modelUrl || "Neuvedeno",
       note,
       filesCount: attachments.length,
       fileList: fileListForLog,
@@ -273,6 +275,8 @@ export async function POST(req: NextRequest) {
     const safeTabLabelHtml = sanitizeHtml(tabLabel);
     const safeNoteHtml = sanitizeHtml(note).replace(/\n/g, "<br/>");
     const safeTimestampHtml = sanitizeHtml(inquiryDetails.timestamp);
+    const safeModelUrlHtml = sanitizeHtml(modelUrl);
+    const isHttpUrl = /^https?:\/\//i.test(modelUrl);
 
     // Check SMTP configuration
     const smtpHost = process.env.SMTP_HOST;
@@ -297,7 +301,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message:
-          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením a kalkulací do 24 hodin.",
+          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením a kalkulací.",
         simulated: true,
       });
     }
@@ -401,6 +405,20 @@ export async function POST(req: NextRequest) {
                   }
                 </td>
               </tr>
+              ${
+                modelUrl
+                  ? `<tr>
+                <th>Odkaz na model / úložiště:</th>
+                <td style="word-break: break-all;">
+                  ${
+                    isHttpUrl
+                      ? `<a href="${safeModelUrlHtml}" target="_blank" rel="noopener noreferrer" style="color: #2563eb;">${safeModelUrlHtml}</a>`
+                      : safeModelUrlHtml
+                  }
+                </td>
+              </tr>`
+                  : ""
+              }
             </table>
 
             <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin: 0 0 8px 0;">Specifikace zadání / Popis klienta:</h3>
@@ -445,7 +463,7 @@ export async function POST(req: NextRequest) {
               <strong>Jaký je další postup?</strong>
               <ul style="margin: 8px 0 0 0; padding-left: 20px;">
                 <li>Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev (DFAM).</li>
-                <li>Ozveme se vám zpět nejpozději do 24 hodin s technickým posouzením a dalšími možnostmi.</li>
+                <li>Ozveme se vám zpět s technickým posouzením a dalšími možnostmi.</li>
               </ul>
             </div>
 
@@ -476,6 +494,7 @@ Preferovaná barva: ${color}
 Prototypovací balíček: ${inquiryDetails.prototypePackage}
 Autorská práva k datům: ${inquiryDetails.licenseConfirmed}
 Přiložené soubory: ${attachments.length > 0 ? fileListForLog.map((f) => f.name).join(", ") : "Žádné"}
+Odkaz na model / úložiště: ${inquiryDetails.modelUrl}
 
 Popis zadání:
 ${note}
@@ -518,7 +537,7 @@ info@3dspline.cz
     return NextResponse.json({
       success: true,
       message:
-        "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme zpět.",
+        "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením.",
     });
   } catch (error: unknown) {
     const errMessage = error instanceof Error ? error.message : String(error);

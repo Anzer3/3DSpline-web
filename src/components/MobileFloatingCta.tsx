@@ -38,7 +38,7 @@ export default function MobileFloatingCta() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 p-3 sm:hidden pointer-events-none transition-all duration-300">
+    <div className="fixed bottom-0 left-0 right-0 z-40 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:hidden pointer-events-none transition-all duration-300">
       <div className="max-w-md mx-auto flex items-center gap-2 p-1.5 bg-[#0F1E2E]/95 backdrop-blur-md border border-slate-700/80 rounded-2xl shadow-xl pointer-events-auto">
         <a
           href="mailto:info@3dspline.cz"

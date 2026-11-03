@@ -29,14 +29,14 @@ export default function Hero() {
 
           {/* Single Hero Image: placed right after intro on mobile, and in right column on desktop */}
           <div className="lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 w-full flex justify-center py-2 lg:py-0">
-            <div className="relative w-full max-w-[260px] lg:max-w-none aspect-square lg:max-h-[440px] mx-auto flex items-center justify-center group lg:p-2">
+            <div className="relative w-full max-w-[260px] lg:max-w-none aspect-square lg:max-h-[440px] mx-auto flex items-center justify-center lg:p-2">
               <Image
                 src="/portfolio/pohar.png"
                 alt="CAD modelování komplexních dílů - 3D Spline"
                 width={600}
                 height={600}
                 sizes="(max-width: 1023px) 260px, 440px"
-                className="w-full h-full object-contain lg:group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-contain"
                 priority
               />
             </div>

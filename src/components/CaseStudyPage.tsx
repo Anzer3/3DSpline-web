@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
@@ -12,18 +12,20 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
     caseStudiesData[(currentIndex + 1) % caseStudiesData.length] ||
     caseStudiesData[0];
   const otherStudies = caseStudiesData.filter((s) => s.slug !== study.slug);
-  const [activeImage, setActiveImage] = useState<string>(study.heroImage);
 
-  const handleInquiry = () => {
+  const handleInquiry = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("select-inquiry-tab", {
-          detail: { tab: study.inquiryTab },
+          detail: { tab: study.inquiryTab, storyTitle: study.title },
         })
       );
       const el = document.querySelector("#poptavka");
       if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.location.hash = "#poptavka";
       }
     }
   };
@@ -53,9 +55,9 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
             <span className="text-slate-700 font-medium">{study.title}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-center">
             {/* Left: Heading and Lead */}
-            <div className="lg:col-span-7 space-y-4 sm:space-y-5">
+            <div className="md:col-span-7 space-y-4 sm:space-y-5">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.15]">
                 {study.h1}
               </h1>
@@ -64,14 +66,14 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
+                <a
+                  href="#poptavka"
                   onClick={handleInquiry}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-sm cursor-pointer"
                 >
                   <span>Poptat podobnou výrobu</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
                 <Link
                   href={`/pribehy-z-dilny/${nextStudy.slug}`}
                   className="inline-flex items-center gap-2 px-4 py-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-sm transition-colors"
@@ -82,45 +84,18 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
               </div>
             </div>
 
-            {/* Right: Main Hero Photo & Thumbnail bar */}
-            <div className="lg:col-span-5">
+            {/* Right: Main Hero Photo */}
+            <div className="md:col-span-5 w-full max-w-sm sm:max-w-md mx-auto md:max-w-none">
               <div className="relative aspect-[4/3] rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden shadow-sm">
                 <Image
-                  src={activeImage}
+                  src={study.heroImage}
                   alt={study.heroImageAlt}
                   fill
                   priority
-                  sizes="(max-width: 1023px) 100vw, 40vw"
+                  sizes="(max-width: 640px) 384px, 40vw"
                   className="object-cover"
                 />
               </div>
-
-              {/* Gallery Thumbnails if available */}
-              {study.gallery && study.gallery.length > 0 && (
-                <div className="grid grid-cols-4 gap-2 mt-3">
-                  {study.gallery.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setActiveImage(img.src)}
-                      className={`relative aspect-square rounded-lg overflow-hidden border transition-all ${
-                        activeImage === img.src
-                          ? "border-blue-600 ring-2 ring-blue-600/30 scale-105"
-                          : "border-slate-200 opacity-70 hover:opacity-100"
-                      }`}
-                      title={img.caption}
-                    >
-                      <Image
-                        src={img.src}
-                        alt={img.caption}
-                        fill
-                        sizes="100px"
-                        className="object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -152,9 +127,6 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
               Jak probíhala zakázka
             </h2>
-            <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-              Konkrétní postup od prvního posouzení původních dílů až po finální osazení hotových výrobků.
-            </p>
           </div>
 
           {/* Story Steps */}
@@ -168,9 +140,9 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
                   key={step.number}
                   className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 lg:p-10 shadow-sm"
                 >
-                  <div className={`grid grid-cols-1 ${hasImage ? "lg:grid-cols-12 gap-8 lg:gap-12 items-center" : "max-w-3xl"}`}>
+                  <div className={`grid grid-cols-1 ${hasImage ? "md:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-center" : "max-w-3xl"}`}>
                     {/* Text content column */}
-                    <div className={hasImage ? `lg:col-span-7 ${isEven ? "lg:order-2" : ""}` : ""}>
+                    <div className={hasImage ? `md:col-span-7 ${isEven ? "md:order-2" : ""}` : ""}>
                       <div className="text-xs font-mono font-bold text-blue-600 mb-2">
                         {step.number}
                       </div>
@@ -191,15 +163,15 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
 
                     {/* Image column */}
                     {hasImage && step.data.image && (
-                      <div className={`lg:col-span-5 ${isEven ? "lg:order-1" : ""}`}>
+                      <div className={`md:col-span-5 w-full max-w-xs sm:max-w-sm mx-auto md:max-w-none ${isEven ? "md:order-1" : ""}`}>
                         <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm">
                           <div className="relative aspect-[4/3] w-full">
                             <Image
                               src={step.data.image.src}
                               alt={step.data.image.alt}
                               fill
-                              sizes="(max-width: 1024px) 100vw, 450px"
-                              className="object-cover hover:scale-105 transition-transform duration-500"
+                              sizes="(max-width: 640px) 320px, (max-width: 768px) 384px, 40vw"
+                              className="object-cover lg:hover:scale-105 transition-transform duration-500"
                             />
                           </div>
                           {step.data.image.caption && (
@@ -228,44 +200,6 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
         </div>
       </section>
 
-      {/* Photo Gallery Grid if there's a gallery */}
-      {study.gallery && study.gallery.length > 0 && (
-        <section className="py-14 sm:py-16 bg-slate-50 border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                Fotodokumentace realizace
-              </h2>
-              <p className="mt-2 text-sm text-slate-600">
-                Prohlédněte si jednotlivé fáze výroby od původního stavu po finální výsledek.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {study.gallery.map((img, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col shadow-sm"
-                >
-                  <div className="relative aspect-[4/3] bg-slate-100">
-                    <Image
-                      src={img.src}
-                      alt={img.caption}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-3.5 text-xs text-slate-700 leading-snug font-medium">
-                    {img.caption}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Bottom CTA Banner */}
       <section className="py-12 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -275,18 +209,18 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
                 Potřebujete vyřešit podobnou součástku nebo model?
               </h2>
               <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
-                Pošlete nám fotku poškozeného dílu, nákres s rozměry nebo 3D model. Nezávazně vám navrhneme postup a cenu do 24 hodin.
+                Pošlete nám fotku poškozeného dílu, nákres s rozměry nebo 3D model. Obvykle odpovídáme do 24 hodin.
               </p>
             </div>
             <div className="shrink-0">
-              <button
-                type="button"
+              <a
+                href="#poptavka"
                 onClick={handleInquiry}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors shadow-md"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors shadow-md cursor-pointer"
               >
                 <span>Poptat nezávazně výrobu</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </a>
             </div>
           </div>
         </div>

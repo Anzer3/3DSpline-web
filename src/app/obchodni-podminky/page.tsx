@@ -72,9 +72,9 @@ export default function TermsAndConditionsPage() {
                 Tyto Všeobecné obchodní podmínky (dále jen <strong>„VOP“</strong>) upravují práva a povinnosti smluvních stran vznikající v souvislosti se zakázkovým 3D tiskem a CAD konstrukcí dílů poskytovanými zhotovitelem:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800 mb-3">
-                <div><strong>Provozovatel (Zhotovitel):</strong> [doplnit jméno a příjmení], podnikající pod označením 3D Spline</div>
+                <div><strong>Provozovatel (Zhotovitel):</strong> Kateřina Řezníčková, podnikající pod označením 3D Spline</div>
                 <div><strong>Místo podnikání:</strong> [doplnit ulici a číslo popisné], Olomouc, Česká republika</div>
-                <div><strong>IČO:</strong> V procesu zápisu (bude doplněno po přidělení)</div>
+                <div><strong>IČO:</strong> 03010562</div>
                 <div><strong>Zápis v evidenci:</strong> Fyzická osoba zapsaná v živnostenském rejstříku vedeném Magistrátem města Olomouce. Zhotovitel není plátcem DPH.</div>
                 <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
                 <div><strong>Web:</strong> https://3dspline.cz</div>
@@ -114,7 +114,7 @@ export default function TermsAndConditionsPage() {
                 3. Prototypovací balíček a schválení před sériovou výrobou
               </h2>
               <p className="mb-2">
-                V zájmu předcházení neshodám nabízí zhotovitel možnost zhotovení <strong>Prototypovacího balíčku (zkušebního vzorku)</strong> před spuštěním sériové výroby:
+                V zájmu předcházení neshodám nabízí zhotovitel možnost zhotovení <strong>Prototypovacího balíčku (zkušebního vzorku)</strong> před spuštěním sériové výroby (služba je standardně určena pro zakázky od 3 kusů):
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-slate-600 text-xs sm:text-sm">
                 <li>Objednatel v takovém případě nejprve uhradí zhotovení a zaslání 1 ks funkčního prototypu.</li>

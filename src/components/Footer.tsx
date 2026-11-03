@@ -77,11 +77,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/3d-tisk-nahradnich-dilu" className="hover:text-white transition-colors">
-                  Náhradní díly
-                </a>
-              </li>
-              <li>
                 <a href="/#pribehy-z-dilny" className="hover:text-white transition-colors">
                   Příběhy z dílny
                 </a>
@@ -116,7 +111,7 @@ export default function Footer() {
             </h4>
             <div className="space-y-1.5 text-xs text-slate-300 font-tech">
               <div className="text-white font-semibold">
-                3D Spline
+                Kateřina Řezníčková – 3D Spline
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
@@ -129,7 +124,7 @@ export default function Footer() {
                 </a>
               </div>
               <div className="pt-1 text-slate-400 text-[11px]">
-                <span>IČO: v procesu zápisu</span>
+                <span>IČO: 03010562</span>
               </div>
             </div>
           </div>

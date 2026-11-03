@@ -9,16 +9,14 @@ import {
   AlertCircle,
   Loader2,
   Mail,
-  MapPin,
   Lock,
   ArrowRight,
   FileBox,
   FileText,
-  ShieldAlert,
   HelpCircle,
   Minus,
   Plus,
-  Info,
+  Link2,
 } from "lucide-react";
 
 type InquiryTab = "model" | "drawing" | null;
@@ -28,10 +26,96 @@ interface UploadedFile {
   file: File;
   id: string;
   previewUrl?: string;
+  originalSize?: number;
 }
 
-export default function InquiryForm() {
-  const [activeTab, setActiveTab] = useState<InquiryTab>(null);
+interface InquiryFormProps {
+  defaultTab?: InquiryTab;
+}
+
+const IMAGE_COMPRESSION_THRESHOLD = 500 * 1024; // 500 KB
+const MAX_IMAGE_DIMENSION = 2000;
+const JPEG_QUALITY = 0.85;
+
+async function compressImageIfNeeded(
+  file: File
+): Promise<{ file: File; originalSize?: number }> {
+  const isCompressibleImage =
+    file.type === "image/jpeg" ||
+    file.type === "image/png" ||
+    /\.(jpg|jpeg|png)$/i.test(file.name);
+
+  if (!isCompressibleImage || file.size <= IMAGE_COMPRESSION_THRESHOLD) {
+    return { file };
+  }
+
+  return new Promise((resolve) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new window.Image();
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      let { width, height } = img;
+      if (width > MAX_IMAGE_DIMENSION || height > MAX_IMAGE_DIMENSION) {
+        if (width >= height) {
+          height = Math.round((height * MAX_IMAGE_DIMENSION) / width);
+          width = MAX_IMAGE_DIMENSION;
+        } else {
+          width = Math.round((width * MAX_IMAGE_DIMENSION) / height);
+          height = MAX_IMAGE_DIMENSION;
+        }
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve({ file });
+        return;
+      }
+
+      // Fill white background in case of transparent PNG
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob || blob.size >= file.size) {
+            resolve({ file });
+            return;
+          }
+
+          const newName = file.name.replace(/\.(png|jpeg|jpg)$/i, ".jpg");
+          const compressedFile = new File([blob], newName, {
+            type: "image/jpeg",
+            lastModified: Date.now(),
+          });
+
+          resolve({
+            file: compressedFile,
+            originalSize: file.size,
+          });
+        },
+        "image/jpeg",
+        JPEG_QUALITY
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve({ file });
+    };
+
+    img.src = objectUrl;
+  });
+}
+
+export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
+  const [activeTab, setActiveTab] = useState<InquiryTab>(defaultTab);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -42,9 +126,11 @@ export default function InquiryForm() {
   const [customColor, setCustomColor] = useState("");
   const [prototypePackage, setPrototypePackage] = useState(false);
   const [note, setNote] = useState("");
+  const [modelUrl, setModelUrl] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [licenseConfirmed, setLicenseConfirmed] = useState(false);
   const [fileSizeWarning, setFileSizeWarning] = useState<string | null>(null);
   const [openTooltip, setOpenTooltip] = useState<TooltipId>(null);
@@ -60,7 +146,11 @@ export default function InquiryForm() {
 
   useEffect(() => {
     const handleTabChange = (e: Event) => {
-      const customEvent = e as CustomEvent<{ tab?: InquiryTab; prototypePackage?: boolean }>;
+      const customEvent = e as CustomEvent<{
+        tab?: InquiryTab;
+        prototypePackage?: boolean;
+        storyTitle?: string;
+      }>;
       if (customEvent.detail) {
         if (customEvent.detail.prototypePackage !== undefined) {
           setPrototypePackage(customEvent.detail.prototypePackage);
@@ -75,6 +165,16 @@ export default function InquiryForm() {
         } else if (customEvent.detail.tab) {
           setActiveTab(customEvent.detail.tab);
           setHighlightedField(`tab-${customEvent.detail.tab}`);
+        }
+
+        if (customEvent.detail.storyTitle) {
+          const title = customEvent.detail.storyTitle;
+          setNote((prev) => {
+            if (!prev.trim() || prev.startsWith("Poptávka na základě realizace:")) {
+              return `Poptávka na základě realizace: ${title} – `;
+            }
+            return prev;
+          });
         }
 
         if (highlightTimeoutRef.current) {
@@ -111,9 +211,12 @@ export default function InquiryForm() {
 
   const acceptedFormats = ".step, .stp, .stl, .3mf, .pdf, .zip, .jpg, .jpeg, .png, .dwg, .dxf";
 
-  const handleFiles = (files: FileList | null) => {
-    if (!files) return;
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
     setFileSizeWarning(null);
+    setIsCompressing(true);
+
+    const fileArray = Array.from(files);
     const newFiles: UploadedFile[] = [];
     const maxTotalSize = 4 * 1024 * 1024; // 4 MB
 
@@ -121,38 +224,57 @@ export default function InquiryForm() {
     let detected3dModel = false;
     let detectedDrawingOrPhoto = false;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (currentTotal + file.size > maxTotalSize) {
-        setFileSizeWarning(
-          `Soubor „${file.name}“ přesahuje limit 4 MB pro webový formulář. Větší modely nebo archivy nám prosím pošlete přímo na e-mail info@3dspline.cz (případně vložte odkaz na Úschovnu či Disk do popisu).`
-        );
-        break;
-      }
-      currentTotal += file.size;
-      const isImg = file.type.startsWith("image/");
-      if (/\.(step|stp|stl|3mf)$/i.test(file.name)) {
-        detected3dModel = true;
-      } else if (/\.(jpg|jpeg|png|pdf|dwg|dxf)$/i.test(file.name)) {
-        detectedDrawingOrPhoto = true;
-      }
-      newFiles.push({
-        file,
-        id: `${file.name}-${file.size}-${Date.now()}-${i}`,
-        previewUrl: isImg ? URL.createObjectURL(file) : undefined,
-      });
-    }
+    try {
+      for (let i = 0; i < fileArray.length; i++) {
+        const rawFile = fileArray[i];
+        const { file, originalSize } = await compressImageIfNeeded(rawFile);
 
-    if (newFiles.length > 0) {
-      setUploadedFiles((prev) => [...prev, ...newFiles]);
-      // Smart auto-selection of tab if user hasn't picked one yet
-      if (!activeTab) {
-        if (detected3dModel) {
-          setActiveTab("model");
-        } else if (detectedDrawingOrPhoto) {
-          setActiveTab("drawing");
+        if (currentTotal + file.size > maxTotalSize) {
+          setFileSizeWarning(
+            `Soubor „${rawFile.name}“ přesahuje limit 4 MB pro webový formulář. Větší modely nebo archivy nám prosím pošlete přímo na e-mail info@3dspline.cz nebo vložte odkaz do pole níže.`
+          );
+          break;
+        }
+
+        currentTotal += file.size;
+        const isImg = file.type.startsWith("image/");
+        if (/\.(step|stp|stl|3mf)$/i.test(file.name)) {
+          detected3dModel = true;
+        } else if (/\.(jpg|jpeg|png|pdf|dwg|dxf)$/i.test(file.name)) {
+          detectedDrawingOrPhoto = true;
+        }
+
+        newFiles.push({
+          file,
+          id: `${file.name}-${file.size}-${Date.now()}-${i}`,
+          previewUrl: isImg ? URL.createObjectURL(file) : undefined,
+          originalSize,
+        });
+      }
+
+      if (newFiles.length > 0) {
+        setUploadedFiles((prev) => [...prev, ...newFiles]);
+        // Smart auto-selection of tab if user hasn't picked one yet
+        if (!activeTab) {
+          if (detected3dModel) {
+            setActiveTab("model");
+          } else if (detectedDrawingOrPhoto) {
+            setActiveTab("drawing");
+          }
         }
       }
+    } finally {
+      setIsCompressing(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleModelUrlChange = (val: string) => {
+    setModelUrl(val);
+    if (!activeTab && /(printables\.com|makerworld\.com|thingiverse\.com|cults3d\.com|thangs\.com)/i.test(val)) {
+      setActiveTab("model");
     }
   };
 
@@ -189,10 +311,11 @@ export default function InquiryForm() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    handleFiles(e.dataTransfer.files);
+    void handleFiles(e.dataTransfer.files);
   };
 
-  const requiresLicenseCheck = activeTab === "model" || uploadedFiles.length > 0;
+  const requiresLicenseCheck =
+    activeTab === "model" || uploadedFiles.length > 0 || modelUrl.trim().length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -251,6 +374,7 @@ export default function InquiryForm() {
       formData.append("prototypePackage", prototypePackage ? "true" : "false");
       formData.append("licenseConfirmed", "true");
       formData.append("note", note);
+      formData.append("modelUrl", modelUrl.trim());
       formData.append("website", honeypot);
 
       uploadedFiles.forEach((item) => {
@@ -271,7 +395,7 @@ export default function InquiryForm() {
       setStatus("success");
       setSuccessMessage(
         data.message ||
-          "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a do 24 hodin se vám ozveme zpět."
+          "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením."
       );
     } catch (err: unknown) {
       setStatus("error");
@@ -289,7 +413,7 @@ export default function InquiryForm() {
         URL.revokeObjectURL(item.previewUrl);
       }
     });
-    setActiveTab(null);
+    setActiveTab(defaultTab);
     setName("");
     setEmail("");
     setPhone("");
@@ -300,6 +424,7 @@ export default function InquiryForm() {
     setCustomColor("");
     setPrototypePackage(false);
     setNote("");
+    setModelUrl("");
     setHoneypot("");
     setUploadedFiles([]);
     setFileSizeWarning(null);
@@ -313,7 +438,7 @@ export default function InquiryForm() {
       ? "Např.: Držák senzoru, požadujeme vyšší mechanickou pevnost, použití v interiéru..."
       : activeTab === "drawing"
       ? "Např.: Potřebuji vyrobit náhradu prasklého dílu (viz přiložená fotka), průměr cca 40 mm..."
-      : "Stručně popište účel dílu, jak bude namáhán nebo v jakém prostředí bude sloužit (interiér, venku, v autě)...";
+      : "Popište účel dílu, jak bude namáhán nebo v jakém prostředí bude sloužit (interiér, venku, v autě)...";
 
   return (
     <section id="poptavka" className="py-16 bg-white border-b border-slate-200 scroll-mt-16">
@@ -328,20 +453,6 @@ export default function InquiryForm() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           {/* Main Form */}
           <div className="lg:col-span-8 bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
-            {/* Oznámení o přípravě formuláře */}
-            <div className="mb-6 p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-950 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-              <div className="text-xs sm:text-sm leading-relaxed">
-                <strong className="block font-semibold text-rose-900 mb-0.5">Příjem poptávek zatím nebyl spuštěn</strong>
-                <span className="text-rose-800">
-                  Projekt 3D Spline je v současné době v přípravné fázi a oficiální spuštění zakázkové výroby plánujeme již brzy. Máte-li předběžný dotaz či zájem o spolupráci, můžete nás kontaktovat e-mailem na{" "}
-                  <a href="mailto:info@3dspline.cz" className="font-semibold text-rose-950 underline underline-offset-2 hover:text-black">
-                    info@3dspline.cz
-                  </a>.
-                </span>
-              </div>
-            </div>
-
             {status === "success" ? (
               <div className="p-8 text-center bg-slate-50 border border-slate-200 rounded-md">
                 <div className="w-12 h-12 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto mb-3">
@@ -355,7 +466,7 @@ export default function InquiryForm() {
                 </p>
                 <div className="p-4 bg-white border border-slate-200 rounded-md text-xs text-slate-600 max-w-md mx-auto mb-6 text-left space-y-1.5 font-mono">
                   <div><strong className="text-slate-900 font-sans">Potvrzení:</strong> {email}</div>
-                  <div><strong className="text-slate-900 font-sans">Odpověď:</strong> do 24 h s technickým posouzením</div>
+                  <div><strong className="text-slate-900 font-sans">Odpověď:</strong> s technickým posouzením a možnostmi výroby</div>
                   <div><strong className="text-slate-900 font-sans">Doručení:</strong> Rychlý kurýr po celé ČR</div>
                 </div>
                 <button
@@ -780,7 +891,7 @@ export default function InquiryForm() {
                             <strong className="text-slate-200">Teploty:</strong> běžná teplota vs. vystavení teplu (např. v autě)
                           </li>
                           <li>
-                            <strong className="text-slate-200">Termín:</strong> standardní posouzení do 24 h nebo spěchá
+                            <strong className="text-slate-200">Termín:</strong> standardní posouzení nebo zda zakázka spěchá
                           </li>
                         </ul>
                         <span className="absolute top-full right-6 border-4 border-transparent border-t-slate-900" />
@@ -799,185 +910,217 @@ export default function InquiryForm() {
                   />
                 </div>
 
-                {/* File Upload Zone - Compact Technical Style */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                      <span>
-                        {activeTab === "drawing"
-                          ? "Přílohy (fotka dílu, náčrt, výkres)"
-                          : activeTab === "model"
-                          ? "Přílohy (3D model .STEP, .STL, .3MF)"
-                          : "Přílohy"}
-                      </span>
-                      <span className="text-slate-400 font-normal font-sans text-xs">(volitelné)</span>
+                {/* File Upload Zone & External Link - Compact Technical Style */}
+                <div className="space-y-2.5">
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1.5">
+                        <span>
+                          {activeTab === "drawing"
+                            ? "Přílohy (fotka dílu, náčrt, výkres)"
+                            : activeTab === "model"
+                            ? "Přílohy (3D model .STEP, .STL, .3MF)"
+                            : "Přílohy"}
+                        </span>
+                        <span className="text-slate-400 font-normal font-sans text-xs">(volitelné)</span>
 
-                      {/* Tooltip pro podporované formáty */}
-                      <button
-                        type="button"
-                        onClick={(e) => toggleTooltip(e, "formats")}
-                        className="relative inline-flex items-center group cursor-pointer"
-                        aria-label="Podporované formáty souborů"
-                      >
-                        <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
-                        <span
-                          className={`pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
-                            openTooltip === "formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                          }`}
+                        {/* Tooltip pro podporované formáty */}
+                        <button
+                          type="button"
+                          onClick={(e) => toggleTooltip(e, "formats")}
+                          className="relative inline-flex items-center group cursor-pointer"
+                          aria-label="Podporované formáty souborů"
                         >
-                          <strong className="block text-slate-100 font-semibold mb-1">
-                            Podporované formáty souborů
-                          </strong>
-                          <span className="block text-slate-300 font-mono text-[11px] mb-1.5 leading-snug">
-                            .STEP, .STP, .STL, .3MF, .PDF, .DWG, .DXF, .ZIP, .PNG, .JPG
+                          <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
+                          <span
+                            className={`pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
+                              openTooltip === "formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                            }`}
+                          >
+                            <strong className="block text-slate-100 font-semibold mb-1">
+                              Podporované formáty souborů
+                            </strong>
+                            <span className="block text-slate-300 font-mono text-[11px] mb-1.5 leading-snug">
+                              .STEP, .STP, .STL, .3MF, .PDF, .DWG, .DXF, .ZIP, .PNG, .JPG
+                            </span>
+                            <span className="block text-slate-400 text-[11px] leading-snug">
+                              Fotky z telefonu automaticky zmenšíme. Max. 4 MB přes formulář (větší soubory pošlete odkazem níže nebo e-mailem).
+                            </span>
+                            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
                           </span>
-                          <span className="block text-slate-400 text-[11px] leading-snug">
-                            Max. 4 MB přes formulář. Větší soubory prosím pošlete přímo na info@3dspline.cz.
-                          </span>
-                          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          max. 4 MB (fotky komprimujeme)
                         </span>
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        max. 4 MB (větší e-mailem)
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`border border-dashed rounded-md py-2.5 px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 cursor-pointer transition-all ${
-                      isDragging
-                        ? "border-slate-900 bg-slate-100"
-                        : "border-slate-300 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-400"
-                    }`}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      multiple
-                      accept={acceptedFormats}
-                      className="hidden"
-                      onChange={(e) => handleFiles(e.target.files)}
-                    />
-
-                    <div className="flex items-center gap-2">
-                      <UploadCloud className="w-4 h-4 text-slate-500 shrink-0" />
-                      <p className="text-xs text-slate-700">
-                        Přetáhněte soubory nebo{" "}
-                        <span className="text-slate-900 font-semibold underline underline-offset-2">
-                          vyberte z disku
-                        </span>
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-sans">
-                      <button
-                        type="button"
-                        onClick={(e) => toggleTooltip(e, "dropzone-formats")}
-                        className="relative inline-flex items-center group cursor-pointer select-none"
-                      >
-                        <span className="underline decoration-slate-300 decoration-dotted underline-offset-2 hover:text-slate-900 transition-colors">
-                          Kompatibilní formáty
-                        </span>
-                        {/* Tooltip v nahrávacím boxu */}
-                        <span
-                          className={`pointer-events-none absolute bottom-full right-0 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
-                            openTooltip === "dropzone-formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                          }`}
-                        >
-                          <strong className="block text-slate-100 font-semibold mb-1">
-                            Podporované formáty
-                          </strong>
-                          <span className="block text-slate-300 font-mono text-[11px] mb-1 leading-snug">
-                            .STEP, .STP, .STL, .3MF, .PDF, .DWG, .DXF, .ZIP, .JPG, .PNG
-                          </span>
-                          <span className="block text-slate-400 text-[11px] leading-snug">
-                            Max. celková velikost 4 MB. Pokud je soubor větší, pošlete nám ho přímo na e-mail info@3dspline.cz.
-                          </span>
-                          <span className="absolute top-full right-4 border-4 border-transparent border-t-slate-900" />
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Upozornění při překročení 4 MB */}
-                  {fileSizeWarning && (
-                    <div className="mt-2 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
-                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                      <div className="leading-relaxed">
-                        <span>{fileSizeWarning} </span>
-                        <a
-                          href="mailto:info@3dspline.cz?subject=Popt%C3%A1vka%203D%20tisku%20-%20nadlimitn%C3%AD%20p%C5%99%C3%ADloha"
-                          className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
-                        >
-                          Poslat na info@3dspline.cz
-                        </a>
                       </div>
                     </div>
-                  )}
 
+                    <div
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`border border-dashed rounded-md py-2.5 px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 cursor-pointer transition-all ${
+                        isDragging
+                          ? "border-slate-900 bg-slate-100"
+                          : "border-slate-300 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-400"
+                      }`}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        multiple
+                        accept={acceptedFormats}
+                        className="hidden"
+                        onChange={(e) => void handleFiles(e.target.files)}
+                      />
 
-                  {uploadedFiles.length > 0 && (
-                    <div className="mt-2 space-y-1.5">
-                      {uploadedFiles.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex items-center justify-between p-2 rounded-md bg-white border border-slate-200 text-xs font-mono"
+                      <div className="flex items-center gap-2">
+                        {isCompressing ? (
+                          <Loader2 className="w-4 h-4 text-blue-600 animate-spin shrink-0" />
+                        ) : (
+                          <UploadCloud className="w-4 h-4 text-slate-500 shrink-0" />
+                        )}
+                        <p className="text-xs text-slate-700">
+                          {isCompressing ? (
+                            <span>Optimalizuji velikost fotek...</span>
+                          ) : (
+                            <>
+                              Přetáhněte soubory nebo{" "}
+                              <span className="text-slate-900 font-semibold underline underline-offset-2">
+                                vyberte z disku
+                              </span>
+                            </>
+                          )}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-sans">
+                        <button
+                          type="button"
+                          onClick={(e) => toggleTooltip(e, "dropzone-formats")}
+                          className="relative inline-flex items-center group cursor-pointer select-none"
                         >
-                          <div className="flex items-center gap-2.5 overflow-hidden pr-2">
-                            {/* File Preview Thumbnail / Icon */}
-                            {item.previewUrl ? (
-                              <div className="w-8 h-8 rounded border border-slate-200 overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={item.previewUrl}
-                                  alt={item.file.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ) : item.file.name.match(/\.(step|stp|stl|3mf)$/i) ? (
-                              <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
-                                <FileBox className="w-4 h-4" />
-                              </div>
-                            ) : item.file.name.match(/\.(pdf|dwg|dxf)$/i) ? (
-                              <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
-                                <FileText className="w-4 h-4" />
-                              </div>
-                            ) : (
-                              <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
-                                <FileCheck2 className="w-4 h-4" />
-                              </div>
-                            )}
-
-                            <div className="truncate font-sans">
-                              <span className="truncate text-slate-800 font-medium block">
-                                {item.file.name}
-                              </span>
-                              <span className="text-slate-400 text-[10px] block font-mono">
-                                {(item.file.size / 1024).toFixed(1)} KB
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeFile(item.id);
-                            }}
-                            className="p-1 text-slate-400 hover:text-rose-600 transition-colors"
+                          <span className="underline decoration-slate-300 decoration-dotted underline-offset-2 hover:text-slate-900 transition-colors">
+                            Kompatibilní formáty
+                          </span>
+                          {/* Tooltip v nahrávacím boxu */}
+                          <span
+                            className={`pointer-events-none absolute bottom-full right-0 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
+                              openTooltip === "dropzone-formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                            }`}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
+                            <strong className="block text-slate-100 font-semibold mb-1">
+                              Podporované formáty
+                            </strong>
+                            <span className="block text-slate-300 font-mono text-[11px] mb-1 leading-snug">
+                              .STEP, .STP, .STL, .3MF, .PDF, .DWG, .DXF, .ZIP, .JPG, .PNG
+                            </span>
+                            <span className="block text-slate-400 text-[11px] leading-snug">
+                              Velké fotky z mobilu se automaticky zmenší. Pro objemnější 3D modely můžete vložit odkaz níže.
+                            </span>
+                            <span className="absolute top-full right-4 border-4 border-transparent border-t-slate-900" />
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  )}
+
+                    {/* Upozornění při překročení 4 MB */}
+                    {fileSizeWarning && (
+                      <div className="mt-2 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+                        <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        <div className="leading-relaxed">
+                          <span>{fileSizeWarning} </span>
+                          <a
+                            href="mailto:info@3dspline.cz?subject=Popt%C3%A1vka%203D%20tisku%20-%20nadlimitn%C3%AD%20p%C5%99%C3%ADloha"
+                            className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
+                          >
+                            Poslat na info@3dspline.cz
+                          </a>
+                        </div>
+                      </div>
+                    )}
+
+                    {uploadedFiles.length > 0 && (
+                      <div className="mt-2 space-y-1.5">
+                        {uploadedFiles.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between p-2 rounded-md bg-white border border-slate-200 text-xs font-mono"
+                          >
+                            <div className="flex items-center gap-2.5 overflow-hidden pr-2">
+                              {/* File Preview Thumbnail / Icon */}
+                              {item.previewUrl ? (
+                                <div className="w-8 h-8 rounded border border-slate-200 overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={item.previewUrl}
+                                    alt={item.file.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ) : item.file.name.match(/\.(step|stp|stl|3mf)$/i) ? (
+                                <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                                  <FileBox className="w-4 h-4" />
+                                </div>
+                              ) : item.file.name.match(/\.(pdf|dwg|dxf)$/i) ? (
+                                <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                                  <FileText className="w-4 h-4" />
+                                </div>
+                              ) : (
+                                <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                                  <FileCheck2 className="w-4 h-4" />
+                                </div>
+                              )}
+
+                              <div className="truncate font-sans">
+                                <span className="truncate text-slate-800 font-medium block">
+                                  {item.file.name}
+                                </span>
+                                <span className="text-slate-400 text-[10px] block font-mono">
+                                  {(item.file.size / 1024).toFixed(1)} KB
+                                  {item.originalSize && item.originalSize > item.file.size && (
+                                    <span className="text-emerald-600 ml-1.5 font-sans">
+                                      (zmenšeno z {(item.originalSize / (1024 * 1024)).toFixed(1)} MB)
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeFile(item.id);
+                              }}
+                              className="p-1 text-slate-400 hover:text-rose-600 transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* External Model / Storage URL Input */}
+                  <div className="flex items-center rounded-md border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-blue-600/20 focus-within:border-blue-600 transition-all overflow-hidden">
+                    <span className="pl-3 pr-2 py-2 text-slate-400 shrink-0">
+                      <Link2 className="w-4 h-4" />
+                    </span>
+                    <input
+                      id="inquiry-model-url"
+                      name="modelUrl"
+                      type="text"
+                      placeholder="Nebo vložte odkaz na model či úložiště (Printables, MakerWorld, Úschovna, Google Drive...)"
+                      value={modelUrl}
+                      onChange={(e) => handleModelUrlChange(e.target.value)}
+                      className="w-full pr-3.5 py-2 bg-transparent text-slate-900 text-xs placeholder-slate-400 outline-none focus:outline-none font-sans"
+                    />
+                  </div>
                 </div>
 
                 {status === "error" && (
@@ -987,7 +1130,7 @@ export default function InquiryForm() {
                   </div>
                 )}
 
-                {/* License and IP declaration checkbox - required when user has a 3D model or uploads files */}
+                {/* License and IP declaration checkbox - required when user has a 3D model, uploads files, or provides a link */}
                 {requiresLicenseCheck && (
                   <div className="pt-1">
                     <label className="flex items-start gap-2.5 cursor-pointer select-none group">
@@ -1007,12 +1150,21 @@ export default function InquiryForm() {
 
                 <div className="pt-2">
                   <button
-                    type="button"
-                    disabled
-                    aria-disabled="true"
-                    className="w-full py-3 px-6 rounded-md bg-slate-100 border border-slate-300 text-slate-400 text-xs sm:text-sm font-semibold tracking-wide cursor-not-allowed flex items-center justify-center gap-2 select-none"
+                    type="submit"
+                    disabled={status === "submitting" || isCompressing}
+                    className="w-full py-3 px-6 rounded-md bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>Příjem poptávek bude brzy spuštěn</span>
+                    {status === "submitting" ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Zpracováváme poptávku...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Odeslat nezávaznou poptávku</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
                   </button>
                   <p className="mt-2.5 text-center text-[11px] text-slate-500 leading-relaxed font-sans">
                     Odesláním poptávky berete na vědomí{" "}
@@ -1039,30 +1191,35 @@ export default function InquiryForm() {
           {/* Right Direct Contact Sidebar */}
           <div className="lg:col-span-4 space-y-4">
             {/* Direct Contact Card */}
-            <div className="bg-[#0F1E2E] rounded-2xl p-6 text-white">
-              <h3 className="text-base font-bold mb-2">
+            <div className="bg-gradient-to-b from-[#102338] to-[#0A1624] rounded-2xl p-6 text-white border border-slate-700/60 shadow-md">
+              <div className="flex items-center gap-2 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                <Mail className="w-3.5 h-3.5 text-blue-400" />
+                <span>Rychlá konzultace</span>
+              </div>
+              <h3 className="text-base font-bold mb-2 text-white">
                 Přímý kontakt &amp; Konzultace
               </h3>
 
-              <p className="text-slate-300 text-xs leading-relaxed mb-4">
-                Rádi s vámi probereme vhodnost 3D tisku pro váš díl nebo technické detaily po e-mailu.
+              <p className="text-slate-300 text-xs leading-relaxed mb-5">
+                Nevyhovuje vám formulář nebo chcete nejprve nezávazně zkonzultovat vyrobitelnost, pevnost či volbu materiálu? Napište nám přímo.
               </p>
 
-              <div className="space-y-3 text-xs border-t border-slate-800/80 pt-4">
+              <div className="space-y-3 text-xs border-t border-slate-700/60 pt-4">
                 <a
                   href="mailto:info@3dspline.cz"
-                  className="flex items-center gap-2.5 text-slate-200 hover:text-blue-400 transition-colors"
+                  className="group flex items-center justify-between p-3 rounded-xl bg-slate-800/60 hover:bg-blue-600/20 border border-slate-700/80 hover:border-blue-500/50 text-white transition-all"
                 >
-                  <Mail className="w-4 h-4 text-blue-400" />
-                  <span>info@3dspline.cz</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors shrink-0">
+                      <Mail className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-semibold text-xs tracking-wide truncate">info@3dspline.cz</span>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 transition-colors shrink-0 ml-2" />
                 </a>
 
-                <div className="flex items-start gap-2.5 text-slate-300 pt-1">
-                  <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-                  <div className="text-xs leading-relaxed">
-                    <strong className="text-white block">Doručení po celé ČR</strong>
-                    Spolehlivý kurýr (Zásilkovna / DPD / PPL) po celé ČR nebo možnost osobního předání v Olomouci.
-                  </div>
+                <div className="text-[11px] text-slate-400 leading-relaxed px-1">
+                  Můžete přiložit fotografie, náčrty s rozměry nebo odkaz na cloudové úložiště (Úschovna, Disk).
                 </div>
               </div>
             </div>

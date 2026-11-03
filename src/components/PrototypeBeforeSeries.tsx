@@ -30,8 +30,7 @@ export default function PrototypeBeforeSeries() {
                 Zkušební prototyp bez rizika
               </h2>
               <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-                Nemusíte hned platit kompletní sériovou výrobu. Nabízíme vám <strong>prototypovací balíček</strong> – vyrobíme vám funkční vzorek k fyzickému vyzkoušení a teprve po jeho schválení se domluvíme na hlavní výrobě.
-              </p>
+                Nemusíte hned platit kompletní sériovou výrobu. U zakázek od 3 kusů vám nabízíme <strong>prototypovací balíček</strong> – nejprve vám vyrobíme 1 funkční vzorek k fyzickému vyzkoušení a teprve po jeho schválení spustíme zbytek série.</p>
             </div>
 
             {/* 2 Clean Variants */}
@@ -65,7 +64,7 @@ export default function PrototypeBeforeSeries() {
             <div className="space-y-2 pt-1">
               <div className="flex items-center gap-2.5 text-slate-700 text-xs sm:text-sm">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span><strong>Žádné riziko:</strong> Platíte pouze prototypování. Hlavní výrobu hradíte až po schválení.</span>
+                <span><strong>Dostupné od 3 kusů:</strong> Platíte pouze prototypování. Hlavní sérii hradíte až po fyzickém schválení vzorku.</span>
               </div>
               <div className="flex items-center gap-2.5 text-slate-700 text-xs sm:text-sm">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />

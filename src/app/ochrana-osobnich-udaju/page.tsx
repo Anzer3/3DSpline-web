@@ -72,9 +72,9 @@ export default function PrivacyPolicyPage() {
                 Správcem osobních údajů podle čl. 4 bod 7 Nařízení Evropského parlamentu a Rady (EU) 2016/679 o ochraně fyzických osob v souvislosti se zpracováním osobních údajů (dále jen <strong>„GDPR“</strong>) je:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800">
-                <div><strong>Provozovatel:</strong> 3D Spline</div>
+                <div><strong>Provozovatel:</strong> Kateřina Řezníčková (3D Spline)</div>
                 <div><strong>Sídlo:</strong> Olomouc, Česká republika</div>
-                <div><strong>IČO:</strong> V procesu zápisu (bude doplněno po přidělení)</div>
+                <div><strong>IČO:</strong> 03010562</div>
                 <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
                 <div><strong>Web:</strong> https://3dspline.cz</div>
               </div>

@@ -19,21 +19,21 @@ const caseStudies: CaseStudy[] = [
     id: 1,
     title: "Madla na pokličky",
     tag: "Náhradní díly",
-    image: "/portfolio/poklicky.jpg",
+    image: "/images/pribehy-z-dilny/poklicky/uvodni_fotka_clanku.jpg",
     href: "/pribehy-z-dilny/madla-na-poklicky",
   },
   {
     id: 2,
-    title: "Model formule (vícebarevný tisk)",
-    tag: "Barevný 3D tisk",
-    image: "/portfolio/vice_barev.jpg",
+    title: "Formule pro dětský tábor",
+    tag: "Tisk podle vašeho modelu",
+    image: "/images/pribehy-z-dilny/formule/series-formule.jpg",
     href: "/pribehy-z-dilny/model-formule",
   },
   {
     id: 3,
     title: "Knoflíky pro staré rádio",
     tag: "Reverzní inženýrství",
-    image: "/images/pribehy-z-dilny/radio%20knofliky/knofliky_nove_vs_stare.jpg",
+    image: "/images/pribehy-z-dilny/radio%20knofliky/knofliky_nove_nabarvene.jpg",
     href: "/pribehy-z-dilny/knofliky-pro-stare-radio",
   },
 ];
@@ -55,7 +55,7 @@ export default function Portfolio() {
             Příběhy z dílny
           </h2>
           <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            Ukázky reálných zakázek – od náhrady nedostupných součástek přes vícebarevné modely až po reverzní inženýrství.
+            Ukázky reálných zakázek
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export default function Portfolio() {
             <Link
               key={study.id}
               href={study.href}
-              className="group relative rounded-xl border border-slate-300 overflow-hidden flex flex-col justify-between min-h-[300px] sm:min-h-[340px] shadow-sm hover:shadow-md transition-all duration-300"
+              className="group relative rounded-xl border border-slate-300 overflow-hidden flex flex-col justify-end min-h-[300px] sm:min-h-[340px] shadow-sm hover:shadow-md transition-all duration-300"
             >
               {/* Celoplošný obrázek */}
               <Image
@@ -75,13 +75,6 @@ export default function Portfolio() {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
-
-              {/* Horní ikona se šipkou */}
-              <div className="relative z-10 flex justify-end p-4 sm:p-5">
-                <span className="p-1.5 rounded-full bg-slate-900/50 backdrop-blur-md text-white border border-white/20 group-hover:bg-blue-600 group-hover:border-blue-500 transition-colors duration-300">
-                  <ArrowUpRight className="w-4 h-4" />
-                </span>
-              </div>
 
               {/* Spodní jemné tmavé podbarvení pouze pro název a odkaz */}
               <div className="relative z-10 p-4 sm:p-5 bg-gradient-to-t from-slate-950/85 via-slate-950/60 to-transparent pt-12">
@@ -97,23 +90,6 @@ export default function Portfolio() {
           ))}
         </div>
 
-        {/* Spodní výzva k poptávce */}
-        <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs sm:text-sm text-slate-600 text-center sm:text-left">
-            Máte podobný díl k výrobě nebo potřebujete posoudit technickou vyrobitelnost?
-          </p>
-          <a
-            href="#poptavka"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollTo("#poptavka");
-            }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs sm:text-sm transition-colors shadow-sm shrink-0"
-          >
-            <span>Nezávazně poptat výrobu</span>
-            <ArrowRight className="w-4 h-4" />
-          </a>
-        </div>
       </div>
     </section>
   );

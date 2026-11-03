@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import ProjectNoticeBanner from "@/components/ProjectNoticeBanner";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -157,7 +156,6 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased text-slate-900 bg-white min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
-        <ProjectNoticeBanner />
         {children}
       </body>
     </html>

@@ -4,23 +4,24 @@ import { caseStudiesData } from "@/lib/caseStudies";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://3dspline.cz";
+  const contentLastModified = new Date("2026-11-03");
 
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: contentLastModified,
       changeFrequency: "weekly",
       priority: 1.0,
     },
     ...services.map((service) => ({
       url: `${baseUrl}/${service.slug}`,
-      lastModified: new Date(),
+      lastModified: contentLastModified,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     ...caseStudiesData.map((study) => ({
       url: `${baseUrl}/pribehy-z-dilny/${study.slug}`,
-      lastModified: new Date(),
+      lastModified: contentLastModified,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
