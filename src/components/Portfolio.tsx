@@ -24,9 +24,9 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: 2,
-    title: "Formule pro dětský tábor",
-    tag: "Tisk podle vašeho modelu",
-    image: "/images/pribehy-z-dilny/formule/series-formule.jpg",
+    title: "Série 50 formulí",
+    tag: "Sériový tisk",
+    image: "/images/pribehy-z-dilny/formule/formule.jpg",
     href: "/pribehy-z-dilny/model-formule",
   },
   {

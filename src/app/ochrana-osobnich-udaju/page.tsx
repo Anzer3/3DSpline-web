@@ -72,9 +72,7 @@ export default function PrivacyPolicyPage() {
                 Správcem osobních údajů podle čl. 4 bod 7 Nařízení Evropského parlamentu a Rady (EU) 2016/679 o ochraně fyzických osob v souvislosti se zpracováním osobních údajů (dále jen <strong>„GDPR“</strong>) je:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800">
-                <div><strong>Provozovatel:</strong> Kateřina Řezníčková (3D Spline)</div>
-                <div><strong>Sídlo:</strong> Olomouc, Česká republika</div>
-                <div><strong>IČO:</strong> 03010562</div>
+                <div><strong>Provozovatel:</strong> 3D Spline</div>
                 <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
                 <div><strong>Web:</strong> https://3dspline.cz</div>
               </div>
@@ -89,11 +87,13 @@ export default function PrivacyPolicyPage() {
                 Zpracováváme pouze údaje, které nám sami dobrovolně poskytnete při odeslání nezávazné poptávky prostřednictvím webového formuláře nebo e-mailové komunikace:
               </p>
               <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs sm:text-sm">
-                <li><strong>Identifikační údaje:</strong> jméno a příjmení (případně název firmy).</li>
-                <li><strong>Kontaktní údaje:</strong> e-mailová adresa, telefonní číslo (pokud jej vyplníte).</li>
+                <li><strong>Kontaktní údaje:</strong> e-mailová adresa pro zaslání odpovědi a technického posouzení poptávky.</li>
                 <li><strong>Poptávková a zakázková data:</strong> technický popis poptávaného dílu, požadovaný materiál, počet kusů, případně nahrávané přílohy (3D modely ve formátech STEP, STL, výkresy, fotografie či náčrty).</li>
-                <li><strong>Fakturační a doručovací údaje:</strong> fakturační adresa a doručovací adresa v případě realizace objednávky.</li>
+                <li><strong>Technické údaje:</strong> IP adresa odesílatele a čas odeslání formuláře (ochrana proti spamu a zneužití).</li>
               </ul>
+              <p className="mt-2 text-xs text-slate-600">
+                Poskytnutí e-mailu je dobrovolné, bez něj však poptávku nelze vyřídit a zaslat odpověď. Neprobíhá automatizované rozhodování ani profilování.
+              </p>
             </section>
 
             {/* Section 3: Legal Basis & Purpose */}
@@ -125,7 +125,8 @@ export default function PrivacyPolicyPage() {
               <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs sm:text-sm">
                 <li>Údaje z nezávazných poptávek, které nevedly k uzavření zakázky, uchováváme po dobu maximálně 12 měsíců pro případné navázání na předchozí komunikaci, poté jsou smazány.</li>
                 <li>Údaje související s realizovanou zakázkou uchováváme po dobu stanovenou příslušnými právními předpisy (např. zákon o účetnictví – 5 až 10 let).</li>
-                <li>Zaslané 3D modely a konstrukční podklady považujeme za důvěrné a nesdílíme je s třetími stranami.</li>
+                <li>Zaslané 3D modely a konstrukční podklady považujeme za důvěrné a nesdílíme je s třetími stranami. Přílohy z poptávek, které nevedly k zakázce, mažeme nejpozději po 12 měsících.</li>
+                <li>IP adresy a technické záznamy uchováváme jen po dobu nezbytnou pro zabezpečení webu a ochranu proti zneužití, nejdéle však 12 měsíců.</li>
               </ul>
             </section>
 
@@ -138,12 +139,12 @@ export default function PrivacyPolicyPage() {
                 Vaše osobní údaje nikomu neprodáváme ani nepředáváme k marketingovým účelům. Přístup k nim mají pouze prověření poskytovatelé nezbytných technických a provozních služeb:
               </p>
               <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs sm:text-sm">
-                <li>Poskytovatel webhostingu a serverové infrastruktury (Vercel Inc. / server v EU).</li>
-                <li>Poskytovatel e-mailových a poštovních služeb pro doručování zpráv.</li>
+                <li>Poskytovatel webhostingu a serverové infrastruktury (Vercel Inc.).</li>
+                <li>Poskytovatel e-mailových služeb pro doručování zpráv (Seznam.cz, a.s.).</li>
                 <li>Doručovací a spediční služby (např. Zásilkovna, DPD, PPL, Česká pošta) výhradně v rozsahu jména, adresy a telefonu pro doručení fyzického balíčku se zakázkou.</li>
               </ul>
               <p className="mt-2 text-xs text-slate-500">
-                Veškerá data jsou zpracovávána výhradně na území Evropské unie (EU / EHP).
+                Data zpracováváme přednostně na území Evropské unie (EU / EHP). Někteří poskytovatelé technických služeb (např. webhosting) mohou být součástí mezinárodních společností; případný přenos údajů mimo EU se v takovém případě řídí zákonnými mechanismy ochrany (zejména standardními smluvními doložkami nebo rozhodnutím o odpovídající ochraně).
               </p>
             </section>
 
@@ -156,7 +157,7 @@ export default function PrivacyPolicyPage() {
                 Web <strong>3dspline.cz nepoužívá žádné analytické, reklamní ani marketingové cookies třetích stran</strong> (např. Google Analytics, Meta Pixel).
               </p>
               <p className="text-slate-600 text-xs sm:text-sm">
-                Používáme výhradně technicky nezbytné systémové cookies zajišťující základní funkčnost, bezpečnost formuláře a ochranu proti spamu (rate limiting). Pro tyto technické cookies není podle zákona vyžadován souhlas návštěvníka.
+                K sledování návštěvníků nepoužíváme žádné cookies. Ochrana formuláře proti zneužití (omezení počtu odeslání) pracuje s krátkodobým zpracováním IP adresy, nikoli s cookies. Pokud by byly použity technicky nezbytné cookies, není pro ně podle zákona vyžadován souhlas návštěvníka.
               </p>
             </section>
 
@@ -171,6 +172,7 @@ export default function PrivacyPolicyPage() {
                 <li>Požadovat opravu nepřesných nebo neúplných údajů.</li>
                 <li>Požadovat výmaz osobních údajů (právo „být zapomenut“), pokud již nejsou potřebné pro stanovený účel nebo pokud odpadl právní důvod.</li>
                 <li>Požadovat omezení zpracování.</li>
+                <li>Získat své údaje ve strukturovaném a strojově čitelném formátu (právo na přenositelnost údajů), pokud je zpracováváme na základě smlouvy.</li>
                 <li>Vznést námitku proti zpracování na základě oprávněného zájmu.</li>
                 <li>Podat stížnost u dozorového úřadu, kterým je v ČR <strong>Úřad pro ochranu osobních údajů</strong> (Pplk. Sochora 27, 170 00 Praha 7, www.uoou.cz).</li>
               </ul>

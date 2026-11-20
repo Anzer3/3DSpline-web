@@ -31,11 +31,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.3,
     },
-    {
-      url: `${baseUrl}/ochrana-osobnich-udaju`,
-      lastModified: new Date("2026-10-22"),
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
   ];
 }

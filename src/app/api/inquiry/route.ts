@@ -158,9 +158,9 @@ export async function POST(req: NextRequest) {
     const note = sanitizeText((formData.get("note") as string) || "", 4000) || "Bez další poznámky";
 
     // 3. VALIDATION
-    if (!name || !email) {
+    if (!email) {
       return NextResponse.json(
-        { success: false, error: "Jméno a příjmení a Váš e-mail jsou povinná pole." },
+        { success: false, error: "Váš e-mail je povinné pole." },
         { status: 400 }
       );
     }
@@ -357,17 +357,11 @@ export async function POST(req: NextRequest) {
             <span class="badge">${safeTabLabelHtml}</span>
             <table class="table">
               <tr>
-                <th>Zákazník:</th>
-                <td><strong>${safeNameHtml}</strong></td>
-              </tr>
-              <tr>
                 <th>E-mail:</th>
                 <td><a href="mailto:${safeEmailHtml}" style="color: #2563eb; text-decoration: none;">${safeEmailHtml}</a></td>
               </tr>
-              <tr>
-                <th>Telefon:</th>
-                <td><a href="tel:${safePhoneHtml}" style="color: #0f172a; text-decoration: none;">${safePhoneHtml}</a></td>
-              </tr>
+              ${name ? `<tr><th>Zákazník:</th><td><strong>${safeNameHtml}</strong></td></tr>` : ""}
+              ${phone && phone !== "Neuvedeno" ? `<tr><th>Telefon:</th><td><a href="tel:${safePhoneHtml}" style="color: #0f172a; text-decoration: none;">${safePhoneHtml}</a></td></tr>` : ""}
               <tr>
                 <th>Počet kusů:</th>
                 <td>${safeQuantityHtml}</td>
@@ -456,9 +450,9 @@ export async function POST(req: NextRequest) {
             <h1>Potvrzení přijetí poptávky • 3dspline.cz</h1>
           </div>
           <div class="content">
-            <p>Dobrý den, <strong>${safeNameHtml}</strong>,</p>
+            <p>Dobrý den${name ? `, <strong>${safeNameHtml}</strong>` : ""},</p>
             <p>děkujeme za zaslání vaší poptávky na <strong>zakázkový 3D tisk a CAD konstrukci</strong>. Vaše zadání jsme v pořádku přijali a začínáme jej zpracovávat.</p>
-            
+
             <div class="highlight">
               <strong>Jaký je další postup?</strong>
               <ul style="margin: 8px 0 0 0; padding-left: 20px;">
@@ -485,9 +479,7 @@ export async function POST(req: NextRequest) {
 Přijato: ${inquiryDetails.timestamp}
 Typ: ${tabLabel}
 
-Zákazník: ${name}
-E-mail: ${email}
-Telefon: ${phone}
+E-mail: ${email}${name ? `\nZákazník: ${name}` : ""}${phone && phone !== "Neuvedeno" ? `\nTelefon: ${phone}` : ""}
 Počet kusů: ${quantity}
 Preferovaný materiál: ${material}
 Preferovaná barva: ${color}
@@ -501,7 +493,7 @@ ${note}
     `.trim();
 
     const clientText = `
-Dobrý den, ${name},
+Dobrý den${name ? ` ${name}` : ""},
 
 děkujeme za zaslání vaší poptávky na zakázkový 3D tisk a CAD konstrukci na 3dspline.cz. Vaše zadání jsme v pořádku přijali.
 
@@ -520,7 +512,7 @@ info@3dspline.cz
         from: fromEmail,
         to: notifyEmail,
         replyTo: email,
-        subject: `Nová poptávka z webu: ${name} (${quantity}) [${tabLabel}]`,
+        subject: `Nová poptávka z webu: ${name || email} (${quantity}) [${tabLabel}]`,
         text: ownerText,
         html: ownerHtml,
         attachments,

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Instagram, Mail, MapPin, ArrowUp } from "lucide-react";
+import { Instagram, Mail, ArrowUp } from "lucide-react";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -104,27 +104,20 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact & Operator Details */}
+          {/* Contact Details */}
           <div className="lg:col-span-4 space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white font-tech">
-              Provozovatel &amp; Fakturace
+              Kontakt
             </h4>
             <div className="space-y-1.5 text-xs text-slate-300 font-tech">
               <div className="text-white font-semibold">
-                Kateřina Řezníčková – 3D Spline
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                <span>Sídlo: Olomouc • Doručení po celé ČR</span>
+                3D Spline
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                 <a href="mailto:info@3dspline.cz" className="hover:text-white transition-colors">
                   info@3dspline.cz
                 </a>
-              </div>
-              <div className="pt-1 text-slate-400 text-[11px]">
-                <span>IČO: 03010562</span>
               </div>
             </div>
           </div>
@@ -137,13 +130,6 @@ export default function Footer() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-[11px]">
-            <a
-              href="/ochrana-osobnich-udaju"
-              className="text-slate-400 hover:text-white transition-colors underline-offset-2 hover:underline"
-            >
-              Ochrana osobních údajů (GDPR)
-            </a>
-            <span className="text-slate-700">•</span>
             <a
               href="/obchodni-podminky"
               className="text-slate-400 hover:text-white transition-colors underline-offset-2 hover:underline"

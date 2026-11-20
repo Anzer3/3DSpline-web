@@ -72,10 +72,7 @@ export default function TermsAndConditionsPage() {
                 Tyto Všeobecné obchodní podmínky (dále jen <strong>„VOP“</strong>) upravují práva a povinnosti smluvních stran vznikající v souvislosti se zakázkovým 3D tiskem a CAD konstrukcí dílů poskytovanými zhotovitelem:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800 mb-3">
-                <div><strong>Provozovatel (Zhotovitel):</strong> Kateřina Řezníčková, podnikající pod označením 3D Spline</div>
-                <div><strong>Místo podnikání:</strong> [doplnit ulici a číslo popisné], Olomouc, Česká republika</div>
-                <div><strong>IČO:</strong> 03010562</div>
-                <div><strong>Zápis v evidenci:</strong> Fyzická osoba zapsaná v živnostenském rejstříku vedeném Magistrátem města Olomouce. Zhotovitel není plátcem DPH.</div>
+                <div><strong>Provozovatel (Zhotovitel):</strong> 3D Spline</div>
                 <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
                 <div><strong>Web:</strong> https://3dspline.cz</div>
               </div>
@@ -164,7 +161,7 @@ export default function TermsAndConditionsPage() {
                   V případě, že zhotovitel pro objednatele provádí CAD modelování či konstrukční návrh, poskytuje objednateli okamžikem úplného zaplacení ceny díla nevýhradní licenci k užití vytvořeného 3D modelu, a to bez omezení územního i časového, v rozsahu nezbytném pro výrobu, úpravy a používání dílů pro vlastní potřebu objednatele. Licence není bez souhlasu zhotovitele podlicencovatelná. Zhotovitel si ponechává právo používat své obecné know-how a postupy, a pokud se strany nedohodnou jinak, může zhotovené díly ukázat v portfoliu, nejde-li o důvěrné informace objednatele.
                 </li>
                 <li>
-                  Zhotovitel se zavazuje zachovávat mlčenlivost o všech technických a výrobních informacích objednatele. Na žádost objednatele je možné předem uzavřít samostatnou Dohodu o mlčenlivosti (NDA).
+                  Zhotovitel se zavazuje zachovávat mlčenlivost o všech technických a výrobních informacích objednatele. Na žádost objednatele (např. zaškrtnutím příslušné volby v poptávkovém formuláři) je možné uzavřít samostatnou Dohodu o mlčenlivosti (NDA); ujednání takové dohody mají přednost před těmito podmínkami.
                 </li>
               </ul>
             </section>
@@ -238,10 +235,7 @@ export default function TermsAndConditionsPage() {
                 9. Závěrečná ustanovení
               </h2>
               <p className="mb-2 text-xs sm:text-sm text-slate-600">
-                Veškeré právní vztahy se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník. Případné spory mezi zhotovitelem a spotřebitelem lze řešit také mimosoudně prostřednictvím České obchodní inspekce (www.coi.cz). Spotřebitel může využít také platformu pro řešení sporů online na adrese https://ec.europa.eu/consumers/odr.
-              </p>
-              <p className="mb-2 text-xs sm:text-sm text-slate-600">
-                Osobní údaje objednatele zpracovává zhotovitel pouze v rozsahu nezbytném pro vyřízení poptávky, plnění smlouvy a splnění zákonných povinností, v souladu s nařízením (EU) 2016/679 (GDPR). Objednatel má práva podle GDPR, zejména právo na přístup, opravu a výmaz údajů; kontaktovat zhotovitele může na info@3dspline.cz.
+                Veškeré právní vztahy se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník. Případné spory mezi zhotovitelem a spotřebitelem lze řešit také mimosoudně prostřednictvím České obchodní inspekce (www.coi.cz).
               </p>
               <p className="text-xs text-slate-500">
                 Zhotovitel je oprávněn tyto podmínky změnit; na již uzavřené smlouvy se použije znění účinné v době jejich uzavření.
