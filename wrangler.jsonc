@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "3dspline-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-20",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "images": {
+    // Optimalizace obrázků pro next/image přes Cloudflare Images
+    // https://opennext.js.org/cloudflare/howtos/image
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Vlastní doména – odkomentovat, až bude zóna 3dspline.cz v Cloudflare:
+  // "routes": [
+  //   { "pattern": "3dspline.cz", "custom_domain": true },
+  //   { "pattern": "www.3dspline.cz", "custom_domain": true }
+  // ]
+}
