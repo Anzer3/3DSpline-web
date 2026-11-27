@@ -57,8 +57,10 @@ export default function Hero() {
                 alt="CAD modelování komplexních dílů - 3D Spline"
                 width={638}
                 height={619}
+                // Skutečná šířka obrázku podle sloupce (40 % / 240 / 300 / 400 px) × přesah 180 / 155 / 130 %
+                sizes="(max-width: 639px) 72vw, (max-width: 767px) 372px, (max-width: 1023px) 465px, 520px"
                 className="w-[180%] sm:w-[155%] lg:w-[130%] max-w-none h-full object-contain mix-blend-multiply scale-[1.06]"
-                priority
+                preload
               />
             </div>
           </div>

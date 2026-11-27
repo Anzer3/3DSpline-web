@@ -1,31 +1,43 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowUpRight, MessageSquareText, Phone } from "lucide-react";
+import { ArrowUpRight, MessageSquareText } from "lucide-react";
+
+const HERO_THRESHOLD = 350; // zobrazit až po opuštění úvodní sekce
 
 export default function MobileFloatingCta() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const heroThreshold = 350; // show after leaving initial hero
-      const formEl = document.querySelector("#poptavka");
+    let formInView = false;
+    let frame = 0;
 
-      if (formEl) {
-        const rect = formEl.getBoundingClientRect();
-        // Hide when form is in view
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          setVisible(false);
-          return;
-        }
-      }
-
-      setVisible(scrollY > heroThreshold);
+    // Nejvýš jeden přepočet na snímek
+    const update = () => {
+      frame = 0;
+      setVisible(!formInView && window.scrollY > HERO_THRESHOLD);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(update);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Viditelnost formuláře hlídá IntersectionObserver, takže scroll handler
+    // nemusí při každém posunu měřit layout (getBoundingClientRect).
+    const formEl = document.querySelector("#poptavka");
+    const observer = formEl
+      ? new IntersectionObserver(([entry]) => {
+          formInView = entry.isIntersecting;
+          scheduleUpdate();
+        })
+      : null;
+    if (formEl) observer?.observe(formEl);
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      observer?.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   const scrollToInquiry = () => {

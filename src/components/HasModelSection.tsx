@@ -1,9 +1,7 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import InquiryCta from "@/components/InquiryCta";
 
 export default function HasModelSection() {
   const seriesItems = [
@@ -28,18 +26,6 @@ export default function HasModelSection() {
       caption: "Kopírování a replikace opotřebovaných nebo chybějících dílů",
     },
   ];
-
-  const handleInquiry = () => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("select-inquiry-tab", { detail: { tab: "model" } })
-      );
-      const formEl = document.querySelector("#poptavka");
-      if (formEl) {
-        formEl.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
 
   return (
     <section className="py-16 bg-[#0F1E2E] border-b border-slate-800 text-white overflow-hidden">
@@ -124,14 +110,13 @@ export default function HasModelSection() {
               <ArrowUpRight className="w-4 h-4 text-slate-400" />
             </Link>
 
-            <button
-              type="button"
-              onClick={handleInquiry}
+            <InquiryCta
+              tab="model"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold transition-colors shrink-0 shadow-md"
             >
               <span>Nahrát model a poptat tisk</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </InquiryCta>
           </div>
         </div>
       </div>

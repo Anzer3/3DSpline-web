@@ -9,10 +9,13 @@ const inter = Inter({
   display: "swap",
 });
 
+// Monospace jen na drobné technické štítky – nepřednačítá se, aby neubíral
+// šířku pásma hlavnímu písmu a úvodnímu obrázku.
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin", "latin-ext"],
   variable: "--font-jetbrains-mono",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

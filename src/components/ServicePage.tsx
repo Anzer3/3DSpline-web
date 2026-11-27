@@ -304,7 +304,7 @@ export default function ServicePage({ service }: { service: Service }) {
                   src={heroImage}
                   alt={heroImageAlt}
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 1023px) 100vw, 40vw"
                   className="object-cover"
                 />

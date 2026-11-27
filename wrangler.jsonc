@@ -1,7 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "3dspline-web",
-  "main": ".open-next/worker.js",
+  // Vlastní vstupní bod – obaluje .open-next/worker.js a přidává cache obrázků
+  "main": "worker.ts",
   "compatibility_date": "2026-11-20",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
@@ -12,6 +13,11 @@
     // Optimalizace obrázků pro next/image přes Cloudflare Images
     // https://opennext.js.org/cloudflare/howtos/image
     "binding": "IMAGES"
+  },
+  // ID nasazené verze – worker.ts ho používá v klíči cache obrázků,
+  // aby se po každém deployi obrázky převedly znovu z aktuálních souborů
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
   },
   "observability": {
     "enabled": true

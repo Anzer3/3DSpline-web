@@ -1,0 +1,9 @@
+# Hlavičky pro statické soubory servírované přímo Cloudflarem (bez Workeru).
+# https://developers.cloudflare.com/workers/static-assets/headers
+# https://opennext.js.org/cloudflare/caching#static-assets-caching
+
+# JS, CSS a fonty z buildu mají v názvu hash obsahu, takže je prohlížeč může
+# držet v cache natrvalo. Bez tohoto pravidla Cloudflare posílá
+# "max-age=0, must-revalidate" a prohlížeč je při každé návštěvě znovu ověřuje.
+/_next/static/*
+  Cache-Control: public,max-age=31536000,immutable

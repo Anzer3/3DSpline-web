@@ -23,7 +23,7 @@ export default function Navbar() {
                 height={32}
                 sizes="32px"
                 className="w-full h-full object-contain"
-                priority
+                loading="eager"
               />
             </div>
             <span className="text-lg font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors whitespace-nowrap">

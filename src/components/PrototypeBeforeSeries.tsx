@@ -1,24 +1,8 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import InquiryCta from "@/components/InquiryCta";
 
 export default function PrototypeBeforeSeries() {
-  const handleInquiry = () => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("select-inquiry-tab", {
-          detail: { tab: "model", prototypePackage: true },
-        })
-      );
-      const formEl = document.querySelector("#poptavka");
-      if (formEl) {
-        formEl.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
   return (
     <section id="prototyp-balicek" className="py-16 bg-slate-50 border-b border-slate-200 overflow-hidden scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -77,14 +61,14 @@ export default function PrototypeBeforeSeries() {
             </div>
 
             <div className="pt-1">
-              <button
-                type="button"
-                onClick={handleInquiry}
+              <InquiryCta
+                tab="model"
+                prototypePackage
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs sm:text-sm transition-colors shadow-sm"
               >
                 <span>Poptat zkušební prototyp</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </InquiryCta>
             </div>
           </div>
 

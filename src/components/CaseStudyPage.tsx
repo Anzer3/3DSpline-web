@@ -1,9 +1,7 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import InquiryCta from "@/components/InquiryCta";
 import { caseStudiesData, type CaseStudyData } from "@/lib/caseStudies";
 
 export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
@@ -12,23 +10,6 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
     caseStudiesData[(currentIndex + 1) % caseStudiesData.length] ||
     caseStudiesData[0];
   const otherStudies = caseStudiesData.filter((s) => s.slug !== study.slug);
-
-  const handleInquiry = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("select-inquiry-tab", {
-          detail: { tab: study.inquiryTab, storyTitle: study.title },
-        })
-      );
-      const el = document.querySelector("#poptavka");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        window.location.hash = "#poptavka";
-      }
-    }
-  };
 
   const storySteps = [
     { number: "01", data: study.story.intro, tag: "Začátek" },
@@ -66,14 +47,15 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
-                <a
-                  href="#poptavka"
-                  onClick={handleInquiry}
+                <InquiryCta
+                  asLink
+                  tab={study.inquiryTab}
+                  storyTitle={study.title}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-sm cursor-pointer"
                 >
                   <span>Poptat podobnou výrobu</span>
                   <ArrowRight className="w-4 h-4" />
-                </a>
+                </InquiryCta>
                 <Link
                   href={`/pribehy-z-dilny/${nextStudy.slug}`}
                   className="inline-flex items-center gap-2 px-4 py-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-sm transition-colors"
@@ -91,7 +73,7 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
                   src={study.heroImage}
                   alt={study.heroImageAlt}
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 640px) 384px, 40vw"
                   className="object-cover"
                 />
@@ -213,14 +195,15 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
               </p>
             </div>
             <div className="shrink-0">
-              <a
-                href="#poptavka"
-                onClick={handleInquiry}
+              <InquiryCta
+                asLink
+                tab={study.inquiryTab}
+                storyTitle={study.title}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors shadow-md cursor-pointer"
               >
                 <span>Poptat nezávazně výrobu</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </InquiryCta>
             </div>
           </div>
         </div>
