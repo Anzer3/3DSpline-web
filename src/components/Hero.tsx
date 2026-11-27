@@ -1,17 +1,7 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
 import { ArrowRight, Check } from "lucide-react";
 
 export default function Hero() {
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section className="relative bg-white border-b border-slate-200 py-6 sm:py-10 lg:py-16 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,7 +59,6 @@ export default function Hero() {
                 height={619}
                 className="w-[180%] sm:w-[155%] lg:w-[130%] max-w-none h-full object-contain mix-blend-multiply scale-[1.06]"
                 priority
-                unoptimized
               />
             </div>
           </div>
@@ -79,10 +68,6 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <a
                 href="#poptavka"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollTo("#poptavka");
-                }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm active:scale-[0.99] w-full sm:w-auto text-center"
               >
                 <span>Nezávazně poptat výrobu</span>

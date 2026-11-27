@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { company, hasIco } from "@/lib/company";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -83,16 +84,26 @@ export default function RootLayout({
       {
         "@type": "LocalBusiness",
         "@id": "https://3dspline.cz/#business",
-        name: "3D Spline",
+        name: company.brand,
+        ...(company.operatorName.trim() !== "" && { legalName: company.operatorName }),
+        ...(hasIco && {
+          identifier: {
+            "@type": "PropertyValue",
+            propertyID: "IČO",
+            value: company.ico,
+          },
+        }),
         image: "https://3dspline.cz/images/og-banner.png",
         logo: "https://3dspline.cz/images/logo_search_results.png",
         description:
           "Zakázkový 3D tisk a CAD modelování na míru pro firmy i jednotlivce. Od náhrady poškozeného kusu po stovkové série.",
-        url: "https://3dspline.cz",
-        email: "info@3dspline.cz",
+        url: company.web,
+        email: company.email,
         address: {
           "@type": "PostalAddress",
-          addressLocality: "Olomouc",
+          ...(company.address.street.trim() !== "" && { streetAddress: company.address.street }),
+          addressLocality: company.address.city,
+          ...(company.address.zip.trim() !== "" && { postalCode: company.address.zip }),
           addressCountry: "CZ",
         },
         areaServed: {
@@ -100,7 +111,7 @@ export default function RootLayout({
           name: "Česká republika",
         },
         priceRange: "$$",
-        sameAs: ["https://www.instagram.com/3dspline.cz/"],
+        sameAs: [company.instagram],
         knowsAbout: [
           "Zakázkový 3D tisk",
           "CAD modelování",

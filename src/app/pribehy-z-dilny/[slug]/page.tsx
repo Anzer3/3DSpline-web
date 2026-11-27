@@ -6,6 +6,7 @@ import InquiryForm from "@/components/InquiryForm";
 import Footer from "@/components/Footer";
 import MobileFloatingCta from "@/components/MobileFloatingCta";
 import { caseStudiesData, getCaseStudy } from "@/lib/caseStudies";
+import { siteUrl } from "@/lib/services";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const study = getCaseStudy(slug);
   if (!study) return {};
 
-  const url = `https://3dspline.cz/pribehy-z-dilny/${study.slug}`;
+  const url = `${siteUrl}/pribehy-z-dilny/${study.slug}`;
   return {
     title: study.metaTitle,
     description: study.metaDescription,
@@ -35,20 +36,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: "3D Spline",
       locale: "cs_CZ",
       type: "article",
-      images: [
-        {
-          url: study.heroImage,
-          width: 1200,
-          height: 630,
-          alt: study.title,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title: study.metaTitle,
       description: study.metaDescription,
-      images: [study.heroImage],
     },
   };
 }
@@ -61,8 +53,47 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
+  const pageUrl = `${siteUrl}/pribehy-z-dilny/${study.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": `${pageUrl}#article`,
+        headline: study.h1,
+        description: study.metaDescription,
+        image: `${siteUrl}${study.heroImage}`,
+        inLanguage: "cs",
+        ...(study.datePublished && { datePublished: study.datePublished }),
+        ...((study.dateModified ?? study.datePublished) && {
+          dateModified: study.dateModified ?? study.datePublished,
+        }),
+        author: { "@id": `${siteUrl}/#business` },
+        publisher: { "@id": `${siteUrl}/#business` },
+        mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "3D Spline", item: siteUrl },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Příběhy z dílny",
+            item: `${siteUrl}/pribehy-z-dilny`,
+          },
+          { "@type": "ListItem", position: 3, name: study.title, item: pageUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main className="flex-grow">
         <CaseStudyPage study={study} />

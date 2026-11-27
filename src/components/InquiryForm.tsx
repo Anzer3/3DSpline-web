@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import {
   UploadCloud,
   FileCheck2,
@@ -141,6 +142,11 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tabSectionRef = useRef<HTMLDivElement>(null);
   const highlightTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  const modelTabButtonRef = useRef<HTMLButtonElement>(null);
+  const noteRef = useRef<HTMLTextAreaElement>(null);
+  const licenseRef = useRef<HTMLInputElement>(null);
+  const dropzoneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleTabChange = (e: Event) => {
@@ -192,6 +198,14 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
       }
     };
   }, []);
+
+  // Po úspěšném odeslání přesunout fokus na nadpis potvrzení
+  useEffect(() => {
+    if (status === "success") {
+      successHeadingRef.current?.focus();
+      successHeadingRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [status]);
 
   // Close open tooltip on outside click / touch
   useEffect(() => {
@@ -325,18 +339,21 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
       setErrorMessage("Prosím vyberte nahoře, zda máte nebo nemáte 3D model.");
       setHighlightedField("tab-selection");
       tabSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      modelTabButtonRef.current?.focus({ preventScroll: true });
       return;
     }
 
     if (!note.trim()) {
       setStatus("error");
       setErrorMessage("Prosím vyplňte podrobný popis (účel dílu, prostředí použití nebo Vaše požadavky).");
+      noteRef.current?.focus();
       return;
     }
 
     if (requiresLicenseCheck && !licenseConfirmed) {
       setStatus("error");
       setErrorMessage("Pro odeslání prosím potvrďte, že disponujete autorskými právy nebo licencí k dodaným podkladům.");
+      licenseRef.current?.focus();
       return;
     }
 
@@ -463,7 +480,11 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                 <div className="w-12 h-12 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto mb-3">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1 tracking-tight">
+                <h3
+                  ref={successHeadingRef}
+                  tabIndex={-1}
+                  className="text-lg font-bold text-slate-900 mb-1 tracking-tight outline-none"
+                >
                   Poptávka byla v pořádku přijata
                 </h3>
                 <p className="text-slate-600 text-xs sm:text-sm max-w-md mx-auto mb-6">
@@ -509,13 +530,24 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                   }`}
                 >
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1">
+                    <span
+                      id="inquiry-tab-label"
+                      className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
+                    >
                       Podklady pro výrobu <span className="text-rose-600 font-bold">*</span>
                     </span>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div
+                      role="radiogroup"
+                      aria-labelledby="inquiry-tab-label"
+                      aria-required="true"
+                      className="flex flex-wrap items-center gap-2"
+                    >
                       <button
+                        ref={modelTabButtonRef}
                         type="button"
+                        role="radio"
+                        aria-checked={activeTab === "model"}
                         onClick={() => {
                           setActiveTab("model");
                           if (highlightedField === "tab-selection") {
@@ -535,6 +567,8 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={activeTab === "drawing"}
                         onClick={() => {
                           setActiveTab("drawing");
                           if (highlightedField === "tab-selection") {
@@ -672,6 +706,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                           <span
                             role="button"
                             tabIndex={0}
+                            aria-describedby="tooltip-prototype"
                             onClick={(e) => toggleTooltip(e, "prototype")}
                             onKeyDown={(e) => {
                               if (e.key === "Enter" || e.key === " ") {
@@ -698,6 +733,8 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
                             {/* Tooltip Popup (hover on desktop + click/tap on mobile) */}
                             <span
+                              id="tooltip-prototype"
+                              role="tooltip"
                               className={`pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
                                 isTooltipOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                               }`}
@@ -719,14 +756,23 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
                 {/* Materiál */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
-                  <label className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1">
+                  <span
+                    id="inquiry-material-label"
+                    className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
+                  >
                     Materiál
-                  </label>
-                  <div className="flex-1 flex flex-wrap items-center gap-2">
+                  </span>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="inquiry-material-label"
+                    className="flex-1 flex flex-wrap items-center gap-2"
+                  >
                     {(["Nechám si poradit", "PETG", "PLA", "Jiné"] as const).map((mat) => (
                       <button
                         key={mat}
                         type="button"
+                        role="radio"
+                        aria-checked={material === mat}
                         onClick={() => setMaterial(mat)}
                         className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-all border ${
                           material === mat
@@ -742,6 +788,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                       <input
                         type="text"
                         autoFocus
+                        aria-label="Vlastní materiál"
                         placeholder="např. ASA, TPU..."
                         value={customMaterial}
                         onChange={(e) => setCustomMaterial(e.target.value)}
@@ -753,14 +800,23 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
                 {/* Barva */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
-                  <label className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1">
+                  <span
+                    id="inquiry-color-label"
+                    className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
+                  >
                     Barva
-                  </label>
-                  <div className="flex-1 flex flex-wrap items-center gap-2">
+                  </span>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="inquiry-color-label"
+                    className="flex-1 flex flex-wrap items-center gap-2"
+                  >
                     {(["Černá", "Bílá", "Jiná"] as const).map((c) => (
                       <button
                         key={c}
                         type="button"
+                        role="radio"
+                        aria-checked={color === c}
                         onClick={() => setColor(c)}
                         className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-all border ${
                           color === c
@@ -797,6 +853,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                       <input
                         type="text"
                         autoFocus
+                        aria-label="Vlastní barva"
                         placeholder="např. Šedá, Oranžová, Nezáleží..."
                         value={customColor}
                         onChange={(e) => setCustomColor(e.target.value)}
@@ -820,6 +877,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                     <button
                       type="button"
                       onClick={(e) => toggleTooltip(e, "description")}
+                      aria-describedby="tooltip-description"
                       className="relative inline-flex items-center group cursor-pointer select-none"
                     >
                       <span className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 transition-colors">
@@ -830,35 +888,38 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                       </span>
 
                       {/* Tooltip okno */}
-                      <div
-                        className={`pointer-events-none absolute bottom-full right-0 mb-2 w-72 p-3 bg-slate-900 text-white text-xs rounded-md shadow-xl transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
+                      <span
+                        id="tooltip-description"
+                        role="tooltip"
+                        className={`block pointer-events-none absolute bottom-full right-0 mb-2 w-72 p-3 bg-slate-900 text-white text-xs rounded-md shadow-xl transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
                           openTooltip === "description" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                         }`}
                       >
                         <strong className="block text-slate-100 font-semibold mb-1 text-xs">
                           Co nám pomůže v popisu upřesnit:
                         </strong>
-                        <ul className="text-slate-300 text-[11px] space-y-1 list-disc list-inside">
-                          <li>
-                            <strong className="text-slate-200">Prostředí:</strong> interiér / exteriér (UV záření, vlhkost)
-                          </li>
-                          <li>
-                            <strong className="text-slate-200">Zatížení:</strong> mechanické namáhání, otěr, rázy
-                          </li>
-                          <li>
-                            <strong className="text-slate-200">Teploty:</strong> běžná teplota vs. vystavení teplu (např. v autě)
-                          </li>
-                          <li>
-                            <strong className="text-slate-200">Termín:</strong> standardní posouzení nebo zda zakázka spěchá
-                          </li>
-                        </ul>
+                        <span className="block text-slate-300 text-[11px] space-y-1">
+                          <span className="block">
+                            • <strong className="text-slate-200">Prostředí:</strong> interiér / exteriér (UV záření, vlhkost)
+                          </span>
+                          <span className="block">
+                            • <strong className="text-slate-200">Zatížení:</strong> mechanické namáhání, otěr, rázy
+                          </span>
+                          <span className="block">
+                            • <strong className="text-slate-200">Teploty:</strong> běžná teplota vs. vystavení teplu (např. v autě)
+                          </span>
+                          <span className="block">
+                            • <strong className="text-slate-200">Termín:</strong> standardní posouzení nebo zda zakázka spěchá
+                          </span>
+                        </span>
                         <span className="absolute top-full right-6 border-4 border-transparent border-t-slate-900" />
-                      </div>
+                      </span>
                     </button>
                   </div>
 
                   <textarea
                     id="inquiry-note"
+                    ref={noteRef}
                     rows={3}
                     required
                     placeholder={notePlaceholder}
@@ -888,9 +949,12 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                           onClick={(e) => toggleTooltip(e, "formats")}
                           className="relative inline-flex items-center group cursor-pointer"
                           aria-label="Podporované formáty souborů"
+                          aria-describedby="tooltip-formats"
                         >
                           <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
                           <span
+                            id="tooltip-formats"
+                            role="tooltip"
                             className={`pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
                               openTooltip === "formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                             }`}
@@ -916,12 +980,28 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                       </div>
                     </div>
 
+                    <p id="dropzone-hint" className="sr-only">
+                      Povolené formáty: STEP, STP, STL, 3MF, PDF, DWG, DXF, ZIP, JPG, PNG. Maximálně 4 MB celkem.
+                    </p>
                     <div
+                      ref={dropzoneRef}
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Přiložit soubory – vybrat z disku"
+                      aria-describedby="dropzone-hint"
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
                       onDrop={handleDrop}
                       onClick={() => fileInputRef.current?.click()}
-                      className={`border border-dashed rounded-md py-2.5 px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 cursor-pointer transition-all ${
+                      onKeyDown={(e) => {
+                        // Reagovat jen na klávesy přímo na dropzone, ne na vnořené tlačítko
+                        if (e.target !== e.currentTarget) return;
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          fileInputRef.current?.click();
+                        }
+                      }}
+                      className={`border border-dashed rounded-md py-2.5 px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 cursor-pointer transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
                         isDragging
                           ? "border-slate-900 bg-slate-100"
                           : "border-slate-300 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-400"
@@ -933,6 +1013,8 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                         multiple
                         accept={acceptedFormats}
                         className="hidden"
+                        tabIndex={-1}
+                        aria-hidden="true"
                         onChange={(e) => void handleFiles(e.target.files)}
                       />
 
@@ -960,6 +1042,8 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                         <button
                           type="button"
                           onClick={(e) => toggleTooltip(e, "dropzone-formats")}
+                          onKeyDown={(e) => e.stopPropagation()}
+                          aria-describedby="tooltip-dropzone-formats"
                           className="relative inline-flex items-center group cursor-pointer select-none"
                         >
                           <span className="underline decoration-slate-300 decoration-dotted underline-offset-2 hover:text-slate-900 transition-colors">
@@ -967,6 +1051,8 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                           </span>
                           {/* Tooltip v nahrávacím boxu */}
                           <span
+                            id="tooltip-dropzone-formats"
+                            role="tooltip"
                             className={`pointer-events-none absolute bottom-full right-0 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
                               openTooltip === "dropzone-formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                             }`}
@@ -988,7 +1074,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
                     {/* Upozornění při překročení 4 MB */}
                     {fileSizeWarning && (
-                      <div className="mt-2 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+                      <div role="status" className="mt-2 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
                         <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                         <div className="leading-relaxed">
                           <span>{fileSizeWarning} </span>
@@ -1050,6 +1136,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                             </div>
                             <button
                               type="button"
+                              aria-label={`Odebrat soubor ${item.file.name}`}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 removeFile(item.id);
@@ -1088,8 +1175,12 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                 </div>
 
                 {status === "error" && (
-                  <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" aria-hidden="true" />
                     <span>{errorMessage}</span>
                   </div>
                 )}
@@ -1099,6 +1190,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                   <div className="pt-1">
                     <label className="flex items-start gap-2.5 cursor-pointer select-none group">
                       <input
+                        ref={licenseRef}
                         type="checkbox"
                         checked={licenseConfirmed}
                         onChange={(e) => setLicenseConfirmed(e.target.checked)}
@@ -1132,12 +1224,19 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                   </button>
                   <p className="mt-2.5 text-center text-[11px] text-slate-500 leading-relaxed font-sans">
                     Odesláním poptávky souhlasíte s{" "}
-                    <a
+                    <Link
                       href="/obchodni-podminky"
                       className="text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors font-sans"
                     >
                       obchodními podmínkami
-                    </a>
+                    </Link>
+                    . Osobní údaje zpracováváme podle{" "}
+                    <Link
+                      href="/ochrana-osobnich-udaju"
+                      className="text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors font-sans"
+                    >
+                      zásad ochrany osobních údajů
+                    </Link>
                     . Poptávka je zcela nezávazná a bezplatná.
                   </p>
                 </div>

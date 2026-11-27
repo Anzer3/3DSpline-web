@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, FileText } from "lucide-react";
 import type { Metadata } from "next";
+import { company, operatorRows } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "Obchodní podmínky zakázkové výroby | 3D Spline",
@@ -72,9 +73,11 @@ export default function TermsAndConditionsPage() {
                 Tyto Všeobecné obchodní podmínky (dále jen <strong>„VOP“</strong>) upravují práva a povinnosti smluvních stran vznikající v souvislosti se zakázkovým 3D tiskem a CAD konstrukcí dílů poskytovanými zhotovitelem:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800 mb-3">
-                <div><strong>Provozovatel (Zhotovitel):</strong> 3D Spline</div>
-                <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
-                <div><strong>Web:</strong> https://3dspline.cz</div>
+                {operatorRows("Provozovatel (Zhotovitel)").map((row) => (
+                  <div key={row.label}><strong>{row.label}:</strong> {row.value}</div>
+                ))}
+                <div><strong>Kontaktní e-mail:</strong> <a href={`mailto:${company.email}`} className="text-blue-600 hover:underline">{company.email}</a></div>
+                <div><strong>Web:</strong> {company.web}</div>
               </div>
               <p className="text-xs text-slate-600">
                 <strong>Objednatelem</strong> je fyzická osoba – spotřebitel (osoba jednající mimo rámec své podnikatelské činnosti) nebo podnikatel (fyzická či právnická osoba jednající v rámci své podnikatelské činnosti), která si u zhotovitele objednává zhotovení 3D dílů nebo konstrukční práce v CAD.
@@ -248,7 +251,14 @@ export default function TermsAndConditionsPage() {
       {/* Footer */}
       <footer className="bg-slate-50 border-t border-slate-200 py-6 text-center text-xs text-slate-500">
         <div className="max-w-4xl mx-auto px-4">
-          &copy; {new Date().getFullYear()} 3D Spline • Olomouc
+          &copy; {new Date().getFullYear()} 3D Spline • Olomouc •{" "}
+          <Link href="/obchodni-podminky" className="hover:text-slate-900 underline-offset-2 hover:underline">
+            Obchodní podmínky
+          </Link>{" "}
+          •{" "}
+          <Link href="/ochrana-osobnich-udaju" className="hover:text-slate-900 underline-offset-2 hover:underline">
+            Ochrana osobních údajů
+          </Link>
         </div>
       </footer>
     </div>

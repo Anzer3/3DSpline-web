@@ -48,7 +48,7 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
               3D Spline
             </Link>
             <span className="mx-1.5">/</span>
-            <Link href="/#pribehy-z-dilny" className="hover:text-slate-900 transition-colors">
+            <Link href="/pribehy-z-dilny" className="hover:text-slate-900 transition-colors">
               Příběhy z dílny
             </Link>
             <span className="mx-1.5">/</span>

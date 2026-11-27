@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
+import { company, operatorRows } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "Zásady ochrany osobních údajů (GDPR) | 3D Spline",
@@ -72,9 +73,11 @@ export default function PrivacyPolicyPage() {
                 Správcem osobních údajů podle čl. 4 bod 7 Nařízení Evropského parlamentu a Rady (EU) 2016/679 o ochraně fyzických osob v souvislosti se zpracováním osobních údajů (dále jen <strong>„GDPR“</strong>) je:
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-xs space-y-1.5 text-slate-800">
-                <div><strong>Provozovatel:</strong> 3D Spline</div>
-                <div><strong>Kontaktní e-mail:</strong> <a href="mailto:info@3dspline.cz" className="text-blue-600 hover:underline">info@3dspline.cz</a></div>
-                <div><strong>Web:</strong> https://3dspline.cz</div>
+                {operatorRows().map((row) => (
+                  <div key={row.label}><strong>{row.label}:</strong> {row.value}</div>
+                ))}
+                <div><strong>Kontaktní e-mail:</strong> <a href={`mailto:${company.email}`} className="text-blue-600 hover:underline">{company.email}</a></div>
+                <div><strong>Web:</strong> {company.web}</div>
               </div>
             </section>
 
@@ -191,7 +194,14 @@ export default function PrivacyPolicyPage() {
       {/* Footer */}
       <footer className="bg-slate-50 border-t border-slate-200 py-6 text-center text-xs text-slate-500">
         <div className="max-w-4xl mx-auto px-4">
-          &copy; {new Date().getFullYear()} 3D Spline • Olomouc
+          &copy; {new Date().getFullYear()} 3D Spline • Olomouc •{" "}
+          <Link href="/obchodni-podminky" className="hover:text-slate-900 underline-offset-2 hover:underline">
+            Obchodní podmínky
+          </Link>{" "}
+          •{" "}
+          <Link href="/ochrana-osobnich-udaju" className="hover:text-slate-900 underline-offset-2 hover:underline">
+            Ochrana osobních údajů
+          </Link>
         </div>
       </footer>
     </div>

@@ -1,31 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Menu, X, ArrowRight, Mail, Clock } from "lucide-react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const router = useRouter();
-
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, sectionHash: string) => {
-    e.preventDefault();
-    setMobileMenuOpen(false);
-    const target = document.querySelector(sectionHash);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      router.push(`/${sectionHash}`);
-    }
-  };
+  const closeMenu = () => setMobileMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-50 bg-[#0F1E2E] border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link href="/" onClick={closeMenu} className="flex items-center gap-2.5 group shrink-0">
             <div className="w-8 h-8 flex items-center justify-center shrink-0">
               <Image
                 src="/images/logo.png"
@@ -40,65 +29,65 @@ export default function Navbar() {
             <span className="text-lg font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors whitespace-nowrap">
               3D Spline
             </span>
-          </a>
+          </Link>
 
           {/* Navigace ukotvená za logem (mr-auto) se stabilními rozestupy, aby odkazy při změně šířky neskákaly */}
           <nav className="hidden sm:flex items-center gap-6 xl:gap-8 ml-8 lg:ml-12 mr-auto text-sm font-medium text-slate-300 whitespace-nowrap">
-            <a
+            <Link
               href="/#sluzby"
-              onClick={(e) => scrollToSection(e, "#sluzby")}
+              onClick={closeMenu}
               className="hover:text-white transition-colors py-1"
             >
               Služby
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#jak-to-funguje"
-              onClick={(e) => scrollToSection(e, "#jak-to-funguje")}
+              onClick={closeMenu}
               className="hover:text-white transition-colors py-1"
             >
               Jak to funguje
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#pribehy-z-dilny"
-              onClick={(e) => scrollToSection(e, "#pribehy-z-dilny")}
+              onClick={closeMenu}
               className="hidden md:inline-block hover:text-white transition-colors py-1"
             >
               Příběhy z dílny
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#materialy"
-              onClick={(e) => scrollToSection(e, "#materialy")}
+              onClick={closeMenu}
               className="hidden min-[900px]:inline-block hover:text-white transition-colors py-1"
             >
               Materiály
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#caste-dotazy"
-              onClick={(e) => scrollToSection(e, "#caste-dotazy")}
+              onClick={closeMenu}
               className="hidden lg:inline-block hover:text-white transition-colors py-1"
             >
               Časté dotazy
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#kontakt"
-              onClick={(e) => scrollToSection(e, "#kontakt")}
+              onClick={closeMenu}
               className="hidden min-[1120px]:inline-block hover:text-white transition-colors py-1"
             >
               Kontakt
-            </a>
+            </Link>
           </nav>
 
           {/* Pravá strana: CTA tlačítko a Hamburger */}
           <div className="flex items-center gap-2.5 sm:gap-3 ml-auto sm:ml-4 shrink-0">
             {/* Tlačítko Poptat tisk - viditelné od sm (640px) */}
-            <a
+            <Link
               href="/#poptavka"
-              onClick={(e) => scrollToSection(e, "#poptavka")}
+              onClick={closeMenu}
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white font-tech text-xs font-bold uppercase tracking-wider transition-colors shadow-sm whitespace-nowrap"
             >
               <span>Poptat tisk</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            </Link>
 
             {/* Hamburger tlačítko: viditelné dokud nejsou v liště zobrazené úplně všechny odkazy (do 1120px) */}
             <button
@@ -118,59 +107,59 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="min-[1120px]:hidden border-b border-slate-800 bg-[#0F1E2E] px-4 pt-3 pb-5 space-y-4 font-tech text-xs shadow-2xl">
           <nav className="space-y-1">
-            <a
+            <Link
               href="/#sluzby"
-              onClick={(e) => scrollToSection(e, "#sluzby")}
+              onClick={closeMenu}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Služby
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#jak-to-funguje"
-              onClick={(e) => scrollToSection(e, "#jak-to-funguje")}
+              onClick={closeMenu}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Jak to funguje
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#pribehy-z-dilny"
-              onClick={(e) => scrollToSection(e, "#pribehy-z-dilny")}
+              onClick={closeMenu}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Příběhy z dílny
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#materialy"
-              onClick={(e) => scrollToSection(e, "#materialy")}
+              onClick={closeMenu}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Materiály
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#caste-dotazy"
-              onClick={(e) => scrollToSection(e, "#caste-dotazy")}
+              onClick={closeMenu}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Časté dotazy
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#kontakt"
-              onClick={(e) => scrollToSection(e, "#kontakt")}
+              onClick={closeMenu}
               className="block py-2.5 px-3 rounded-lg text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors text-sm font-medium"
             >
               Kontakt
-            </a>
+            </Link>
           </nav>
 
           <div className="pt-2 border-t border-slate-800/80 space-y-2">
-            <a
+            <Link
               href="/#poptavka"
-              onClick={(e) => scrollToSection(e, "#poptavka")}
+              onClick={closeMenu}
               className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded bg-blue-600 hover:bg-blue-500 text-white font-tech text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
             >
               <span>Poptat tisk</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            </Link>
 
             <div className="flex items-center justify-between px-2 pt-2 text-[11px] text-slate-400">
               <a

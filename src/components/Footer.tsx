@@ -1,14 +1,10 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Instagram, Mail, ArrowUp } from "lucide-react";
+import { company, formatAddress, hasStreetAddress } from "@/lib/company";
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <footer id="kontakt" className="bg-[#0F1E2E] text-slate-400 border-t border-slate-800 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 sm:pb-10">
@@ -37,7 +33,7 @@ export default function Footer() {
 
             <div className="pt-1 flex items-center gap-3">
               <a
-                href="https://www.instagram.com/3dspline.cz/"
+                href={company.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
@@ -46,7 +42,7 @@ export default function Footer() {
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href="mailto:info@3dspline.cz"
+                href={`mailto:${company.email}`}
                 className="w-8 h-8 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
                 aria-label="E-mail"
               >
@@ -62,44 +58,44 @@ export default function Footer() {
             </h4>
             <ul className="space-y-1.5 text-xs font-tech text-slate-400">
               <li>
-                <a href="/#jak-to-funguje" className="hover:text-white transition-colors">
+                <Link href="/#jak-to-funguje" className="hover:text-white transition-colors">
                   Průběh spolupráce
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/3d-tisk-na-zakazku" className="hover:text-white transition-colors">
+                <Link href="/3d-tisk-na-zakazku" className="hover:text-white transition-colors">
                   3D tisk na zakázku
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/cad-modelovani-na-miru" className="hover:text-white transition-colors">
+                <Link href="/cad-modelovani-na-miru" className="hover:text-white transition-colors">
                   3D modelování na míru
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/#pribehy-z-dilny" className="hover:text-white transition-colors">
+                <Link href="/pribehy-z-dilny" className="hover:text-white transition-colors">
                   Příběhy z dílny
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/#prototyp-balicek" className="hover:text-white transition-colors">
+                <Link href="/#prototyp-balicek" className="hover:text-white transition-colors">
                   Zkušební prototyp
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/#materialy" className="hover:text-white transition-colors">
+                <Link href="/#materialy" className="hover:text-white transition-colors">
                   Materiály (PETG, PLA, ASA)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/#caste-dotazy" className="hover:text-white transition-colors">
+                <Link href="/#caste-dotazy" className="hover:text-white transition-colors">
                   Časté dotazy &amp; Limity
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/#poptavka" className="hover:text-white transition-colors">
+                <Link href="/#poptavka" className="hover:text-white transition-colors">
                   Poptávka výroby
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -111,12 +107,15 @@ export default function Footer() {
             </h4>
             <div className="space-y-1.5 text-xs text-slate-300 font-tech">
               <div className="text-white font-semibold">
-                3D Spline
+                {company.operatorName.trim() !== "" ? `${company.operatorName} (${company.brand})` : company.brand}
               </div>
+              {company.ico.trim() !== "" && <div>IČO: {company.ico}</div>}
+              {company.dic.trim() !== "" && <div>DIČ: {company.dic}</div>}
+              {hasStreetAddress && <div>{formatAddress()}</div>}
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                <a href="mailto:info@3dspline.cz" className="hover:text-white transition-colors">
-                  info@3dspline.cz
+                <a href={`mailto:${company.email}`} className="hover:text-white transition-colors">
+                  {company.email}
                 </a>
               </div>
             </div>
@@ -130,21 +129,27 @@ export default function Footer() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-[11px]">
-            <a
+            <Link
               href="/obchodni-podminky"
               className="text-slate-400 hover:text-white transition-colors underline-offset-2 hover:underline"
             >
               Obchodní podmínky
-            </a>
+            </Link>
             <span className="text-slate-700">•</span>
-            <button
-              type="button"
-              onClick={scrollToTop}
+            <Link
+              href="/ochrana-osobnich-udaju"
+              className="text-slate-400 hover:text-white transition-colors underline-offset-2 hover:underline"
+            >
+              Ochrana osobních údajů
+            </Link>
+            <span className="text-slate-700">•</span>
+            <a
+              href="#"
               className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
             >
               <span>Nahoru</span>
               <ArrowUp className="w-3 h-3" />
-            </button>
+            </a>
           </div>
         </div>
       </div>

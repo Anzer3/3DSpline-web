@@ -30,6 +30,9 @@ export interface CaseStudyData {
     quote: { text: string; author: string };
   };
   inquiryTab: "model" | "drawing";
+  /** Datum publikace a poslední úpravy obsahu (ISO, YYYY-MM-DD). */
+  datePublished?: string;
+  dateModified?: string;
 }
 
 export const caseStudiesData: CaseStudyData[] = [
@@ -120,6 +123,8 @@ export const caseStudiesData: CaseStudyData[] = [
       },
     },
     inquiryTab: "drawing",
+    datePublished: "2026-11-03",
+    dateModified: "2026-11-03",
   },
   {
     slug: "model-formule",
@@ -197,6 +202,8 @@ export const caseStudiesData: CaseStudyData[] = [
       },
     },
     inquiryTab: "model",
+    datePublished: "2026-11-03",
+    dateModified: "2026-11-03",
   },
   {
     slug: "knofliky-pro-stare-radio",
@@ -284,6 +291,8 @@ export const caseStudiesData: CaseStudyData[] = [
       },
     },
     inquiryTab: "drawing",
+    datePublished: "2026-11-03",
+    dateModified: "2026-11-03",
   },
 ];
 
