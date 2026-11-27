@@ -15,10 +15,18 @@
   },
   "observability": {
     "enabled": true
+  },
+  // Nastavení odesílání poptávek (Seznam SMTP). Heslo SMTP_PASS sem nepatří –
+  // je uložené jako Secret v Cloudflare (Worker → Settings → Variables and Secrets).
+  // Proměnné přidané jen v dashboardu by další deploy smazal, proto jsou tady.
+  "vars": {
+    "SMTP_HOST": "smtp.seznam.cz",
+    "SMTP_PORT": "465",
+    "SMTP_SECURE": "true",
+    "SMTP_USER": "info@3dspline.cz",
+    "NOTIFY_EMAIL": "info@3dspline.cz",
+    "FROM_EMAIL": "3dspline.cz Poptávky <info@3dspline.cz>"
   }
-  // Vlastní doména – odkomentovat, až bude zóna 3dspline.cz v Cloudflare:
-  // "routes": [
-  //   { "pattern": "3dspline.cz", "custom_domain": true },
-  //   { "pattern": "www.3dspline.cz", "custom_domain": true }
-  // ]
+  // Doména 3dspline.cz je k Workeru připojená v dashboardu (Custom domain),
+  // www.3dspline.cz přesměrovává Redirect Rule na hlavní doménu.
 }
