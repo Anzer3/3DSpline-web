@@ -8,7 +8,7 @@ import MobileFloatingCta from "@/components/MobileFloatingCta";
 import { caseStudiesData, getCaseStudy } from "@/lib/caseStudies";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export const dynamicParams = false;
@@ -17,8 +17,9 @@ export function generateStaticParams() {
   return caseStudiesData.map((cs) => ({ slug: cs.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const study = getCaseStudy(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const study = getCaseStudy(slug);
   if (!study) return {};
 
   const url = `https://3dspline.cz/pribehy-z-dilny/${study.slug}`;
@@ -52,8 +53,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function Page({ params }: PageProps) {
-  const study = getCaseStudy(params.slug);
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
+  const study = getCaseStudy(slug);
 
   if (!study) {
     notFound();

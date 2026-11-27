@@ -148,7 +148,11 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="cs" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="cs"
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
+      data-scroll-behavior="smooth"
+    >
       <head>
         <script
           type="application/ld+json"

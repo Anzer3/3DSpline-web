@@ -4,6 +4,14 @@ import nodemailer from "nodemailer";
 // Maximum total payload size: 4 MB (serverless-safe limit)
 const MAX_TOTAL_SIZE = 4 * 1024 * 1024;
 
+// Obecná hláška pro zákazníka – technické detaily chyby patří jen do logu
+const SEND_FAILED_ERROR =
+  "Poptávku se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo nám napište přímo na info@3dspline.cz.";
+
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 // Allowed file extensions
 const ALLOWED_EXTENSIONS = new Set([
   "step",
@@ -233,6 +241,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Licenci je nutné potvrdit jen u dodaných dat (3D model, přílohy nebo odkaz)
+    const licenseRequired = tab === "model" || attachments.length > 0 || modelUrl.length > 0;
+    if (licenseRequired && !licenseConfirmed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Pro odeslání prosím potvrďte, že disponujete autorskými právy nebo licencí k dodaným podkladům.",
+        },
+        { status: 400 }
+      );
+    }
+
     const tabLabel =
       tab === "model"
         ? "Mám hotový 3D model (.STEP, .STL, .3MF)"
@@ -251,7 +272,7 @@ export async function POST(req: NextRequest) {
         : "NE (rovnou výroba dle zadání)",
       licenseConfirmed: licenseConfirmed
         ? "ANO (klient potvrdil vlastnictví práv či komerční licenci k modelu)"
-        : "NEPOTVRZENO",
+        : "NEVYŽADOVÁNO (bez modelu, příloh i odkazu)",
       modelUrl: modelUrl || "Neuvedeno",
       note,
       filesCount: attachments.length,
@@ -295,8 +316,16 @@ export async function POST(req: NextRequest) {
       smtpPass !== "testpass";
 
     if (!isSmtpConfigured) {
+      // V produkci by se poptávka bez SMTP tiše ztratila – zákazníkovi proto vrátíme chybu
+      if (process.env.NODE_ENV === "production") {
+        console.error(
+          "❌ SMTP není nakonfigurováno – poptávku nelze doručit e-mailem. Údaje poptávky jsou výše v logu."
+        );
+        return NextResponse.json({ success: false, error: SEND_FAILED_ERROR }, { status: 503 });
+      }
+
       console.log(
-        "ℹ️ SMTP není nakonfigurováno pro produkci (nebo běží lokální simulace). Poptávka byla bezpečně uložena v konzoli."
+        "ℹ️ SMTP není nakonfigurováno (lokální vývoj) – e-maily se neodesílají, poptávka je jen vypsaná v konzoli."
       );
       return NextResponse.json({
         success: true,
@@ -315,10 +344,6 @@ export async function POST(req: NextRequest) {
       auth: {
         user: smtpUser,
         pass: smtpPass,
-      },
-      tls: {
-        // Do not fail on invalid certs and allow proper TLS negotiation
-        rejectUnauthorized: false,
       },
       connectionTimeout: 15000,
       greetingTimeout: 15000,
@@ -380,7 +405,11 @@ export async function POST(req: NextRequest) {
               </tr>
               <tr>
                 <th>Autorská práva &amp; licence:</th>
-                <td><span style="color: #16a34a; font-weight: 600;">✓ Potvrzeno klientem</span> (vlastník dat / platná licence)</td>
+                <td>${
+                  licenseConfirmed
+                    ? `<span style="color: #16a34a; font-weight: 600;">✓ Potvrzeno klientem</span> (vlastník dat / platná licence)`
+                    : `<span style="color: #64748b; font-weight: 600;">Nevyžadováno</span> (bez modelu, příloh i odkazu)`
+                }</td>
               </tr>
               <tr>
                 <th>Přiložené soubory:</th>
@@ -457,7 +486,7 @@ export async function POST(req: NextRequest) {
               <strong>Jaký je další postup?</strong>
               <ul style="margin: 8px 0 0 0; padding-left: 20px;">
                 <li>Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev (DFAM).</li>
-                <li>Ozveme se vám zpět s technickým posouzením a dalšími možnostmi.</li>
+                <li>Ozveme se vám zpět obvykle do 24 hodin s technickým posouzením a dalšími možnostmi.</li>
               </ul>
             </div>
 
@@ -499,16 +528,16 @@ děkujeme za zaslání vaší poptávky na zakázkový 3D tisk a CAD konstrukci 
 
 Jaký je další postup?
 - Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev.
-- Ozveme se vám zpět nejpozději do 24 hodin s posouzením a dalšími možnostmi.
+- Ozveme se vám zpět obvykle do 24 hodin s posouzením a dalšími možnostmi.
 
 S pozdravem,
 Tým 3D Spline
 info@3dspline.cz
     `.trim();
 
-    // Send emails in parallel
-    await Promise.all([
-      transporter.sendMail({
+    // E-mail majiteli je kritický – bez něj poptávka nikam nedorazí, proto při chybě vracíme chybu
+    try {
+      await transporter.sendMail({
         from: fromEmail,
         to: notifyEmail,
         replyTo: email,
@@ -516,30 +545,36 @@ info@3dspline.cz
         text: ownerText,
         html: ownerHtml,
         attachments,
-      }),
-      transporter.sendMail({
+      });
+    } catch (error: unknown) {
+      console.error("❌ Poptávku se nepodařilo odeslat (údaje jsou výše v logu):", describeError(error));
+      return NextResponse.json({ success: false, error: SEND_FAILED_ERROR }, { status: 502 });
+    }
+
+    // Nepodařené potvrzení (např. překlep v adrese) nesmí z již doručené poptávky udělat chybu,
+    // jinak ji zákazník odešle znovu a vzniknou duplicity
+    let confirmationSent = true;
+    try {
+      await transporter.sendMail({
         from: fromEmail,
         to: email,
         subject: "Potvrzení přijetí poptávky • 3D Spline",
         text: clientText,
         html: clientHtml,
-      }),
-    ]);
+      });
+    } catch (error: unknown) {
+      confirmationSent = false;
+      console.warn(`⚠️ Potvrzení zákazníkovi (${email}) se nepodařilo odeslat:`, describeError(error));
+    }
 
     return NextResponse.json({
       success: true,
-      message:
-        "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením.",
+      message: confirmationSent
+        ? "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením."
+        : "Děkujeme! Vaše poptávka byla úspěšně odeslána. Potvrzení na váš e-mail se ale nepodařilo doručit, zkontrolujte prosím, že je adresa správná. Ozveme se vám zpět s technickým posouzením.",
     });
   } catch (error: unknown) {
-    const errMessage = error instanceof Error ? error.message : String(error);
-    console.error("❌ CHYBA PŘI ZPRACOVÁNÍ POPTÁVKY:", errMessage);
-    return NextResponse.json(
-      {
-        success: false,
-        error: `Chyba při odesílání e-mailu: ${errMessage}`,
-      },
-      { status: 500 }
-    );
+    console.error("❌ CHYBA PŘI ZPRACOVÁNÍ POPTÁVKY:", describeError(error));
+    return NextResponse.json({ success: false, error: SEND_FAILED_ERROR }, { status: 500 });
   }
 }

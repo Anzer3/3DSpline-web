@@ -362,7 +362,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
       formData.append("material", effectiveMaterial);
       formData.append("color", effectiveColor);
       formData.append("prototypePackage", prototypePackage ? "true" : "false");
-      formData.append("licenseConfirmed", "true");
+      formData.append("licenseConfirmed", licenseConfirmed ? "true" : "false");
       formData.append("note", note);
       formData.append("modelUrl", modelUrl.trim());
       formData.append("website", honeypot);
@@ -371,20 +371,37 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
         formData.append("files", item.file);
       });
 
-      const res = await fetch("/api/inquiry", {
-        method: "POST",
-        body: formData,
-      });
+      let res: Response;
+      try {
+        res = await fetch("/api/inquiry", {
+          method: "POST",
+          body: formData,
+        });
+      } catch {
+        throw new Error("Nepodařilo se spojit se serverem. Zkontrolujte prosím připojení k internetu a zkuste to znovu.");
+      }
 
-      const data = await res.json();
+      // Server nemusí vždy odpovědět JSONem (např. Vercel při příliš velkém požadavku nebo timeoutu).
+      const data: { success?: boolean; message?: string; error?: string } | null = await res
+        .json()
+        .catch(() => null);
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Při odesílání poptávky došlo k chybě.");
+      if (res.status === 413) {
+        throw new Error(
+          "Přílohy jsou pro webový formulář příliš velké. Pošlete nám je prosím přímo na info@3dspline.cz, nebo vložte odkaz na úložiště."
+        );
+      }
+
+      if (!res.ok || !data?.success) {
+        throw new Error(
+          data?.error ||
+            "Poptávku se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo nám napište přímo na info@3dspline.cz."
+        );
       }
 
       setStatus("success");
       setSuccessMessage(
-        data.message ||
+        data?.message ||
           "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením."
       );
     } catch (err: unknown) {

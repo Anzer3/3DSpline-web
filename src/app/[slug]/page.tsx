@@ -8,7 +8,7 @@ import MobileFloatingCta from "@/components/MobileFloatingCta";
 import { getService, services, siteUrl } from "@/lib/services";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export const dynamicParams = false;
@@ -17,8 +17,9 @@ export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const service = getService(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const service = getService(slug);
   if (!service) return {};
 
   const url = `/${service.slug}`;
@@ -52,8 +53,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function ServiceRoute({ params }: PageProps) {
-  const service = getService(params.slug);
+export default async function ServiceRoute({ params }: PageProps) {
+  const { slug } = await params;
+  const service = getService(slug);
   if (!service) notFound();
 
   const pageUrl = `${siteUrl}/${service.slug}`;
