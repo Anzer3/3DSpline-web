@@ -44,7 +44,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="hover:text-white transition-colors py-1"
+                className="link-underline hover:text-white transition-colors py-1"
               >
                 {link.label}
               </Link>
@@ -104,7 +104,7 @@ export default function Navbar() {
               <a href={`mailto:${company.email}`} className="hover:text-white transition-colors">
                 {company.email}
               </a>
-              <span>Odpověď do 24 h</span>
+              <span>Ve všední dny odpověď do 24 h</span>
             </div>
           </div>
         </div>

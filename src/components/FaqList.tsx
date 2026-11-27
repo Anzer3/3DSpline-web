@@ -9,8 +9,11 @@ export default function FaqList({ faqs }: { faqs: Faq[] }) {
   return (
     <div className="divide-y divide-slate-200 border-y border-slate-200">
       {faqs.map((faq) => (
-        <details key={faq.question} className="group">
-          <summary className="flex items-start justify-between gap-6 cursor-pointer list-none py-5 text-base font-semibold text-slate-900 hover:text-blue-600 transition-colors [&::-webkit-details-marker]:hidden">
+        <details
+          key={faq.question}
+          className="group relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-blue-600 before:origin-top before:scale-y-0 before:transition-transform open:before:scale-y-100 open:pl-4 transition-[padding] duration-200"
+        >
+          <summary className="flex items-start justify-between gap-6 cursor-pointer list-none py-5 text-base font-semibold text-slate-900 hover:text-blue-600 group-open:text-blue-600 transition-colors [&::-webkit-details-marker]:hidden">
             <span>{faq.question}</span>
             <ChevronDown className="w-5 h-5 mt-0.5 text-slate-400 shrink-0 transition-transform duration-200 group-open:rotate-180 group-open:text-blue-600" />
           </summary>

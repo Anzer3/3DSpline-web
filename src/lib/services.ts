@@ -194,7 +194,7 @@ export const services: Service[] = [
             text: "Přes poptávkový formulář nahrajete soubor a napíšete, jaký materiál a kolik kusů potřebujete.",
           },
           {
-            title: "Kalkulace do 24 hodin",
+            title: "Kalkulace ve všední dny do 24 hodin",
             text: "Zkontroluji geometrii a vyrobitelnost, nastavím tisk a pošlu vám pevnou cenu a termín.",
           },
           {
@@ -259,7 +259,7 @@ export const services: Service[] = [
     ],
     closing: {
       title: "Máte hotový 3D model? Pošlete mi ho",
-      text: "Napište, kolik kusů potřebujete a k čemu budou sloužit. Cenu a termín vám nezávazně pošlu do 24 hodin.",
+      text: "Napište, kolik kusů potřebujete a k čemu budou sloužit. Cenu a termín vám nezávazně pošlu ve všední dny do 24 hodin.",
     },
   },
   {
@@ -290,7 +290,7 @@ export const services: Service[] = [
       { label: "Podklady", value: "stačí náčrt s kótami či vzorek" },
       { label: "Modelování", value: "parametrický CAD" },
       { label: "Ověření", value: "zkušební výtisk před sérií" },
-      { label: "Reakce", value: "kalkulace do 24 hodin" },
+      { label: "Reakce", value: "kalkulace ve všední dny do 24 h" },
     ],
     blocks: [
       {
@@ -434,7 +434,7 @@ export const services: Service[] = [
     ],
     closing: {
       title: "Máte nápad nebo potřebujete vyřešit díl?",
-      text: "Stačí fotka a pár vět o tom, co potřebujete. Do 24 hodin se ozvu a probereme nejjednodušší cestu k hotovému dílu.",
+      text: "Stačí fotka a pár vět o tom, co potřebujete. Ve všední dny se ozvu do 24 hodin a probereme nejjednodušší cestu k hotovému dílu.",
     },
   },
 ];

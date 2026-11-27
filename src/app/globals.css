@@ -37,6 +37,89 @@ body {
   background: #1D4ED8; /* ztmavení na hover (blue-700) */
 }
 
+/* Nativní posuvník stránky se skryje, jen když ho nahradí OverlayScrollbar (ležící nad obsahem) */
+html.has-overlay-scrollbar {
+  scrollbar-width: none;
+}
+html.has-overlay-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+::selection {
+  background: var(--brand-blue);
+  color: #FFFFFF;
+}
+
+/* Viditelný fokus pro ovládání klávesnicí */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 3px;
+}
+
+/* Šipka v odkazech a tlačítkách se při najetí posune doprava */
+svg.lucide-arrow-right {
+  transition: transform 0.2s ease;
+}
+a:hover > svg.lucide-arrow-right,
+button:hover > svg.lucide-arrow-right,
+.group:hover svg.lucide-arrow-right {
+  transform: translateX(3px);
+}
+
+@layer components {
+  /* Jemná technická mřížka pro tmavé sekce (odkaz na CAD) */
+  .bg-blueprint {
+    background-color: #0F1E2E;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -1px -1px;
+  }
+
+  /* Modré podtržení klíčového slova v nadpisu */
+  .accent-underline {
+    background-image: linear-gradient(#3B82F6, #3B82F6);
+    background-repeat: no-repeat;
+    background-size: 100% 0.12em;
+    background-position: 0 96%;
+    padding-bottom: 0.04em;
+  }
+
+  /* Krátká modrá linka nad nadpisem sekce */
+  .section-title::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    margin-bottom: 1rem;
+    background: var(--brand-blue);
+  }
+
+  /* Podtržení textového odkazu, které se při najetí vysune zleva */
+  .link-underline {
+    background-image: linear-gradient(#3B82F6, #3B82F6);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: 0 100%;
+    padding-bottom: 2px;
+    transition: background-size 0.25s ease, color 0.15s ease;
+  }
+  .link-underline:hover,
+  .group:hover .link-underline {
+    background-size: 100% 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  svg.lucide-arrow-right,
+  .link-underline {
+    transition: none;
+  }
+}
+
 @keyframes fieldHighlightPulse {
   0% {
     box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6);

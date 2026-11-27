@@ -75,11 +75,11 @@ const products: {
 
 export default function Services() {
   return (
-    <section id="sluzby" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="sluzby" className="bg-white scroll-mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         <div className="max-w-2xl mb-10 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Máte model, nebo jen představu?
+          <h2 className="section-title text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            Máte model, nebo jen <span className="accent-underline">představu</span>?
           </h2>
           <p className="mt-2 text-slate-600 text-sm sm:text-base">
             Obojí je v pořádku. Liší se jen tím, kde začínám.
@@ -89,7 +89,10 @@ export default function Services() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-0 md:divide-x md:divide-slate-200">
           {paths.map((path, idx) => (
             <div key={path.title} className={idx === 0 ? "md:pr-12" : "md:pl-12"}>
-              <h3 className="text-xl font-bold text-slate-900">{path.title}</h3>
+              <div className="font-mono text-xs font-semibold text-blue-600">
+                {String(idx + 1).padStart(2, "0")}
+              </div>
+              <h3 className="mt-1 text-xl font-bold text-slate-900">{path.title}</h3>
               <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-lg">
                 {path.text}
               </p>
@@ -111,32 +114,34 @@ export default function Services() {
                   href={path.moreHref}
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors"
                 >
-                  <span>{path.moreLabel}</span>
+                  <span className="link-underline">{path.moreLabel}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
           ))}
         </div>
+      </div>
 
-        <div className="mt-16 pt-10 border-t border-slate-200">
-          <h3 className="text-base font-bold text-slate-900">Co nejčastěji vyrábím</h3>
+      <div className="bg-blueprint text-white border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <h3 className="text-base font-bold text-white">Co nejčastěji vyrábím</h3>
           <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8">
             {products.map((item) => (
-              <figure key={item.title}>
-                <div className="relative aspect-[4/3] bg-slate-200 overflow-hidden">
+              <figure key={item.title} className="group">
+                <div className="relative aspect-[4/3] bg-slate-800 overflow-hidden">
                   <Image
                     src={item.src}
                     alt={item.alt}
                     fill
                     sizes="(max-width: 1023px) 50vw, 300px"
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     style={item.position ? { objectPosition: item.position } : undefined}
                   />
                 </div>
                 <figcaption className="mt-3">
-                  <div className="text-sm font-semibold text-slate-900 leading-snug">{item.title}</div>
-                  <div className="mt-0.5 text-xs text-slate-500">{item.caption}</div>
+                  <div className="text-sm font-semibold text-white leading-snug">{item.title}</div>
+                  <div className="mt-0.5 text-xs text-slate-400">{item.caption}</div>
                 </figcaption>
               </figure>
             ))}

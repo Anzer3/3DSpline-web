@@ -90,7 +90,7 @@ export default function PrivacyPolicyPage() {
                 Zpracováváme pouze údaje, které nám sami dobrovolně poskytnete při odeslání nezávazné poptávky prostřednictvím webového formuláře nebo e-mailové komunikace:
               </p>
               <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs sm:text-sm">
-                <li><strong>Kontaktní údaje:</strong> e-mailová adresa pro zaslání odpovědi a technického posouzení poptávky.</li>
+                <li><strong>Kontaktní údaje:</strong> jméno (pokud ho vyplníte) a e-mailová adresa pro zaslání odpovědi a technického posouzení poptávky.</li>
                 <li><strong>Poptávková a zakázková data:</strong> technický popis poptávaného dílu, požadovaný materiál, počet kusů, případně nahrávané přílohy (3D modely ve formátech STEP, STL, výkresy, fotografie či náčrty).</li>
                 <li><strong>Technické údaje:</strong> IP adresa odesílatele a čas odeslání formuláře (ochrana proti spamu a zneužití).</li>
               </ul>
@@ -142,8 +142,9 @@ export default function PrivacyPolicyPage() {
                 Vaše osobní údaje nikomu neprodáváme ani nepředáváme k marketingovým účelům. Přístup k nim mají pouze prověření poskytovatelé nezbytných technických a provozních služeb:
               </p>
               <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs sm:text-sm">
-                <li>Poskytovatel webhostingu a serverové infrastruktury (Vercel Inc.).</li>
+                <li>Poskytovatel webhostingu a serverové infrastruktury (Cloudflare, Inc.).</li>
                 <li>Poskytovatel e-mailových služeb pro doručování zpráv (Seznam.cz, a.s.).</li>
+                <li>Služba Resend (Plus Five Five, Inc., USA) pro odeslání poptávky z webového formuláře a potvrzení o jejím přijetí, včetně přiložených souborů.</li>
                 <li>Doručovací a spediční služby (např. Zásilkovna, DPD, PPL, Česká pošta) výhradně v rozsahu jména, adresy a telefonu pro doručení fyzického balíčku se zakázkou.</li>
               </ul>
               <p className="mt-2 text-xs text-slate-500">

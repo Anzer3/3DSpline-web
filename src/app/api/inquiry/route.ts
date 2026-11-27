@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { company } from "@/lib/company";
+import { acceptingInquiries, company, informativeNotice } from "@/lib/company";
+import { buildClientEmail, buildOwnerEmail, type InquiryEmailData } from "@/lib/inquiryEmails";
 
 // E-maily posíláme přes HTTP API Resendu – SMTP (Nodemailer) na Cloudflare Workers nefunguje.
 // https://resend.com/docs/api-reference/emails/send-email
@@ -99,19 +100,8 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfterSeconds: numb
 }
 
 // -------------------------------------------------------------
-// HTML & Text XSS Sanitizer
+// Čištění vstupů
 // -------------------------------------------------------------
-function sanitizeHtml(str: string): string {
-  if (!str) return "";
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .replace(/\//g, "&#x2F;");
-}
-
 function sanitizeText(str: string, maxLength = 2000): string {
   if (!str) return "";
   // Strip control characters, keep newlines and tabs
@@ -136,6 +126,11 @@ function getClientIp(req: NextRequest): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Zablokovaný formulář v prohlížeči nestačí, poptávka se nesmí dát poslat ani přímo na API
+  if (!acceptingInquiries) {
+    return NextResponse.json({ success: false, error: informativeNotice }, { status: 503 });
+  }
+
   try {
     // 1. RATE LIMITING CHECK
     const clientIp = getClientIp(req);
@@ -167,7 +162,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message:
-          "Děkuji! Poptávka dorazila v pořádku. Ozvu se vám s technickým posouzením.",
+          "Děkuji! Poptávka dorazila v pořádku. Ve všední dny se ozvu do 24 hodin.",
       });
     }
 
@@ -177,12 +172,11 @@ export async function POST(req: NextRequest) {
 
     const name = sanitizeText((formData.get("name") as string) || "", 120);
     const email = sanitizeText((formData.get("email") as string) || "", 120).toLowerCase();
-    const phone = sanitizeText((formData.get("phone") as string) || "", 50) || "Neuvedeno";
     const quantity = sanitizeText((formData.get("quantity") as string) || "", 100) || "Neuvedeno";
     const rawMaterial = sanitizeText((formData.get("material") as string) || "", 100);
     const material = rawMaterial || "Nechám si poradit";
     const rawColor = sanitizeText((formData.get("color") as string) || "", 100);
-    const color = rawColor || "Černá";
+    const color = rawColor; // bez předvolby – v e-mailu se pak ukáže „neuvedena“
     const modelUrl = sanitizeText((formData.get("modelUrl") as string) || "", 500);
 
     const prototypePackage =
@@ -291,7 +285,6 @@ export async function POST(req: NextRequest) {
       tab: tabLabel,
       name,
       email,
-      phone,
       quantity,
       material,
       color,
@@ -313,20 +306,6 @@ export async function POST(req: NextRequest) {
     console.log("📥 PŘIJATA NOVÁ POPTÁVKA (3dspline.cz):", inquiryDetails);
     console.log("==================================================");
 
-    // 5. ESCAPED VARIABLES FOR EMAIL HTML TEMPLATES (XSS PREVENTION)
-    const safeNameHtml = sanitizeHtml(name);
-    const safeEmailHtml = sanitizeHtml(email);
-    const safePhoneHtml = sanitizeHtml(phone);
-    const safeQuantityHtml = sanitizeHtml(quantity);
-    const safeMaterialHtml = sanitizeHtml(material);
-    const safeColorHtml = sanitizeHtml(color);
-    const safePrototypePackageHtml = sanitizeHtml(inquiryDetails.prototypePackage);
-    const safeTabLabelHtml = sanitizeHtml(tabLabel);
-    const safeNoteHtml = sanitizeHtml(note).replace(/\n/g, "<br/>");
-    const safeTimestampHtml = sanitizeHtml(inquiryDetails.timestamp);
-    const safeModelUrlHtml = sanitizeHtml(modelUrl);
-    const isHttpUrl = /^https?:\/\//i.test(modelUrl);
-
     // Konfigurace odesílání (Resend)
     const resendApiKey = process.env.RESEND_API_KEY;
     const notifyEmail = process.env.NOTIFY_EMAIL || "info@3dspline.cz";
@@ -347,195 +326,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message:
-          "Děkuji! Poptávka dorazila v pořádku. Ozvu se vám s technickým posouzením a kalkulací.",
+          "Děkuji! Poptávka dorazila v pořádku. Ve všední dny se ozvu do 24 hodin.",
         simulated: true,
       });
     }
 
-    // 1. Email to Site Owner / Engineer (with escaped HTML)
-    const ownerHtml = `
-      <!DOCTYPE html>
-      <html lang="cs">
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; color: #0f172a; }
-          .container { max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-          .header { background: #0f2942; color: #ffffff; padding: 24px 32px; border-bottom: 3px solid #2563eb; }
-          .header h1 { margin: 0 0 6px 0; font-size: 20px; font-weight: 700; }
-          .header p { margin: 0; font-size: 13px; color: #94a3b8; }
-          .content { padding: 32px; }
-          .badge { display: inline-block; background: #eff6ff; color: #1d4ed8; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; margin-bottom: 20px; border: 1px solid #bfdbfe; }
-          .table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-          .table th { text-align: left; padding: 10px 12px; font-size: 13px; color: #64748b; background: #f8fafc; border-bottom: 1px solid #e2e8f0; width: 35%; }
-          .table td { padding: 10px 12px; font-size: 14px; color: #0f172a; border-bottom: 1px solid #e2e8f0; font-weight: 500; }
-          .note-box { background: #f8fafc; border-left: 4px solid #2563eb; padding: 16px; border-radius: 0 6px 6px 0; margin-bottom: 24px; font-size: 14px; line-height: 1.6; word-break: break-word; }
-          .file-pill { display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-family: monospace; margin: 4px 4px 0 0; }
-          .footer { background: #f1f5f9; padding: 16px 32px; font-size: 12px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>3dspline.cz • Nová zakázková poptávka</h1>
-            <p>Přijato dne ${safeTimestampHtml} přes webový formulář</p>
-          </div>
-          <div class="content">
-            <span class="badge">${safeTabLabelHtml}</span>
-            <table class="table">
-              <tr>
-                <th>E-mail:</th>
-                <td><a href="mailto:${safeEmailHtml}" style="color: #2563eb; text-decoration: none;">${safeEmailHtml}</a></td>
-              </tr>
-              ${name ? `<tr><th>Zákazník:</th><td><strong>${safeNameHtml}</strong></td></tr>` : ""}
-              ${phone && phone !== "Neuvedeno" ? `<tr><th>Telefon:</th><td><a href="tel:${safePhoneHtml}" style="color: #0f172a; text-decoration: none;">${safePhoneHtml}</a></td></tr>` : ""}
-              <tr>
-                <th>Počet kusů:</th>
-                <td>${safeQuantityHtml}</td>
-              </tr>
-              <tr>
-                <th>Preferovaný materiál:</th>
-                <td>${safeMaterialHtml}</td>
-              </tr>
-              <tr>
-                <th>Preferovaná barva:</th>
-                <td>${safeColorHtml}</td>
-              </tr>
-              <tr>
-                <th>Prototypovací balíček:</th>
-                <td><strong>${safePrototypePackageHtml}</strong></td>
-              </tr>
-              <tr>
-                <th>Autorská práva &amp; licence:</th>
-                <td>${
-                  licenseConfirmed
-                    ? `<span style="color: #16a34a; font-weight: 600;">✓ Potvrzeno klientem</span> (vlastník dat / platná licence)`
-                    : `<span style="color: #64748b; font-weight: 600;">Nevyžadováno</span> (bez modelu, příloh i odkazu)`
-                }</td>
-              </tr>
-              <tr>
-                <th>Přiložené soubory:</th>
-                <td>
-                  ${
-                    attachments.length > 0
-                      ? fileListForLog
-                          .map(
-                            (f) =>
-                              `<span class="file-pill">📎 ${sanitizeHtml(f.name)} (${sanitizeHtml(
-                                f.size
-                              )})</span>`
-                          )
-                          .join(" ")
-                      : "Žádné soubory nepřipojeny"
-                  }
-                </td>
-              </tr>
-              ${
-                modelUrl
-                  ? `<tr>
-                <th>Odkaz na model / úložiště:</th>
-                <td style="word-break: break-all;">
-                  ${
-                    isHttpUrl
-                      ? `<a href="${safeModelUrlHtml}" target="_blank" rel="noopener noreferrer" style="color: #2563eb;">${safeModelUrlHtml}</a>`
-                      : safeModelUrlHtml
-                  }
-                </td>
-              </tr>`
-                  : ""
-              }
-            </table>
-
-            <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin: 0 0 8px 0;">Specifikace zadání / Popis klienta:</h3>
-            <div class="note-box">
-              ${safeNoteHtml}
-            </div>
-          </div>
-          <div class="footer">
-            Systémové hlášení 3dspline.cz • Olomouc • Zakázkový 3D tisk a CAD konstrukce
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-
-    // 2. Automated Confirmation Email for the Client (with escaped HTML)
-    const clientHtml = `
-      <!DOCTYPE html>
-      <html lang="cs">
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; color: #0f172a; }
-          .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; }
-          .header { background: #0f2942; color: #ffffff; padding: 24px 32px; border-bottom: 3px solid #2563eb; }
-          .header h1 { margin: 0; font-size: 20px; font-weight: 700; }
-          .content { padding: 32px; line-height: 1.6; font-size: 15px; }
-          .highlight { background: #eff6ff; border-radius: 6px; padding: 16px; border: 1px solid #bfdbfe; margin: 20px 0; }
-          .footer { background: #f8fafc; padding: 20px 32px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Potvrzení přijetí poptávky • 3dspline.cz</h1>
-          </div>
-          <div class="content">
-            <p>Dobrý den${name ? `, <strong>${safeNameHtml}</strong>` : ""},</p>
-            <p>děkuji za vaši poptávku na <strong>zakázkový 3D tisk a CAD konstrukci</strong>. Zadání jsem v pořádku přijal a začínám na něm pracovat.</p>
-
-            <div class="highlight">
-              <strong>Jaký je další postup?</strong>
-              <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-                <li>Projdu zaslané podklady a ověřím, jak se díl bude tisknout a jak orientovat vrstvy.</li>
-                <li>Obvykle do 24 hodin se vám ozvu s technickým posouzením a dalšími možnostmi.</li>
-              </ul>
-            </div>
-
-            <p>Pokud budete chtít mezitím cokoli doplnit nebo upřesnit, napište mi přímo na <a href="mailto:info@3dspline.cz" style="color: #2563eb;">info@3dspline.cz</a>.</p>
-
-            <p style="margin-top: 24px;">S pozdravem,<br/><strong>${company.founderName}</strong>, 3D Spline<br/><span style="color: #64748b; font-size: 13px;">Zakázkový 3D tisk a CAD konstrukce dílů</span></p>
-          </div>
-          <div class="footer">
-            3D Spline • Spolehlivé doručení kurýrem po celé ČR
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-
-    // Plain text fallbacks
-    const ownerText = `
-3dspline.cz • Nová zakázková poptávka
-Přijato: ${inquiryDetails.timestamp}
-Typ: ${tabLabel}
-
-E-mail: ${email}${name ? `\nZákazník: ${name}` : ""}${phone && phone !== "Neuvedeno" ? `\nTelefon: ${phone}` : ""}
-Počet kusů: ${quantity}
-Preferovaný materiál: ${material}
-Preferovaná barva: ${color}
-Prototypovací balíček: ${inquiryDetails.prototypePackage}
-Autorská práva k datům: ${inquiryDetails.licenseConfirmed}
-Přiložené soubory: ${attachments.length > 0 ? fileListForLog.map((f) => f.name).join(", ") : "Žádné"}
-Odkaz na model / úložiště: ${inquiryDetails.modelUrl}
-
-Popis zadání:
-${note}
-    `.trim();
-
-    const clientText = `
-Dobrý den${name ? ` ${name}` : ""},
-
-děkuji za vaši poptávku na zakázkový 3D tisk a CAD konstrukci na 3dspline.cz. Zadání jsem v pořádku přijal.
-
-Jaký je další postup?
-- Projdu zaslané podklady a ověřím, jak se díl bude tisknout a jak orientovat vrstvy.
-- Obvykle do 24 hodin se vám ozvu s posouzením a dalšími možnostmi.
-
-S pozdravem,
-${company.founderName}, 3D Spline
-info@3dspline.cz
-    `.trim();
+    // 5. E-MAILY
+    const emailData: InquiryEmailData = {
+      name,
+      email,
+      quantity,
+      material,
+      color,
+      hasModel: tab === "model",
+      prototypePackage,
+      licenseConfirmed,
+      files: fileListForLog,
+      modelUrl,
+      note,
+      timestamp: inquiryDetails.timestamp,
+    };
+    const ownerEmail = buildOwnerEmail(emailData);
+    const clientEmail = buildClientEmail(emailData, company.founderName);
 
     // E-mail majiteli je kritický – bez něj poptávka nikam nedorazí, proto při chybě vracíme chybu
     try {
@@ -543,9 +355,7 @@ info@3dspline.cz
         from: fromEmail,
         to: notifyEmail,
         reply_to: email,
-        subject: `Nová poptávka z webu: ${name || email} (${quantity}) [${tabLabel}]`,
-        text: ownerText,
-        html: ownerHtml,
+        ...ownerEmail,
         attachments: attachments.length > 0 ? attachments : undefined,
       });
     } catch (error: unknown) {
@@ -561,9 +371,7 @@ info@3dspline.cz
         from: fromEmail,
         to: email,
         reply_to: notifyEmail,
-        subject: "Potvrzení přijetí poptávky • 3D Spline",
-        text: clientText,
-        html: clientHtml,
+        ...clientEmail,
       });
     } catch (error: unknown) {
       confirmationSent = false;
@@ -573,8 +381,8 @@ info@3dspline.cz
     return NextResponse.json({
       success: true,
       message: confirmationSent
-        ? "Děkuji! Poptávka je odeslaná. Na e-mail jsem vám poslal potvrzení a ozvu se s technickým posouzením."
-        : "Děkuji! Poptávka je odeslaná, ale potvrzení na váš e-mail se nepodařilo doručit. Zkontrolujte prosím, že je adresa správná. Ozvu se s technickým posouzením.",
+        ? "Děkuji! Poptávka je odeslaná. Na e-mail jsem vám poslal potvrzení. Ve všední dny se ozvu do 24 hodin."
+        : "Děkuji! Poptávka je odeslaná, ale potvrzení na váš e-mail se nepodařilo doručit. Zkontrolujte prosím, že je adresa správná. Ve všední dny se ozvu do 24 hodin.",
     });
   } catch (error: unknown) {
     console.error("❌ CHYBA PŘI ZPRACOVÁNÍ POPTÁVKY:", describeError(error));

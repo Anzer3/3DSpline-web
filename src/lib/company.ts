@@ -25,6 +25,15 @@ export type CompanyInfo = {
   instagram: string;
 };
 
+/**
+ * Dokud provozovatel nemá IČO, web slouží jen pro informaci: formulář je zablokovaný a API poptávky odmítá.
+ * Po přidělení IČO stačí přepnout na true.
+ */
+export const acceptingInquiries: boolean = false;
+
+export const informativeNotice =
+  "Web má zatím pouze informativní charakter. Poptávky ani zakázky nyní nepřijímám.";
+
 export const company: CompanyInfo = {
   brand: "3D Spline",
   founderName: "Tomáš Řezníček",

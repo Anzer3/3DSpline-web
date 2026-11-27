@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { acceptingInquiries, informativeNotice } from "@/lib/company";
 import {
   UploadCloud,
   FileCheck2,
@@ -137,11 +138,12 @@ function RequiredMark() {
 
 export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
   const [activeTab, setActiveTab] = useState<InquiryTab>(defaultTab);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [material, setMaterial] = useState<"Nechám si poradit" | "PETG" | "PLA" | "Jiné">("Nechám si poradit");
   const [customMaterial, setCustomMaterial] = useState("");
-  const [color, setColor] = useState<"Černá" | "Bílá" | "Jiná">("Černá");
+  const [color, setColor] = useState<"" | "Černá" | "Bílá" | "Jiná">("");
   const [customColor, setCustomColor] = useState("");
   const [prototypePackage, setPrototypePackage] = useState(false);
   const [note, setNote] = useState("");
@@ -351,6 +353,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptingInquiries) return;
     setStatus("submitting");
     setErrorMessage("");
 
@@ -394,6 +397,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
       const formData = new FormData();
       formData.append("tab", activeTab);
+      formData.append("name", name.trim());
       formData.append("email", email.trim());
       formData.append("quantity", `${quantity.trim() ? quantity.trim() : "1"} ks`);
       formData.append("material", effectiveMaterial);
@@ -418,7 +422,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
         throw new Error("Nepodařilo se spojit se serverem. Zkontrolujte prosím připojení k internetu a zkuste to znovu.");
       }
 
-      // Server nemusí vždy odpovědět JSONem (např. Vercel při příliš velkém požadavku nebo timeoutu).
+      // Server nemusí vždy odpovědět JSONem (např. hosting při příliš velkém požadavku nebo timeoutu).
       const data: { success?: boolean; message?: string; error?: string } | null = await res
         .json()
         .catch(() => null);
@@ -439,7 +443,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
       setStatus("success");
       setSuccessMessage(
         data?.message ||
-          "Děkuji! Poptávka je odeslaná. Na e-mail jsem vám poslal potvrzení a ozvu se s technickým posouzením."
+          "Děkuji! Poptávka je odeslaná. Na e-mail jsem vám poslal potvrzení. Ve všední dny se ozvu do 24 hodin."
       );
     } catch (err: unknown) {
       setStatus("error");
@@ -458,11 +462,12 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
       }
     });
     setActiveTab(defaultTab);
+    setName("");
     setEmail("");
     setQuantity("1");
     setMaterial("Nechám si poradit");
     setCustomMaterial("");
-    setColor("Černá");
+    setColor("");
     setCustomColor("");
     setPrototypePackage(false);
     setNote("");
@@ -486,7 +491,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
     <section id="poptavka" className="py-16 sm:py-20 bg-white border-b border-slate-200 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-8 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <h2 className="section-title text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
             Rychlá nezávazná poptávka
           </h2>
         </div>
@@ -514,7 +519,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                   <div>
                     <dt className="text-xs text-slate-500">Odpověď</dt>
                     <dd className="mt-1 text-sm font-semibold text-slate-900">
-                      s technickým posouzením a možnostmi výroby
+                      ve všední dny do 24 hodin
                     </dd>
                   </div>
                   <div>
@@ -532,7 +537,23 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="relative">
+              <>
+              {!acceptingInquiries && (
+                <p
+                  id="inquiry-closed-notice"
+                  className="mb-6 flex items-start gap-2.5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900"
+                >
+                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" aria-hidden="true" />
+                  <span>{informativeNotice} Formulář je proto vypnutý.</span>
+                </p>
+              )}
+              {/* inert vypne klikání, psaní i klávesnici v celém formuláři včetně nahrávání souborů */}
+              <form
+                onSubmit={handleSubmit}
+                inert={!acceptingInquiries}
+                aria-describedby={acceptingInquiries ? undefined : "inquiry-closed-notice"}
+                className={`relative ${acceptingInquiries ? "" : "opacity-50 select-none"}`}
+              >
                 {/* Anti-spam Honeypot field (hidden from real users) */}
                 <div
                   className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden"
@@ -604,6 +625,24 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                         Nemám model
                       </button>
                     </div>
+                  </div>
+
+                  {/* Vaše jméno */}
+                  <div className={rowClass}>
+                    <label htmlFor="inquiry-name" className={labelClass}>
+                      Vaše jméno <span className="text-slate-500 font-normal">(volitelné)</span>
+                    </label>
+                    <input
+                      id="inquiry-name"
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      maxLength={120}
+                      placeholder="např. Jan Novák"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className={`${inputClass} w-full sm:flex-1`}
+                    />
                   </div>
 
                   {/* Váš e-mail */}
@@ -1166,38 +1205,39 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                   </div>
                 </div>
               </form>
+              </>
             )}
           </div>
 
           {/* Přímý kontakt a NDA */}
-          <aside className="lg:col-span-4 border-t border-slate-200 pt-10 lg:border-t-0 lg:pt-0 lg:border-l lg:pl-12 space-y-10">
+          <aside className="lg:col-span-4 bg-blueprint text-white border-t-2 border-blue-500 p-6 sm:p-8 space-y-8">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Přímý kontakt a konzultace</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+              <h3 className="text-base font-bold text-white">Přímý kontakt a konzultace</h3>
+              <p className="mt-2 text-sm text-slate-300 leading-relaxed">
                 Nevyhovuje vám formulář nebo chcete nejprve nezávazně zkonzultovat vyrobitelnost, pevnost či volbu materiálu? Napište mi přímo.
               </p>
               <a
                 href="mailto:info@3dspline.cz"
-                className="mt-4 inline-flex items-center gap-1.5 text-lg font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                className="mt-4 inline-flex items-center gap-1.5 text-lg font-semibold text-blue-400 hover:text-blue-300 transition-colors"
               >
-                <span>info@3dspline.cz</span>
+                <span className="link-underline">info@3dspline.cz</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
-              <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+              <p className="mt-2 text-xs text-slate-400 leading-relaxed">
                 Můžete přiložit fotografie, náčrty s rozměry nebo odkaz na cloudové úložiště (Úschovna, Disk).
               </p>
             </div>
 
-            <div className="pt-10 border-t border-slate-200">
-              <h3 className="text-base font-bold text-slate-900">Dohoda o mlčenlivosti (NDA)</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+            <div className="pt-8 border-t border-slate-700">
+              <h3 className="text-base font-bold text-white">Dohoda o mlčenlivosti (NDA)</h3>
+              <p className="mt-2 text-sm text-slate-300 leading-relaxed">
                 Máte nový výrobek nebo interní výkres podléhající utajení? Před zasláním CAD dat vám obratem podepíšu vaše NDA, případně pošlu svoje.
               </p>
               <a
                 href="mailto:info@3dspline.cz?subject=Žádost%20o%20podpis%20NDA%20před%20poptávkou"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-blue-300 transition-colors"
               >
-                <span>Vyžádat podpis NDA</span>
+                <span className="link-underline">Vyžádat podpis NDA</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import InquiryCta from "@/components/InquiryCta";
 import CaseStudyCard from "@/components/CaseStudyCard";
+import HeroFacts from "@/components/HeroFacts";
 import { caseStudiesData, type CaseStudyData } from "@/lib/caseStudies";
 
 export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
@@ -21,27 +22,27 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
   return (
     <>
       {/* Hero */}
-      <section className="bg-white border-b border-slate-200">
+      <section className="bg-blueprint text-white border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
-          <nav aria-label="Drobečková navigace" className="mb-6 text-xs text-slate-500">
-            <Link href="/" className="hover:text-slate-900 transition-colors">
+          <nav aria-label="Drobečková navigace" className="mb-8 font-mono text-[11px] uppercase tracking-wider text-slate-400">
+            <Link href="/" className="hover:text-white transition-colors">
               3D Spline
             </Link>
             <span className="mx-1.5">/</span>
-            <Link href="/pribehy-z-dilny" className="hover:text-slate-900 transition-colors">
+            <Link href="/pribehy-z-dilny" className="hover:text-white transition-colors">
               Příběhy z dílny
             </Link>
             <span className="mx-1.5">/</span>
-            <span className="text-slate-700 font-medium">{study.title}</span>
+            <span className="text-slate-200">{study.title}</span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-7">
-              <div className="text-sm font-semibold text-blue-600">{study.tag}</div>
-              <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.1] text-balance">
+              <div className="font-mono text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-400">{study.tag}</div>
+              <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-[1.1] text-balance">
                 {study.h1}
               </h1>
-              <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+              <p className="mt-5 text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
                 {study.lead}
               </p>
 
@@ -50,34 +51,30 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
                   asLink
                   tab={study.inquiryTab}
                   storyTitle={study.title}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors cursor-pointer shadow-lg shadow-blue-900/40"
                 >
                   <span>Poptat podobnou výrobu</span>
                   <ArrowRight className="w-4 h-4" />
                 </InquiryCta>
                 <Link
                   href={`/pribehy-z-dilny/${nextStudy.slug}`}
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-blue-300 transition-colors"
                 >
-                  <span>Další příběh</span>
+                  <span className="link-underline">Další příběh</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
 
-              <dl className="mt-12 pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-5">
-                {study.facts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt className="text-xs text-slate-500">{fact.label}</dt>
-                    <dd className="mt-1 text-sm font-semibold text-slate-900 leading-snug">
-                      {fact.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <HeroFacts facts={study.facts} />
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+              <div className="relative">
+                <div
+                  aria-hidden="true"
+                  className="hidden sm:block absolute inset-0 translate-x-3 translate-y-3 border border-blue-500/50"
+                />
+                <div className="relative aspect-[4/3] bg-slate-800 overflow-hidden">
                 <Image
                   src={study.heroImage}
                   alt={study.heroImageAlt}
@@ -86,6 +83,7 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
                   sizes="(max-width: 1023px) 100vw, 40vw"
                   className="object-cover"
                 />
+                </div>
               </div>
             </div>
           </div>
@@ -95,7 +93,7 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
       {/* Příběh krok za krokem */}
       <section className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-10 sm:mb-12">
+          <h2 className="section-title text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-10 sm:mb-12">
             Jak probíhala zakázka
           </h2>
 
@@ -161,11 +159,11 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
       <section className="py-14 sm:py-16 bg-[#0F1E2E] border-b border-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="max-w-2xl">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h2 className="section-title text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Potřebujete vyřešit podobnou součástku nebo model?
             </h2>
             <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
-              Pošlete mi fotku poškozeného dílu, nákres s rozměry nebo 3D model. Obvykle odpovídám do 24 hodin.
+              Pošlete mi fotku poškozeného dílu, nákres s rozměry nebo 3D model. Ve všední dny se ozvu do 24 hodin.
             </p>
           </div>
           <div className="shrink-0">
@@ -185,7 +183,7 @@ export default function CaseStudyPage({ study }: { study: CaseStudyData }) {
       {/* Další příběhy */}
       <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-10">
+          <h2 className="section-title text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-10">
             Další příběhy z dílny
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">

@@ -1,6 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { company, formatAddress, hasStreetAddress } from "@/lib/company";
+import {
+  acceptingInquiries,
+  company,
+  formatAddress,
+  hasStreetAddress,
+  informativeNotice,
+} from "@/lib/company";
 
 const navLinks = [
   { href: "/3d-tisk-na-zakazku", label: "3D tisk na zakázku" },
@@ -14,35 +20,35 @@ const navLinks = [
 
 export default function Footer() {
   return (
-    <footer id="kontakt" className="bg-[#0F1E2E] text-slate-400 border-t border-slate-800 scroll-mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-28 sm:pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-10 border-b border-slate-800">
+    <footer id="kontakt" className="bg-[#0F1E2E] text-slate-400 border-t-2 border-blue-600 scroll-mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24 sm:pb-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 pb-6 border-b border-slate-800">
           {/* Značka */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-4">
             <div className="flex items-center gap-2.5">
               <Image
                 src="/images/logo.png"
                 alt="3D Spline"
-                width={32}
-                height={32}
-                sizes="32px"
-                className="w-8 h-8 object-contain"
+                width={28}
+                height={28}
+                sizes="28px"
+                className="w-7 h-7 object-contain"
               />
-              <span className="text-lg font-bold tracking-tight text-white">3D Spline</span>
+              <span className="text-base font-bold tracking-tight text-white">3D Spline</span>
             </div>
-            <p className="mt-4 text-sm text-slate-400 leading-relaxed max-w-sm">
+            <p className="mt-2.5 text-[13px] text-slate-400 leading-relaxed max-w-sm">
               Modeluju a 3D tisknu série na míru. Funkční díly z PETG i barevné medaile, poháry a
               dárky, od pár kusů po stovky.
             </p>
           </div>
 
           {/* Navigace */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-5">
             <h2 className="text-sm font-semibold text-white">Navigace</h2>
-            <ul className="mt-4 space-y-2 text-sm">
+            <ul className="mt-2.5 grid grid-cols-2 gap-x-4 gap-y-1 text-[13px]">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="hover:text-white transition-colors">
+                  <Link href={link.href} className="link-underline hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -51,9 +57,9 @@ export default function Footer() {
           </div>
 
           {/* Kontakt */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
             <h2 className="text-sm font-semibold text-white">Kontakt</h2>
-            <div className="mt-4 space-y-2 text-sm">
+            <div className="mt-2.5 space-y-1 text-[13px]">
               <div className="text-white">{company.founderName}</div>
               {company.operatorName.trim() !== "" && <div>{company.operatorName}</div>}
               {company.ico.trim() !== "" && <div>IČO: {company.ico}</div>}
@@ -62,7 +68,7 @@ export default function Footer() {
               <div>
                 <a
                   href={`mailto:${company.email}`}
-                  className="text-blue-400 hover:text-blue-300 transition-colors"
+                  className="link-underline text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   {company.email}
                 </a>
@@ -81,8 +87,10 @@ export default function Footer() {
           </div>
         </div>
 
+        {!acceptingInquiries && <p className="pt-4 text-xs text-slate-300">{informativeNotice}</p>}
+
         {/* Spodní lišta */}
-        <div className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
           <p>
             &copy; {new Date().getFullYear()} {company.brand}
           </p>

@@ -4,10 +4,11 @@ import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
 import ServiceCtaButton from "@/components/ServiceCtaButton";
 import FaqList from "@/components/FaqList";
+import HeroFacts from "@/components/HeroFacts";
 import { services, type Block, type Service } from "@/lib/services";
 
 const h2Class =
-  "text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight";
+  "section-title text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight";
 const introClass = "mt-3 text-sm sm:text-base text-slate-600 leading-relaxed";
 
 function SectionShell({
@@ -107,7 +108,12 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
           {block.variant === "steps" ? (
             <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {block.items.map((item, idx) => (
-                <li key={item.title} className="flex flex-col">
+                <li key={item.title} className="relative flex flex-col border-t border-slate-200 pt-5">
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-px left-0 h-0.5 bg-blue-600"
+                    style={{ width: `${((idx + 1) / block.items.length) * 100}%` }}
+                  />
                   <div className="text-2xl font-bold font-mono text-blue-600 mb-2">
                     {String(idx + 1).padStart(2, "0")}
                   </div>
@@ -218,7 +224,7 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
       return (
         <SectionShell tone="dark">
           <div className="max-w-3xl mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
+            <h2 className="section-title text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
               {block.title}
             </h2>
             {block.intro && (
@@ -261,23 +267,23 @@ export default function ServicePage({ service }: { service: Service }) {
   return (
     <>
       {/* Hero */}
-      <section className="bg-white border-b border-slate-200">
+      <section className="bg-blueprint text-white border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
-          <nav aria-label="Drobečková navigace" className="mb-6 text-xs text-slate-500">
-            <Link href="/" className="hover:text-slate-900 transition-colors">
+          <nav aria-label="Drobečková navigace" className="mb-8 font-mono text-[11px] uppercase tracking-wider text-slate-400">
+            <Link href="/" className="hover:text-white transition-colors">
               3D Spline
             </Link>
             <span className="mx-1.5">/</span>
-            <span className="text-slate-700">{service.name}</span>
+            <span className="text-slate-200">{service.name}</span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-7">
-              <p className="text-sm sm:text-base font-semibold text-blue-600">{service.kicker}</p>
-              <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.1] text-balance">
+              <p className="font-mono text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-400">{service.kicker}</p>
+              <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-[1.1] text-balance">
                 {service.h1}
               </h1>
-              <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+              <p className="mt-5 text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
                 {service.lead}
               </p>
               <div className="mt-8">
@@ -288,20 +294,16 @@ export default function ServicePage({ service }: { service: Service }) {
                 />
               </div>
 
-              <dl className="mt-12 pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-5">
-                {service.facts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt className="text-xs text-slate-500">{fact.label}</dt>
-                    <dd className="mt-1 text-sm font-semibold text-slate-900 leading-snug">
-                      {fact.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <HeroFacts facts={service.facts} />
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative aspect-[4/3] lg:aspect-[5/4] bg-slate-100 overflow-hidden">
+              <div className="relative">
+                <div
+                  aria-hidden="true"
+                  className="hidden sm:block absolute inset-0 translate-x-3 translate-y-3 border border-blue-500/50"
+                />
+                <div className="relative aspect-[4/3] lg:aspect-[5/4] bg-slate-800 overflow-hidden">
                 <Image
                   src={heroImage}
                   alt={heroImageAlt}
@@ -310,6 +312,7 @@ export default function ServicePage({ service }: { service: Service }) {
                   sizes="(max-width: 1023px) 100vw, 40vw"
                   className="object-cover"
                 />
+                </div>
               </div>
             </div>
           </div>
@@ -368,7 +371,7 @@ export default function ServicePage({ service }: { service: Service }) {
               >
                 <div>
                   <div className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {s.name}
+                    <span className="link-underline">{s.name}</span>
                   </div>
                   <p className="mt-1 text-sm text-slate-600 leading-relaxed">{s.cardText}</p>
                 </div>
