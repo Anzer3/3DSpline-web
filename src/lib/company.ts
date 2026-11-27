@@ -4,6 +4,8 @@
 
 export type CompanyInfo = {
   brand: string;
+  /** Jméno člověka, který za značkou stojí (zobrazuje se v sekci „Kdo za tím stojí“). */
+  founderName: string;
   /** Jméno a příjmení podnikatele nebo název firmy (doplnit po přidělení IČO). */
   operatorName: string;
   /** IČO (doplnit po přidělení). */
@@ -25,6 +27,7 @@ export type CompanyInfo = {
 
 export const company: CompanyInfo = {
   brand: "3D Spline",
+  founderName: "Tomáš Řezníček",
   operatorName: "",
   ico: "",
   dic: "",

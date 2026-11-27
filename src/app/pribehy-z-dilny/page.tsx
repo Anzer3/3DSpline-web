@@ -102,13 +102,13 @@ export default function Page() {
                 Příběhy z dílny
               </h1>
               <p className="mt-4 text-slate-600 text-base sm:text-lg leading-relaxed">
-                Ukázky reálných zakázek, které jsme vyráběli. Od náhrady dílu, který už nejde koupit,
+                Skutečné zakázky od zadání po hotové kusy. Od náhrady dílu, který už nejde koupit,
                 přes sériový tisk podle hotového modelu až po repliky historických součástek. U každého
-                příběhu popisujeme zadání, postup i výsledek.
+                příběhu popisuju zadání, postup i výsledek.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
               {caseStudiesData.map((study) => (
                 <CaseStudyCard
                   key={study.slug}

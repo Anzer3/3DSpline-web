@@ -95,7 +95,7 @@ export const services: Service[] = [
     kicker: "Máte hotový 3D model a hledáte spolehlivou výrobu",
     metaTitle: "Zakázkový 3D tisk z vašich modelů | 3D Spline",
     metaDescription:
-      "Zakázkový 3D tisk ze souborů STEP, STL a 3MF. Kusová i malosériová výroba z PETG, PLA, ASA a TPU. Zkušební vzorek před sérií a doručení po celé ČR.",
+      "Zakázkový 3D tisk ze souborů STEP, STL a 3MF. Kusová i sériová výroba z PETG a PLA, na vyžádání z ASA. Zkušební kus před sérií a doručení po celé ČR.",
     keywords: [
       "zakázkový 3D tisk",
       "3D tisk na zakázku",
@@ -105,88 +105,82 @@ export const services: Service[] = [
       "3D tisk PETG",
     ],
     cardText:
-      "Máte hotový model? Vytiskneme ho kusově i v sérii z technických materiálů.",
-    lead: "Pošlete nám STEP, STL nebo 3MF a my se postaráme o přesnou výrobu. Tiskneme od jediného prototypu až po série stovek kusů. Před spuštěním tiskárny model vždy zkontrolujeme, doporučíme vhodný filament a u větších zakázek pošleme zkušební kus k fyzickému ověření.",
+      "Máte hotový model? Vytisknu ho kusově i v sérii z PETG nebo PLA.",
+    lead: "Pošlete mi STEP, STL nebo 3MF a já se postarám o výrobu. Tisknu od jednoho prototypu až po série stovek kusů. Před tiskem model vždy zkontroluji, doporučím vhodný materiál a u sérií pošlu nejdřív zkušební kus na vyzkoušení.",
     image: "/portfolio/seriovka.jpg",
     imageAlt: "Sériový 3D tisk funkčních dílů na tiskové podložce",
     tab: "model",
     ctaLabel: "Poptat 3D tisk",
     facts: [
       { label: "Formáty", value: "STEP, STL, 3MF" },
-      { label: "Materiály", value: "PETG, PLA, ASA, TPU" },
+      { label: "Materiály", value: "PETG, PLA (ASA na vyžádání)" },
       { label: "Tiskový prostor", value: "250 × 250 × 250 mm" },
       { label: "Tolerance", value: "obvykle ±0,2 mm" },
     ],
     blocks: [
       {
         type: "split",
-        title: "Kusová výroba i malosérie bez drahých forem",
+        title: "Kusová výroba i série bez drahých forem",
         paragraphs: [
-          "Tiskneme prověřenou technologií FDM (nanášení roztaveného termoplastu po vrstvách, typicky 0,16 až 0,28 mm). Protože odpadá nutnost vyrábět nákladné formy nebo speciální nástroje, dává 3D tisk ekonomický smysl už od jednoho jediného kusu.",
-          "Pokud potřebujete desítky nebo stovky kusů, naskládáme díly na tiskovou podložku tak, aby byl proces co nejefektivnější. Výsledné díly mají jemnou vrstvenou strukturu, ale při správné orientaci vláken nabízejí skvělou mechanickou pevnost a odolnost.",
+          "Tisknu technologií FDM: roztavený plast se nanáší po vrstvách, typicky 0,16 až 0,28 mm. Protože odpadá výroba drahých forem a nástrojů, dává 3D tisk smysl už od jednoho kusu.",
+          "Když potřebujete desítky nebo stovky kusů, naskládám díly na tiskovou podložku tak, aby výroba byla co nejefektivnější. Díly mají jemnou vrstvenou strukturu, ale při správné orientaci jsou pevné a odolné.",
         ],
         image: "/images/print-plate.jpg",
-        imageAlt: "Tiskárna a podložka plná právě vytištěných technických dílů",
+        imageAlt: "Tiskárna a podložka plná právě vytištěných dílů",
       },
       {
         type: "table",
-        title: "Přehled používaných materiálů",
+        title: "Materiály",
         intro:
-          "Materiál vždy vybíráme podle prostředí, ve kterém bude díl pracovat. Uvedené teploty představují orientační limity tvarové stálosti.",
-        columns: ["Materiál", "Ideální použití", "Teplotní limit", "Vlastnosti a poznámka"],
+          "Materiál vybírám podle prostředí, ve kterém bude díl sloužit. Teploty jsou orientační limity, do kterých díl drží tvar.",
+        columns: ["Materiál", "K čemu se hodí", "Teplotní limit", "Vlastnosti"],
         rows: [
           [
-            "PLA",
-            "Vizuální modely, prototypy tvaru, interiérové doplňky",
-            "do cca 50–55 °C",
-            "Skvělá detailnost a čistý povrch. Není vhodný na přímé slunce ani za sklo auta.",
-          ],
-          [
             "PETG",
-            "Technické součásti, funkční držáky, mechanické přípravky",
+            "Funkční držáky, přípravky a technické díly",
             "do cca 75–80 °C",
-            "Houževnatý, odolný proti rázům a chemikáliím. Náš nejpoužívanější technický plast.",
+            "Houževnatý a odolný proti nárazům i chemii. Tisknu z něj nejčastěji.",
           ],
           [
-            "ASA",
-            "Venkovní aplikace, díly do auta, na motocykly a stroje",
+            "PLA",
+            "Medaile, poháry, dárky, modely a interiérové doplňky",
+            "do cca 50–55 °C",
+            "Ostré detaily a spousta barev. Nehodí se na přímé slunce ani za sklo auta.",
+          ],
+          [
+            "ASA (na vyžádání)",
+            "Venkovní díly a díly na slunci",
             "do cca 95 °C",
-            "Vysoká UV stabilita, snáší přímé sluneční záření, déšť i vyšší letní teploty.",
-          ],
-          [
-            "TPU",
-            "Pružné díly, tlumicí dorazy, ochranné návleky a těsnění",
-            "–",
-            "Flexibilní pryžový termoplast, který snese deformaci a vrací se do původního tvaru.",
+            "Odolá UV záření, dešti i letnímu horku.",
           ],
         ],
-        note: "Nejste si jistí volbou? V poptávce popište, k čemu díl slouží, a vhodný materiál vám doporučíme.",
+        note: "Nejste si jistí? V poptávce popište, k čemu díl slouží, a materiál doporučím.",
       },
       {
         type: "list",
         variant: "rows",
-        title: "Co nám poslat k poptávce",
-        intro: "Čím přesnější informace v úvodu máme, tím rychleji vám pošleme nezávaznou kalkulaci a termín.",
+        title: "Co mi poslat k poptávce",
+        intro: "Čím víc toho vím hned na začátku, tím rychleji vám pošlu nezávaznou cenu a termín.",
         items: [
           {
             title: "3D model",
-            text: "Soubor ve formátu STEP (nejlepší pro přesnost), případně STL nebo 3MF. Pokud potřebujete model ještě upravit, je STEP ideální.",
+            text: "Soubor ve formátu STEP (nejlepší pro přesnost), případně STL nebo 3MF. Pokud je potřeba model ještě upravit, je STEP ideální.",
           },
           {
             title: "Počet kusů",
-            text: "Stačí orientačně – ať víme, jestli připravujeme kalkulaci na 1 prototyp, desítky nebo stovky kusů.",
+            text: "Stačí orientačně, ať vím, jestli počítám s jedním prototypem, desítkami nebo stovkami kusů.",
           },
           {
-            title: "Pracovní prostředí",
-            text: "Kde bude díl sloužit? Bude v interiéru, venku na slunci, v horku, v kontaktu s olejem, nebo mechanicky namáhaný?",
+            title: "Prostředí",
+            text: "Kde bude díl sloužit? V interiéru, venku na slunci, v horku, v kontaktu s olejem, nebo bude mechanicky namáhaný?",
           },
           {
             title: "Barva a vzhled",
-            text: "Pokud máte požadavek na konkrétní barvu (černá, šedá, bílá nebo jiná), uveďte ji v poznámce.",
+            text: "Pokud chcete konkrétní barvu (černá, šedá, bílá nebo jiná), napište ji do poznámky.",
           },
           {
             title: "Původ modelu (licence)",
-            text: "Pokud jde o model stažený z internetu, uveďte zdroj. Zkontrolujeme, zda licenční podmínky autora umožňují zakázkovou výrobu.",
+            text: "Pokud jde o model stažený z internetu, uveďte zdroj. Zkontroluji, jestli licence autora zakázkovou výrobu dovoluje.",
           },
         ],
       },
@@ -197,46 +191,46 @@ export const services: Service[] = [
         items: [
           {
             title: "Nahrajete 3D model",
-            text: "Přes náš poptávkový formulář nahrajete soubor a napíšete, jaké máte požadavky na materiál a množství.",
+            text: "Přes poptávkový formulář nahrajete soubor a napíšete, jaký materiál a kolik kusů potřebujete.",
           },
           {
             title: "Kalkulace do 24 hodin",
-            text: "Zkontrolujeme geometrii a vyrobitelnost, navrhneme optimální tiskové parametry a pošleme pevnou cenu a termín.",
+            text: "Zkontroluji geometrii a vyrobitelnost, nastavím tisk a pošlu vám pevnou cenu a termín.",
           },
           {
-            title: "Zkušební vzorek",
-            text: "U sériových zakázek nejdříve vytiskneme zkušební kus a zašleme vám ho k otestování. Poštovné jde za námi.",
+            title: "Zkušební kus",
+            text: "U sérií nejdřív vytisknu zkušební kus a pošlu vám ho na vyzkoušení. Poštovné platím já.",
           },
           {
             title: "Výroba a odeslání",
-            text: "Jakmile vzorek potvrdíte, spustíme finální tisk, díly pečlivě zabalíme a odešleme k vám kamkoliv po ČR.",
+            text: "Jakmile zkušební kus schválíte, vytisknu celou sérii, pečlivě ji zabalím a pošlu kamkoli v ČR.",
           },
         ],
       },
       {
         type: "limits",
         title: "Férově předem: co 3D tisk neumí",
-        intro: "Otevřené jednání je pro nás základ. Raději vám předem popíšeme technologické limity, než abyste byli překvapeni po rozbalení balíčku.",
+        intro: "Raději vám limity technologie popíšu předem, než abyste byli překvapení po rozbalení balíčku.",
         items: [
           {
             title: "Viditelná vrstvená struktura",
-            text: "Díly vznikají nanášením plastové struny po vrstvách. Nejsou zrcadlově hladké jako díly ze vstřikolisu z velkovýroby.",
+            text: "Díly vznikají nanášením plastu po vrstvách. Nejsou zrcadlově hladké jako díly ze vstřikolisu.",
           },
           {
             title: "Maximální rozměr z jednoho kusu",
-            text: "Náš tiskový prostor je 250 × 250 × 250 mm. Větší objekty rozdělíme na více dílů a spojíme pevnými konstrukčními zámky či šrouby.",
+            text: "Tiskový prostor je 250 × 250 × 250 mm. Větší díly rozdělím na části a spojím je zámky nebo šrouby.",
           },
           {
-            title: "Potravinářství a hračky pro nejmenší",
-            text: "Běžný FDM tisk není hygienicky certifikovaný pro přímý dlouhodobý styk s potravinami ani jako kousátka či hračky pro batolata.",
+            title: "Potraviny a hračky pro nejmenší",
+            text: "Běžný FDM tisk není certifikovaný pro styk s potravinami a nehodí se ani na kousátka a hračky pro batolata.",
           },
           {
             title: "Zbraně, implantáty a padělky",
-            text: "Zásadně netiskneme zbraně, tlumiče, součásti střeliva, zdravotnické implantáty ani kopie značkového zboží porušující ochranné známky.",
+            text: "Netisknu zbraně, tlumiče, součásti střeliva, zdravotnické implantáty ani kopie značkového zboží.",
           },
           {
             title: "Cizí modely s licencí Non-Commercial",
-            text: "Respektujeme autorská práva. Modely stažené z webu s licencí zakazující komerční využití pro zakázky netiskneme.",
+            text: "Modely z internetu s licencí, která zakazuje komerční využití, na zakázku netisknu.",
           },
         ],
       },
@@ -245,27 +239,27 @@ export const services: Service[] = [
       {
         question: "Mohu si nechat vytisknout model stažený z internetu?",
         answer:
-          "Ano, pokud to licenční podmínky autora umožňují (např. Public Domain, CC0 nebo Creative Commons s povoleným komerčním využitím). Modely s licencí Non-Commercial (NC), chráněná loga ani franšízové postavičky bez licence tisknout nemůžeme.",
+          "Ano, pokud to licence autora dovoluje (např. Public Domain, CC0 nebo Creative Commons s povoleným komerčním využitím). Netisknu modely s licencí Non-Commercial (NC), chráněná loga ani postavičky z filmů a her bez doložené licence.",
       },
       {
         question: "Jaká je přesnost FDM 3D tisku?",
         answer:
-          "Běžně dodržujeme výrobní tolerance v rozmezí ±0,2 mm. Skutečná přesnost závisí na tvaru dílu, orientaci tisku a smrštění konkrétního materiálu. S vůlemi pro montáž a šrouby počítáme už při přípravě tiskových dat.",
+          "Obvykle držím toleranci ±0,2 mm. Skutečná přesnost závisí na tvaru dílu, orientaci tisku a smrštění materiálu. S vůlemi pro montáž a šrouby počítám už při přípravě tisku.",
       },
       {
         question: "Od kolika kusů se zakázka vyplatí?",
         answer:
-          "Výroba se vyplatí už od jediného kusu. Nepotřebujete žádnou drahou formu ani speciální nástroje, takže 3D tisk je skvělý jak na prototypy, tak na série v řádu desítek až stovek kusů.",
+          "Už od jednoho kusu. Nepotřebujete drahou formu ani speciální nástroje, takže 3D tisk se hodí na prototypy i na série v řádu desítek až stovek kusů.",
       },
       {
         question: "Jak rychle zakázku vyrobíte?",
         answer:
-          "Běžné kusové zakázky a prototypy odesíláme zpravidla do 2 až 4 pracovních dnů. U větších sérií záleží na celkové době tisku, přesný termín vám vždy závazně potvrdíme v kalkulaci.",
+          "Kusové zakázky a prototypy obvykle odesílám do 2 až 4 pracovních dnů. U větších sérií záleží na době tisku, přesný termín vám potvrdím v kalkulaci.",
       },
     ],
     closing: {
-      title: "Máte hotový 3D model? Pošlete nám ho",
-      text: "Napište, kolik kusů potřebujete a k čemu budou sloužit. Cenovou nabídku a termín vám připravíme nezávazně do 24 hodin.",
+      title: "Máte hotový 3D model? Pošlete mi ho",
+      text: "Napište, kolik kusů potřebujete a k čemu budou sloužit. Cenu a termín vám nezávazně pošlu do 24 hodin.",
     },
   },
   {
@@ -275,7 +269,7 @@ export const services: Service[] = [
     kicker: "Máte nápad, náčrtek nebo vzorek, ale chybí vám 3D model",
     metaTitle: "3D CAD modelování a návrh dílů na míru | 3D Spline",
     metaDescription:
-      "Nemáte 3D model? Podle vzorku, výkresu nebo náčrtu navrhneme funkční CAD model dílu s ohledem na mechanickou pevnost a technologii 3D tisku.",
+      "Nemáte 3D model? Podle vzorku, výkresu nebo náčrtu navrhnu funkční CAD model dílu tak, aby vydržel, k čemu je určený, a dal se dobře tisknout.",
     keywords: [
       "CAD modelování",
       "modelování na míru",
@@ -284,8 +278,8 @@ export const services: Service[] = [
       "reverzní inženýrství",
     ],
     cardText:
-      "Nemáte 3D model? Navrhneme ho podle vzorku, výkresu nebo náčrtu.",
-    lead: "Nemáte hotová 3D data? Vůbec nevadí. Vytvoříme pro vás přesný CAD model podle opotřebovaného dílu, technického výkresu nebo obyčejného náčrtu s rozměry na papíře. Navrhujeme součástky tak, aby perfektně pasovaly a spolehlivě vydržely zamýšlené zatížení.",
+      "Nemáte 3D model? Navrhnu ho podle vzorku, výkresu nebo náčrtu.",
+    lead: "Nemáte 3D data? Nevadí. Vytvořím CAD model podle opotřebovaného dílu, výkresu nebo obyčejného náčrtu s rozměry. Díly navrhuji tak, aby seděly na své místo a vydržely, k čemu jsou určené.",
     image: "/images/pohar_real_vs_cad.jpg",
     imageAlt: "Konstrukce a 3D CAD modelování dílů na míru v počítači",
     heroImage: "/images/pohar_real_vs_cad.jpg",
@@ -294,7 +288,7 @@ export const services: Service[] = [
     ctaLabel: "Poptat modelování",
     facts: [
       { label: "Podklady", value: "stačí náčrt s kótami či vzorek" },
-      { label: "Modelování", value: "parametrický CAD systém" },
+      { label: "Modelování", value: "parametrický CAD" },
       { label: "Ověření", value: "zkušební výtisk před sérií" },
       { label: "Reakce", value: "kalkulace do 24 hodin" },
     ],
@@ -303,23 +297,23 @@ export const services: Service[] = [
         type: "split",
         title: "Díl navržený přesně pro vaše použití",
         paragraphs: [
-          "Často za námi zákazníci přicházejí ve chvíli, kdy potřebují specifický držák na nářadí, montážní konzoli na stůl či hliníkový profil, adaptér mezi dvě různé součástky nebo atypický stojánek, který se v obchodech vůbec neprodává.",
-          "Model navrhujeme přímo pro technologii 3D tisku. To znamená, že rovnou promýšlíme orientaci vláken vůči působícím silám, navrhujeme správné vůle a kapsy pro zapuštěné šrouby či matice a volíme tvary, které se vytisknou čistě bez zbytečných podpěr.",
-          "Než se pustíme do finální výroby, připravíme zkušební výtisk. Vyzkoušíte si ho přímo na místě a máte jistotu, že vše sedí na milimetr přesně.",
+          "Často se na mě lidé obracejí, když potřebují držák na nářadí, konzoli na stůl nebo profil, adaptér mezi dvě různé součástky nebo stojánek, který se nikde neprodává.",
+          "Model navrhuji rovnou pro 3D tisk. Myslím na orientaci vrstev vůči silám, které na díl budou působit, na vůle a kapsy pro šrouby a matice a na tvary, které se vytisknou čistě bez zbytečných podpěr.",
+          "Před výrobou série připravím zkušební výtisk. Vyzkoušíte si ho přímo na místě a uvidíte, že všechno sedí.",
         ],
         image: "/portfolio/drzak.png",
-        imageAlt: "CAD návrh mechanického profilového držáku s konstrukčním vyztužením",
+        imageAlt: "CAD návrh profilového držáku s vyztužením",
       },
       {
         type: "gallery",
-        title: "Co v CADu reálně navrhujeme",
+        title: "Co v CADu navrhuji",
         intro:
-          "Ukázky modelů z naší dílny – od drobných funkčních čepů po mechanické úchyty a tvarově složité geometrie.",
+          "Ukázky mých modelů, od drobných funkčních čepů po úchyty a tvarově složité geometrie.",
         items: [
           {
             src: "/portfolio/drzak.png",
             title: "Profilový držák",
-            caption: "Mechanický úchyt se zpevňujícími žebry pro vyšší tuhost",
+            caption: "Úchyt se zpevňujícími žebry pro vyšší tuhost",
           },
           {
             src: "/portfolio/stojan.png",
@@ -339,31 +333,31 @@ export const services: Service[] = [
           {
             src: "/portfolio/pohar.png",
             title: "Atypická geometrie",
-            caption: "Designový spirálovitý pohár s organickým tvarem",
+            caption: "Spirálovitý pohár s organickým tvarem",
           },
         ],
       },
       {
         type: "list",
         variant: "rows",
-        title: "Co nám stačí poslat jako podklad",
-        intro: "Nemusíte být konstruktér ani mít profesionální výkres. Stačí nám základní informace:",
+        title: "Co mi stačí poslat",
+        intro: "Nemusíte být konstruktér ani mít profesionální výkres. Stačí základní informace:",
         items: [
           {
             title: "Náčrt na papíře s rozměry",
-            text: "Klidně načrtnutý od ruky tužkou. Nejdůležitější jsou hlavní kóty: celkové rozměry, průměry otvorů a rozteče mezi šrouby.",
+            text: "Klidně od ruky tužkou. Nejdůležitější jsou hlavní kóty: celkové rozměry, průměry otvorů a rozteče mezi šrouby.",
           },
           {
             title: "Fotografie s měřítkem",
-            text: "Vyfoťte prostor, kam má díl přijít, případně starý díl z několika úhlů. Když vedle něj položíte pravítko nebo metr, pomůže nám to s měřítkem.",
+            text: "Vyfoťte místo, kam má díl přijít, případně starý díl z několika stran. Když vedle něj položíte pravítko nebo metr, pomůže mi to s měřítkem.",
           },
           {
             title: "Fyzický vzorek poštou",
-            text: "Pokud máte poškozený či starý díl a nechcete ho měřit sami, můžete nám ho zaslat poštou. Rozměry si přesně odměříme posuvným měřidlem.",
+            text: "Pokud máte poškozený nebo starý díl a nechcete ho měřit sami, pošlete mi ho. Rozměry odměřím posuvným měřidlem.",
           },
           {
             title: "Popis zatížení a funkce",
-            text: "Napište nám, co bude díl dělat, jaká síla na něj bude působit a v jakém prostředí bude pracovat (interiér, teplo, vlhko, slunce).",
+            text: "Napište, co bude díl dělat, jaká síla na něj bude působit a v jakém prostředí bude (interiér, teplo, vlhko, slunce).",
           },
         ],
       },
@@ -372,23 +366,23 @@ export const services: Service[] = [
         variant: "rows",
         title: "Pravidla konstrukce pro 3D tisk",
         intro:
-          "Kvalitní model pro 3D tisk není jen hezký 3D tvar. Každý díl navrhujeme podle osvědčených konstrukčních zásad:",
+          "Dobrý model pro 3D tisk není jen hezký tvar. Každý díl navrhuji podle osvědčených zásad:",
         items: [
           {
-            title: "Pevnost orientovaná podle zátěže",
-            text: "Vrstvy 3D tisku se chovají podobně jako léta ve dřevě. Modelujeme tak, aby tahové a ohybové síly nepůsobily kolmo na rozhraní vrstev.",
+            title: "Pevnost podle zatížení",
+            text: "Vrstvy 3D tisku se chovají podobně jako léta ve dřevě. Modeluji tak, aby tahové a ohybové síly nepůsobily kolmo na rozhraní vrstev.",
           },
           {
-            title: "Zapuštění matic a spojovacího materiálu",
-            text: "Do modelů rovnou zapouštíme šestihranné kapsy na matice, osazení pro hlavy šroubů nebo přípravu na mosazné závitové vložky.",
+            title: "Zapuštěné matice a šrouby",
+            text: "Do modelů rovnou kreslím kapsy na matice, osazení pro hlavy šroubů nebo místo pro mosazné závitové vložky.",
           },
           {
             title: "Geometrie bez zbytečných podpěr",
-            text: "Zkosení hran (fasetky) a přechody navrhujeme pod úhly, které tiskárna zvládne vytisknout čistě do vzduchu bez nevzhledných tiskových podpěr.",
+            text: "Zkosení a přechody navrhuji pod úhly, které tiskárna vytiskne čistě bez podpěr.",
           },
           {
             title: "Správné výrobní vůle",
-            text: "Známe přesné chování a smrštění jednotlivých plastů. Otvory pro hřídele a lícování navrhujeme tak, aby díly pasovaly bez nutnosti pilování.",
+            text: "Počítám se smrštěním jednotlivých plastů. Otvory pro hřídele a lícování navrhuji tak, aby díly pasovaly bez pilování.",
           },
         ],
       },
@@ -399,19 +393,19 @@ export const services: Service[] = [
         items: [
           {
             title: "Zadání a konzultace",
-            text: "Nahrajete náčrt, fotky nebo pošlete vzorek. Ujasníme si rozměry, funkci a montážní požadavky.",
+            text: "Pošlete náčrt, fotky nebo vzorek. Ujasníme si rozměry, funkci a způsob montáže.",
           },
           {
             title: "Tvorba 3D CAD modelu",
-            text: "Vytvoříme parametrický 3D model. Pošleme vám náhledy nebo 3D vizualizaci ke kontrole.",
+            text: "Vytvořím parametrický 3D model a pošlu vám náhledy ke kontrole.",
           },
           {
             title: "Zkušební prototyp",
-            text: "Model vytiskneme a zašleme vám vzorek k fyzickému vyzkoušení ve vašem zařízení. Poštovné hradíme my.",
+            text: "Model vytisknu a pošlu vám ho na vyzkoušení. Poštovné platím já.",
           },
           {
             title: "Výroba a předání dat",
-            text: "Po vašem odsouhlasení vyrobíme potřebný počet kusů a na přání vám předáme i zdrojové soubory STEP pro budoucí použití.",
+            text: "Po vašem schválení vyrobím potřebný počet kusů a na přání vám předám i zdrojová data STEP.",
           },
         ],
       },
@@ -420,27 +414,27 @@ export const services: Service[] = [
       {
         question: "Co všechno potřebuji dodat k modelování?",
         answer:
-          "Stačí nám náčrt na papíře s kótami, fotka s přiloženým pravítkem nebo fyzický vzorek. Čím víc informací o funkci dílu a jeho montáži máme, tím rychleji a přesněji model připravíme.",
+          "Stačí náčrt na papíře s kótami, fotka s pravítkem nebo fyzický vzorek. Čím víc toho vím o funkci dílu a jeho montáži, tím rychleji a přesněji model připravím.",
       },
       {
         question: "Co když nemám přesné rozměry?",
         answer:
-          "Pokud máte původní součástku, můžete nám ji poslat poštou – změříme si ji sami posuvným měřidlem a úhloměrem. Pokud díl nemáte, stačí změřit prostor a protikusy, kam má nová součástka pasovat.",
+          "Pokud máte původní součástku, pošlete mi ji poštou a změřím si ji sám. Pokud díl nemáte, stačí změřit místo a protikusy, kam má nová součástka pasovat.",
       },
       {
         question: "Získám k modelu i výrobní 3D data?",
         answer:
-          "Ano. Po dokončení a uhrazení zakázky vám na přání předáme kompletní data ve formátu STEP (univerzální CAD standard) i výrobní soubory STL nebo 3MF pro 3D tisk.",
+          "Ano. Po dokončení a zaplacení zakázky vám na přání předám data ve formátu STEP i soubory STL nebo 3MF pro 3D tisk.",
       },
       {
         question: "Jak ověříte, že bude díl pasovat?",
         answer:
-          "Před finální výrobou vytiskneme zkušební vzorek, který vám pošleme k otestování. Přímo ve svém zařízení si vyzkoušíte montáž i funkčnost a případné drobné úpravy doladíme předem.",
+          "Před výrobou vytisknu zkušební kus a pošlu vám ho. Ve svém zařízení si vyzkoušíte montáž i funkci a případné drobnosti doladím ještě před sérií.",
       },
     ],
     closing: {
       title: "Máte nápad nebo potřebujete vyřešit díl?",
-      text: "Stačí fotka a pár vět o tom, co potřebujete. Ozveme se do 24 hodin a společně probereme nejjednodušší cestu k hotovému dílu.",
+      text: "Stačí fotka a pár vět o tom, co potřebujete. Do 24 hodin se ozvu a probereme nejjednodušší cestu k hotovému dílu.",
     },
   },
 ];

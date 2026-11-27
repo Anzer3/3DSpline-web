@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "3D tisk a modelování na míru | 3D Spline",
   description:
-    "Zakázkový 3D tisk a modelování na míru pro firmy i jednotlivce. Od rychlé náhrady prasklého dílu a výrobních přípravků po sériovou výrobu z technických materiálů.",
+    "Zakázkový 3D tisk a modelování na míru. Navrhnu a vytisknu série funkčních dílů z PETG i barevné medaile, poháry a dárky, od pár kusů po stovky. Doručení po celé ČR.",
   keywords: [
     "3D Spline",
     "zakázkový 3D tisk",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "3D tisk a modelování na míru | 3D Spline",
     description:
-      "Díly nejen tiskneme, ale také navrhujeme a upravujeme tak, aby vydržely reálný provoz a dávaly ekonomický smysl.",
+      "Modeluju a 3D tisknu série na míru: funkční díly z PETG i barevné medaile, poháry a dárky.",
     url: "https://3dspline.cz",
     siteName: "3D Spline",
     locale: "cs_CZ",
@@ -89,6 +89,7 @@ export default function RootLayout({
         "@id": "https://3dspline.cz/#business",
         name: company.brand,
         ...(company.operatorName.trim() !== "" && { legalName: company.operatorName }),
+        founder: { "@type": "Person", name: company.founderName },
         ...(hasIco && {
           identifier: {
             "@type": "PropertyValue",
@@ -134,7 +135,7 @@ export default function RootLayout({
                 "@type": "Service",
                 name: "Zakázkový 3D tisk (FDM / FFF)",
                 description:
-                  "Kusová i sériová výroba funkčních plastových dílů z materiálů PETG, PLA, ASA a TPU ze souborů STEP, STL a 3MF.",
+                  "Kusová i sériová výroba plastových dílů z PETG a PLA (na vyžádání z ASA) ze souborů STEP, STL a 3MF.",
               },
             },
             {

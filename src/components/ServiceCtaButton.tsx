@@ -24,7 +24,7 @@ export default function ServiceCtaButton({
     <InquiryCta
       tab={tab}
       prototypePackage={prototypePackage}
-      className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm transition-colors shadow-sm active:scale-[0.99] ${styles}`}
+      className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md font-semibold text-sm transition-colors ${styles}`}
     >
       <span>{label}</span>
       <ArrowRight className="w-4 h-4" />

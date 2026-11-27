@@ -1,82 +1,69 @@
 import Image from "next/image";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+const facts = [
+  { label: "Série", value: "od pár kusů po stovky" },
+  { label: "Materiály", value: "PETG a PLA" },
+  { label: "Tiskový prostor", value: "25 × 25 × 25 cm" },
+  { label: "Doručení z Olomouce", value: "po celé ČR" },
+];
 
 export default function Hero() {
   return (
-    <section className="relative bg-white border-b border-slate-200 py-6 sm:py-10 lg:py-16 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-[1fr_40%] sm:grid-cols-[1fr_240px] md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_400px] items-stretch gap-x-3 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
-          {/* Levá část (Řádek 1): Nadpis, podnadpis a 3 klíčové body až po 'Doručení po celé ČR' */}
-          <div className="col-start-1 row-start-1 min-w-0 flex flex-col justify-between py-0.5 relative z-10">
-            <div className="space-y-2 sm:space-y-3.5 lg:space-y-5">
-              <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.18]">
-                3D tisk a modelování na míru
-              </h1>
+    <section className="bg-white border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          <div className="lg:col-span-7">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.08] text-balance">
+              Modeluju a 3D&nbsp;tisknu série na&nbsp;míru
+            </h1>
 
-              <p className="text-xs sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl">
-                Zakázková výroba pro firmy i jednotlivce. Od náhrady poškozeného kusu po stovkové série podle vašich potřeb.
-              </p>
-            </div>
+            <p className="mt-6 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl">
+              Držáky a přípravky z PETG, barevné medaile, poháry i dárky. Díl navrhnu podle
+              vašeho náčrtu, vzorku nebo hotového modelu a vyrobím ho v počtu, jaký potřebujete.
+            </p>
 
-            {/* 3 klíčové body sahající přesně po spodní úroveň obrázku */}
-            <div className="space-y-2 sm:space-y-2.5 pt-3 sm:pt-5 lg:pt-6">
-              <div className="flex items-start sm:items-center gap-2 sm:gap-3 text-slate-700 text-xs sm:text-sm">
-                <div className="p-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0 mt-0.5 sm:mt-0">
-                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
-                </div>
-                <span>
-                  <strong>CAD konstrukce:</strong> optimalizace tvaru pro maximální pevnost dílu
-                </span>
-              </div>
-
-              <div className="flex items-start sm:items-center gap-2 sm:gap-3 text-slate-700 text-xs sm:text-sm">
-                <div className="p-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0 mt-0.5 sm:mt-0">
-                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
-                </div>
-                <span>
-                  <strong>Zkušební vzorek:</strong> otestování funkčnosti před spuštěním série
-                </span>
-              </div>
-
-              <div className="flex items-start sm:items-center gap-2 sm:gap-3 text-slate-700 text-xs sm:text-sm">
-                <div className="p-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0 mt-0.5 sm:mt-0">
-                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
-                </div>
-                <span>
-                  <strong>Doručení po celé ČR</strong>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Pravá část: Velký obrázek striktně oříznutý do svého sloupce (overflow-hidden), takže nikdy nepřekryje text */}
-          <div className="col-start-2 row-start-1 lg:row-span-2 relative self-stretch overflow-hidden flex items-center justify-center">
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <Image
-                src="/portfolio/pohar.png"
-                alt="CAD modelování komplexních dílů - 3D Spline"
-                width={638}
-                height={619}
-                // Skutečná šířka obrázku podle sloupce (40 % / 240 / 300 / 400 px) × přesah 180 / 155 / 130 %
-                sizes="(max-width: 639px) 72vw, (max-width: 767px) 372px, (max-width: 1023px) 465px, 520px"
-                className="w-[180%] sm:w-[155%] lg:w-[130%] max-w-none h-full object-contain mix-blend-multiply scale-[1.06]"
-                preload
-              />
-            </div>
-          </div>
-
-          {/* Spodní blok (Řádek 2): CTA tlačítko */}
-          <div className="col-span-2 lg:col-span-1 col-start-1 row-start-2 pt-5 sm:pt-6 relative z-10">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
               <a
                 href="#poptavka"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm active:scale-[0.99] w-full sm:w-auto text-center"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors"
               >
-                <span>Nezávazně poptat výrobu</span>
+                <span>Poptat výrobu</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <a
+                href="#pribehy-z-dilny"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+              >
+                <span>Ukázky zakázek</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
+
+            <dl className="mt-12 pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-5">
+              {facts.map((fact) => (
+                <div key={fact.label}>
+                  <dt className="text-xs text-slate-500">{fact.label}</dt>
+                  <dd className="mt-1 text-sm font-semibold text-slate-900">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
+
+          <figure className="lg:col-span-5 max-w-md mx-auto lg:max-w-none w-full">
+            <Image
+              src="/images/pohar_real_vs_cad.jpg"
+              alt="Vytištěný pohár pro futsalový turnaj držený v ruce před monitorem s jeho 3D modelem"
+              width={1759}
+              height={2000}
+              sizes="(max-width: 1023px) min(28rem, calc(100vw - 2rem)), 480px"
+              className="w-full h-auto"
+              preload
+            />
+            <figcaption className="mt-3 text-xs text-slate-500">
+              Pohár pro futsalový turnaj: hotový výtisk před modelem, ze kterého vznikl.
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>

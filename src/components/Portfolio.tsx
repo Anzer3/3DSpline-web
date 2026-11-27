@@ -5,20 +5,27 @@ import { caseStudiesData } from "@/lib/caseStudies";
 
 export default function Portfolio() {
   return (
-    <section id="pribehy-z-dilny" className="py-16 bg-white border-b border-slate-200 scroll-mt-16 overflow-hidden">
+    <section id="pribehy-z-dilny" className="py-16 sm:py-20 bg-white border-b border-slate-200 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-10">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
-            Příběhy z dílny
-          </h2>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            Ukázky reálných zakázek
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+              Příběhy z dílny
+            </h2>
+            <p className="mt-2 text-slate-600 text-sm sm:text-base">
+              Skutečné zakázky od zadání po hotové kusy.
+            </p>
+          </div>
+          <Link
+            href="/pribehy-z-dilny"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors shrink-0"
+          >
+            <span>Všechny příběhy</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
 
-        {/* Karty příběhů (stejný vizuální styl jako dlaždice služeb) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
           {caseStudiesData.map((study) => (
             <CaseStudyCard
               key={study.slug}
@@ -30,14 +37,6 @@ export default function Portfolio() {
             />
           ))}
         </div>
-
-        <Link
-          href="/pribehy-z-dilny"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-        >
-          Všechny příběhy z dílny
-          <ArrowRight className="w-4 h-4" />
-        </Link>
       </div>
     </section>
   );

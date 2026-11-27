@@ -1,8 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, ChevronDown, ArrowUpRight } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import ServiceCtaButton from "@/components/ServiceCtaButton";
+import FaqList from "@/components/FaqList";
 import { services, type Block, type Service } from "@/lib/services";
 
 const h2Class =
@@ -23,7 +24,7 @@ function SectionShell({
   }[tone];
 
   return (
-    <section className={`py-14 sm:py-16 border-b ${styles}`}>
+    <section className={`py-16 sm:py-20 border-b ${styles}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
   );
@@ -45,25 +46,19 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
             </div>
 
             {block.aside && (
-              <aside className="lg:col-span-5">
-                <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
-                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                    {block.aside.title}
-                  </h3>
-                  <ul className="mt-4 space-y-3">
-                    {block.aside.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-3 text-sm text-slate-700 leading-relaxed"
-                      >
-                        <span className="mt-0.5 p-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0">
-                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                        </span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <aside className="lg:col-span-5 lg:border-l lg:border-slate-200 lg:pl-10">
+                <h3 className="text-base font-bold text-slate-900">{block.aside.title}</h3>
+                <ul className="mt-4 space-y-3">
+                  {block.aside.items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 text-sm text-slate-700 leading-relaxed"
+                    >
+                      <Check className="w-4 h-4 mt-0.5 text-blue-600 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </aside>
             )}
           </div>
@@ -87,7 +82,7 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
             <div
               className={`lg:col-span-6 ${block.reverse ? "lg:order-1" : "lg:order-2"}`}
             >
-              <div className="relative aspect-[4/3] rounded-xl border border-slate-200 bg-slate-100 overflow-hidden">
+              <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
                 <Image
                   src={block.image}
                   alt={block.imageAlt}
@@ -110,19 +105,17 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
           </div>
 
           {block.variant === "steps" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {block.items.map((item, idx) => (
-                <div key={item.title} className="flex flex-col">
+                <li key={item.title} className="flex flex-col">
                   <div className="text-2xl font-bold font-mono text-blue-600 mb-2">
                     {String(idx + 1).padStart(2, "0")}
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-1.5">
-                    {item.title}
-                  </h3>
+                  <h3 className="text-base font-bold text-slate-900 mb-1.5">{item.title}</h3>
                   <p className="text-sm text-slate-600 leading-relaxed">{item.text}</p>
-                </div>
+                </li>
               ))}
-            </div>
+            </ol>
           ) : (
             <dl className="max-w-4xl border-t border-slate-200">
               {block.items.map((item) => (
@@ -151,12 +144,12 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
             {block.intro && <p className={introClass}>{block.intro}</p>}
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-            <table className="w-full min-w-[560px] text-left text-sm">
-              <thead className="bg-slate-100 text-xs uppercase tracking-wider text-slate-500">
-                <tr>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] text-left text-sm border-y border-slate-200">
+              <thead className="text-xs text-slate-500">
+                <tr className="border-b border-slate-200">
                   {block.columns.map((col) => (
-                    <th key={col} className="px-4 py-3 font-semibold">
+                    <th key={col} className="py-3 pr-6 font-medium">
                       {col}
                     </th>
                   ))}
@@ -168,8 +161,11 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
                     {row.map((cell, idx) => (
                       <td
                         key={idx}
-                        className={`px-4 py-3.5 align-top leading-relaxed ${
-                          idx === 0 ? "font-bold text-slate-900" : "text-slate-600"
+                        className={`py-4 pr-6 align-top leading-relaxed ${
+                          idx === 0 ? "font-bold text-slate-900 whitespace-nowrap" : "text-slate-600"
+                        } ${
+                          // Krátké hodnoty (např. teplotní limit) nezalamovat
+                          idx > 0 && cell.length <= 18 ? "whitespace-nowrap" : ""
                         }`}
                       >
                         {cell}
@@ -195,13 +191,10 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
             {block.intro && <p className={introClass}>{block.intro}</p>}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-8">
             {block.items.map((item) => (
-              <div
-                key={item.src}
-                className="bg-white rounded-xl border border-slate-200 p-3 flex flex-col"
-              >
-                <div className="relative w-full aspect-square p-2 mb-3">
+              <figure key={item.src}>
+                <div className="relative aspect-square bg-white p-3">
                   <Image
                     src={item.src}
                     alt={item.title}
@@ -211,11 +204,11 @@ function BlockView({ block, tone }: { block: Block; tone: "white" | "slate" | "d
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="text-xs font-bold text-slate-900 leading-snug">
-                  {item.title}
-                </div>
-                <div className="text-[11px] text-slate-500 mt-0.5">{item.caption}</div>
-              </div>
+                <figcaption className="mt-3">
+                  <div className="text-sm font-semibold text-slate-900 leading-snug">{item.title}</div>
+                  <div className="mt-0.5 text-xs text-slate-500">{item.caption}</div>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </SectionShell>
@@ -268,9 +261,9 @@ export default function ServicePage({ service }: { service: Service }) {
   return (
     <>
       {/* Hero */}
-      <section className="relative bg-white border-b border-slate-200 py-10 sm:py-14 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav aria-label="Drobečková navigace" className="mb-5 text-xs text-slate-500">
+      <section className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
+          <nav aria-label="Drobečková navigace" className="mb-6 text-xs text-slate-500">
             <Link href="/" className="hover:text-slate-900 transition-colors">
               3D Spline
             </Link>
@@ -278,28 +271,37 @@ export default function ServicePage({ service }: { service: Service }) {
             <span className="text-slate-700">{service.name}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-7 space-y-4 sm:space-y-5">
-              <p className="text-sm sm:text-base font-semibold text-blue-600">
-                {service.kicker}
-              </p>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.15]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-7">
+              <p className="text-sm sm:text-base font-semibold text-blue-600">{service.kicker}</p>
+              <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.1] text-balance">
                 {service.h1}
               </h1>
-              <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-2xl">
+              <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
                 {service.lead}
               </p>
-              <div className="pt-2">
+              <div className="mt-8">
                 <ServiceCtaButton
                   label={service.ctaLabel}
                   tab={service.tab}
                   prototypePackage={service.prototypePackage}
                 />
               </div>
+
+              <dl className="mt-12 pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-5">
+                {service.facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt className="text-xs text-slate-500">{fact.label}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-slate-900 leading-snug">
+                      {fact.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative aspect-[4/3] lg:aspect-[5/4] rounded-xl border border-slate-200 bg-slate-100 overflow-hidden">
+              <div className="relative aspect-[4/3] lg:aspect-[5/4] bg-slate-100 overflow-hidden">
                 <Image
                   src={heroImage}
                   alt={heroImageAlt}
@@ -314,92 +316,63 @@ export default function ServicePage({ service }: { service: Service }) {
         </div>
       </section>
 
-      {/* Klíčové údaje */}
-      <section className="bg-slate-900 border-b border-slate-800 text-white py-6 sm:py-7">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <dl className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
-            {service.facts.map((fact) => (
-              <div key={fact.label} className="border-l-2 border-blue-500/70 pl-3.5">
-                <dt className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                  {fact.label}
-                </dt>
-                <dd className="mt-0.5 text-sm font-bold text-white leading-snug">
-                  {fact.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
       {/* Obsah podle služby */}
       {blocks.map(({ block, tone }, idx) => (
         <BlockView key={`${block.type}-${idx}`} block={block} tone={tone} />
       ))}
 
-      {/* FAQ */}
-      <section className="py-14 bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className={`${h2Class} mb-8 text-center`}>Časté dotazy</h2>
-          <div className="space-y-3">
-            {service.faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group bg-slate-50 rounded-xl border border-slate-200 overflow-hidden"
-              >
-                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none p-4 sm:p-5 text-sm sm:text-base font-semibold text-slate-900">
-                  <span>{faq.question}</span>
-                  <ChevronDown className="w-4 h-4 text-slate-500 shrink-0 transition-transform duration-200 group-open:rotate-180" />
-                </summary>
-                <div className="px-4 sm:px-5 pb-4 sm:pb-5 text-sm text-slate-600 leading-relaxed">
-                  {faq.answer}
-                </div>
-              </details>
-            ))}
+      {/* Časté dotazy */}
+      <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          <div className="lg:col-span-4">
+            <h2 className={h2Class}>Časté dotazy</h2>
+          </div>
+          <div className="lg:col-span-8">
+            <FaqList faqs={service.faqs} />
           </div>
         </div>
       </section>
 
       {/* Závěrečná výzva */}
-      <section className="py-12 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-xl bg-[#0F1E2E] border border-slate-800 p-6 sm:p-8 lg:p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                {service.closing.title}
-              </h2>
-              <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
-                {service.closing.text}
-              </p>
-            </div>
-            <div className="shrink-0">
-              <ServiceCtaButton
-                label={service.ctaLabel}
-                tab={service.tab}
-                prototypePackage={service.prototypePackage}
-                variant="dark"
-              />
-            </div>
+      <section className="py-14 sm:py-16 bg-[#0F1E2E] border-b border-slate-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              {service.closing.title}
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
+              {service.closing.text}
+            </p>
+          </div>
+          <div className="shrink-0">
+            <ServiceCtaButton
+              label={service.ctaLabel}
+              tab={service.tab}
+              prototypePackage={service.prototypePackage}
+              variant="dark"
+            />
           </div>
         </div>
       </section>
 
       {/* Další služby */}
-      <section className="py-12 bg-slate-50 border-b border-slate-200">
+      <section className="py-12 sm:py-14 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-lg font-bold text-slate-900 mb-5">Další služby</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <h2 className="text-base font-bold text-slate-900 mb-4">Další služby</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 border-t border-slate-200">
             {otherServices.map((s) => (
               <Link
                 key={s.slug}
                 href={`/${s.slug}`}
-                className="group flex items-start justify-between gap-3 p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-300 transition-colors"
+                className="group flex items-start justify-between gap-4 py-5 border-b border-slate-200"
               >
                 <div>
-                  <div className="text-sm font-bold text-slate-900">{s.name}</div>
-                  <p className="mt-1 text-xs text-slate-500 leading-relaxed">{s.cardText}</p>
+                  <div className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    {s.name}
+                  </div>
+                  <p className="mt-1 text-sm text-slate-600 leading-relaxed">{s.cardText}</p>
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 shrink-0 transition-colors" />
+                <ArrowRight className="w-4 h-4 mt-1 text-slate-400 group-hover:text-blue-600 shrink-0 transition-colors" />
               </Link>
             ))}
           </div>

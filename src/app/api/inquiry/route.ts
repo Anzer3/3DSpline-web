@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { company } from "@/lib/company";
 
 // E-maily posíláme přes HTTP API Resendu – SMTP (Nodemailer) na Cloudflare Workers nefunguje.
 // https://resend.com/docs/api-reference/emails/send-email
@@ -33,7 +34,7 @@ const MAX_TOTAL_SIZE = 4 * 1024 * 1024;
 
 // Obecná hláška pro zákazníka – technické detaily chyby patří jen do logu
 const SEND_FAILED_ERROR =
-  "Poptávku se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo nám napište přímo na info@3dspline.cz.";
+  "Poptávku se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo mi napište přímo na info@3dspline.cz.";
 
 function describeError(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -166,7 +167,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message:
-          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením.",
+          "Děkuji! Poptávka dorazila v pořádku. Ozvu se vám s technickým posouzením.",
       });
     }
 
@@ -234,7 +235,7 @@ export async function POST(req: NextRequest) {
             {
               success: false,
               error:
-                "Celková velikost přiložených souborů přesahuje limit 4 MB. Větší soubory nám prosím pošlete přímo na e-mail info@3dspline.cz.",
+                "Celková velikost přiložených souborů přesahuje limit 4 MB. Větší soubory mi prosím pošlete přímo na e-mail info@3dspline.cz.",
             },
             { status: 400 }
           );
@@ -346,7 +347,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message:
-          "Děkujeme! Vaše poptávka byla úspěšně přijata. Ozveme se vám s technickým posouzením a kalkulací.",
+          "Děkuji! Poptávka dorazila v pořádku. Ozvu se vám s technickým posouzením a kalkulací.",
         simulated: true,
       });
     }
@@ -481,19 +482,19 @@ export async function POST(req: NextRequest) {
           </div>
           <div class="content">
             <p>Dobrý den${name ? `, <strong>${safeNameHtml}</strong>` : ""},</p>
-            <p>děkujeme za zaslání vaší poptávky na <strong>zakázkový 3D tisk a CAD konstrukci</strong>. Vaše zadání jsme v pořádku přijali a začínáme jej zpracovávat.</p>
+            <p>děkuji za vaši poptávku na <strong>zakázkový 3D tisk a CAD konstrukci</strong>. Zadání jsem v pořádku přijal a začínám na něm pracovat.</p>
 
             <div class="highlight">
               <strong>Jaký je další postup?</strong>
               <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-                <li>Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev (DFAM).</li>
-                <li>Ozveme se vám zpět obvykle do 24 hodin s technickým posouzením a dalšími možnostmi.</li>
+                <li>Projdu zaslané podklady a ověřím, jak se díl bude tisknout a jak orientovat vrstvy.</li>
+                <li>Obvykle do 24 hodin se vám ozvu s technickým posouzením a dalšími možnostmi.</li>
               </ul>
             </div>
 
-            <p>Pokud budete chtít mezitím cokoliv doplnit nebo upřesnit, můžete nás kontaktovat přímo na <a href="mailto:info@3dspline.cz" style="color: #2563eb;">info@3dspline.cz</a>.</p>
+            <p>Pokud budete chtít mezitím cokoli doplnit nebo upřesnit, napište mi přímo na <a href="mailto:info@3dspline.cz" style="color: #2563eb;">info@3dspline.cz</a>.</p>
 
-            <p style="margin-top: 24px;">S pozdravem,<br/><strong>Tým 3D Spline</strong><br/><span style="color: #64748b; font-size: 13px;">Zakázkový 3D tisk a CAD konstrukce dílů</span></p>
+            <p style="margin-top: 24px;">S pozdravem,<br/><strong>${company.founderName}</strong>, 3D Spline<br/><span style="color: #64748b; font-size: 13px;">Zakázkový 3D tisk a CAD konstrukce dílů</span></p>
           </div>
           <div class="footer">
             3D Spline • Spolehlivé doručení kurýrem po celé ČR
@@ -525,14 +526,14 @@ ${note}
     const clientText = `
 Dobrý den${name ? ` ${name}` : ""},
 
-děkujeme za zaslání vaší poptávky na zakázkový 3D tisk a CAD konstrukci na 3dspline.cz. Vaše zadání jsme v pořádku přijali.
+děkuji za vaši poptávku na zakázkový 3D tisk a CAD konstrukci na 3dspline.cz. Zadání jsem v pořádku přijal.
 
 Jaký je další postup?
-- Projdeme zaslané podklady a ověříme tisknutelnost i orientaci vrstev.
-- Ozveme se vám zpět obvykle do 24 hodin s posouzením a dalšími možnostmi.
+- Projdu zaslané podklady a ověřím, jak se díl bude tisknout a jak orientovat vrstvy.
+- Obvykle do 24 hodin se vám ozvu s posouzením a dalšími možnostmi.
 
 S pozdravem,
-Tým 3D Spline
+${company.founderName}, 3D Spline
 info@3dspline.cz
     `.trim();
 
@@ -572,8 +573,8 @@ info@3dspline.cz
     return NextResponse.json({
       success: true,
       message: confirmationSent
-        ? "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením."
-        : "Děkujeme! Vaše poptávka byla úspěšně odeslána. Potvrzení na váš e-mail se ale nepodařilo doručit, zkontrolujte prosím, že je adresa správná. Ozveme se vám zpět s technickým posouzením.",
+        ? "Děkuji! Poptávka je odeslaná. Na e-mail jsem vám poslal potvrzení a ozvu se s technickým posouzením."
+        : "Děkuji! Poptávka je odeslaná, ale potvrzení na váš e-mail se nepodařilo doručit. Zkontrolujte prosím, že je adresa správná. Ozvu se s technickým posouzením.",
     });
   } catch (error: unknown) {
     console.error("❌ CHYBA PŘI ZPRACOVÁNÍ POPTÁVKY:", describeError(error));

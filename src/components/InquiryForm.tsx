@@ -6,11 +6,8 @@ import {
   UploadCloud,
   FileCheck2,
   Trash2,
-  CheckCircle2,
   AlertCircle,
   Loader2,
-  Mail,
-  Lock,
   ArrowRight,
   FileBox,
   FileText,
@@ -21,7 +18,7 @@ import {
 } from "lucide-react";
 
 type InquiryTab = "model" | "drawing" | null;
-type TooltipId = "prototype" | "description" | "formats" | "dropzone-formats" | null;
+type TooltipId = "prototype" | "description" | "dropzone-formats" | null;
 
 interface UploadedFile {
   file: File;
@@ -113,6 +110,29 @@ async function compressImageIfNeeded(
 
     img.src = objectUrl;
   });
+}
+
+// Sdílené třídy vzhledu formuláře
+const rowClass = "py-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-6";
+const rowTopClass = "py-4 flex flex-col sm:flex-row sm:items-start gap-2.5 sm:gap-6";
+const labelClass = "text-sm font-semibold text-slate-900 sm:w-40 shrink-0";
+const inputClass =
+  "px-3.5 py-2.5 rounded-md border border-slate-300 bg-white text-slate-900 text-sm placeholder-slate-400 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors";
+const segmentClass =
+  "inline-flex items-center gap-2 px-0.5 py-1.5 border-b-[3px] text-sm font-semibold transition-colors";
+const segmentOnClass = "border-blue-600 text-slate-900";
+// Hover jen na zařízeních s myší, aby na mobilu nezůstávalo „viset“ šedé podtržení po ťuknutí
+const segmentOffClass =
+  "border-transparent text-slate-500 [@media(hover:hover)]:hover:text-slate-900 [@media(hover:hover)]:hover:border-slate-300";
+const tooltipClass =
+  "pointer-events-none absolute mb-2 p-3 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-opacity duration-200 z-30 leading-relaxed text-left font-normal";
+
+function RequiredMark() {
+  return (
+    <span className="text-rose-600" aria-hidden="true">
+      *
+    </span>
+  );
 }
 
 export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
@@ -243,7 +263,7 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
         if (currentTotal + file.size > maxTotalSize) {
           setFileSizeWarning(
-            `Soubor „${rawFile.name}“ přesahuje limit 4 MB pro webový formulář. Větší modely nebo archivy nám prosím pošlete přímo na e-mail info@3dspline.cz nebo vložte odkaz do pole níže.`
+            `Soubor „${rawFile.name}“ přesahuje limit 4 MB pro webový formulář. Větší modely nebo archivy mi prosím pošlete přímo na e-mail info@3dspline.cz nebo vložte odkaz do pole níže.`
           );
           break;
         }
@@ -405,21 +425,21 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
 
       if (res.status === 413) {
         throw new Error(
-          "Přílohy jsou pro webový formulář příliš velké. Pošlete nám je prosím přímo na info@3dspline.cz, nebo vložte odkaz na úložiště."
+          "Přílohy jsou pro webový formulář příliš velké. Pošlete mi je prosím přímo na info@3dspline.cz, nebo vložte odkaz na úložiště."
         );
       }
 
       if (!res.ok || !data?.success) {
         throw new Error(
           data?.error ||
-            "Poptávku se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo nám napište přímo na info@3dspline.cz."
+            "Poptávku se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo mi napište přímo na info@3dspline.cz."
         );
       }
 
       setStatus("success");
       setSuccessMessage(
         data?.message ||
-          "Děkujeme! Vaše poptávka byla úspěšně odeslána. Na e-mail jsme vám zaslali potvrzení a ozveme se vám zpět s technickým posouzením."
+          "Děkuji! Poptávka je odeslaná. Na e-mail jsem vám poslal potvrzení a ozvu se s technickým posouzením."
       );
     } catch (err: unknown) {
       setStatus("error");
@@ -463,48 +483,56 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
       : "Popište účel dílu, jak bude namáhán nebo v jakém prostředí bude sloužit (interiér, venku, v autě)...";
 
   return (
-    <section id="poptavka" className="py-16 bg-white border-b border-slate-200 scroll-mt-16">
+    <section id="poptavka" className="py-16 sm:py-20 bg-white border-b border-slate-200 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="max-w-3xl mb-8">
+        <div className="max-w-2xl mb-8 sm:mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
             Rychlá nezávazná poptávka
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-          {/* Main Form */}
-          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-0 items-start">
+          {/* Formulář */}
+          <div className="lg:col-span-8 lg:pr-12">
             {status === "success" ? (
-              <div className="p-8 text-center bg-slate-50 border border-slate-200 rounded-md">
-                <div className="w-12 h-12 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
+              <div className="py-10 border-y border-slate-200">
                 <h3
                   ref={successHeadingRef}
                   tabIndex={-1}
-                  className="text-lg font-bold text-slate-900 mb-1 tracking-tight outline-none"
+                  className="text-xl font-bold text-slate-900 tracking-tight outline-none"
                 >
                   Poptávka byla v pořádku přijata
                 </h3>
-                <p className="text-slate-600 text-xs sm:text-sm max-w-md mx-auto mb-6">
+                <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
                   {successMessage}
                 </p>
-                <div className="p-4 bg-white border border-slate-200 rounded-md text-xs text-slate-600 max-w-md mx-auto mb-6 text-left space-y-1.5 font-mono">
-                  <div><strong className="text-slate-900 font-sans">Potvrzení:</strong> {email}</div>
-                  <div><strong className="text-slate-900 font-sans">Odpověď:</strong> s technickým posouzením a možnostmi výroby</div>
-                  <div><strong className="text-slate-900 font-sans">Doručení:</strong> Rychlý kurýr po celé ČR</div>
-                </div>
+                <dl className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-4 max-w-2xl">
+                  <div>
+                    <dt className="text-xs text-slate-500">Potvrzení</dt>
+                    <dd className="mt-1 text-sm font-semibold text-slate-900 break-all">{email}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-slate-500">Odpověď</dt>
+                    <dd className="mt-1 text-sm font-semibold text-slate-900">
+                      s technickým posouzením a možnostmi výroby
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-slate-500">Doručení</dt>
+                    <dd className="mt-1 text-sm font-semibold text-slate-900">Rychlý kurýr po celé ČR</dd>
+                  </div>
+                </dl>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-5 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold tracking-wide transition-colors"
+                  className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors"
                 >
-                  Odeslat další poptávku
+                  <span>Odeslat další poptávku</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 relative">
+              <form onSubmit={handleSubmit} className="relative">
                 {/* Anti-spam Honeypot field (hidden from real users) */}
                 <div
                   className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden"
@@ -522,26 +550,20 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                   />
                 </div>
 
-                {/* 3D Model: Máte 3D model? a štítky na stejném řádku */}
-                <div
-                  ref={tabSectionRef}
-                  className={`p-2 -mx-2 rounded-md transition-all ${
-                    highlightedField === "tab-selection" ? "ring-1 ring-rose-500 bg-rose-50/40" : ""
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span
-                      id="inquiry-tab-label"
-                      className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
-                    >
-                      Podklady pro výrobu <span className="text-rose-600 font-bold">*</span>
+                <div className="divide-y divide-slate-200 border-y border-slate-200">
+                  {/* Podklady pro výrobu */}
+                  <div ref={tabSectionRef} className={rowClass}>
+                    <span id="inquiry-tab-label" className={labelClass}>
+                      Podklady pro výrobu <RequiredMark />
                     </span>
 
                     <div
                       role="radiogroup"
                       aria-labelledby="inquiry-tab-label"
                       aria-required="true"
-                      className="flex flex-wrap items-center gap-2"
+                      className={`flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md transition-shadow ${
+                        highlightedField === "tab-selection" ? "ring-2 ring-rose-500 ring-offset-4" : ""
+                      }`}
                     >
                       <button
                         ref={modelTabButtonRef}
@@ -556,13 +578,11 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                             setErrorMessage("");
                           }
                         }}
-                        className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-all border ${
-                          activeTab === "model"
-                            ? "bg-blue-50/50 text-blue-600 border-blue-600 ring-1 ring-blue-600 shadow-sm"
-                            : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                        } ${highlightedField === "tab-model" ? "ring-2 ring-blue-600 animate-field-highlight" : ""}`}
+                        className={`${segmentClass} ${activeTab === "model" ? segmentOnClass : segmentOffClass} ${
+                          highlightedField === "tab-model" ? "animate-field-highlight" : ""
+                        }`}
                       >
-                        <span>Mám model</span>
+                        Mám model
                       </button>
 
                       <button
@@ -577,733 +597,611 @@ export default function InquiryForm({ defaultTab = null }: InquiryFormProps) {
                             setErrorMessage("");
                           }
                         }}
-                        className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-all border ${
-                          activeTab === "drawing"
-                            ? "bg-blue-50/50 text-blue-600 border-blue-600 ring-1 ring-blue-600 shadow-sm"
-                            : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                        } ${highlightedField === "tab-drawing" ? "ring-2 ring-blue-600 animate-field-highlight" : ""}`}
+                        className={`${segmentClass} ${activeTab === "drawing" ? segmentOnClass : segmentOffClass} ${
+                          highlightedField === "tab-drawing" ? "animate-field-highlight" : ""
+                        }`}
                       >
-                        <span>Nemám model</span>
+                        Nemám model
                       </button>
                     </div>
                   </div>
-                </div>
 
-                {/* Váš e-mail */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
-                  <label
-                    htmlFor="inquiry-email"
-                    className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
-                  >
-                    Váš e-mail <span className="text-rose-600 font-bold">*</span>
-                  </label>
-                  <input
-                    id="inquiry-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    placeholder="např. jan.novak@email.cz"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 px-3.5 py-2 rounded-md border border-slate-200 bg-white text-slate-900 text-xs sm:text-sm placeholder-slate-400 outline-none focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-colors"
-                  />
-                </div>
-
-                {/* Počet kusů & Prototypovací balíček na stejném řádku */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                  <label
-                    htmlFor="inquiry-quantity"
-                    className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
-                  >
-                    Počet kusů
-                  </label>
-                  <div className="flex flex-wrap items-center gap-3 flex-1">
-                    <div className="inline-flex items-center rounded-md border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-blue-600/20 focus-within:border-blue-600 transition-all">
-                      <button
-                        type="button"
-                        onClick={() => adjustQuantity(-1)}
-                        aria-label="Snížit počet kusů"
-                        className="px-2.5 py-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors rounded-l-md"
-                      >
-                        <Minus className="w-3.5 h-3.5" />
-                      </button>
-                      <div className="relative w-20">
-                        <input
-                          id="inquiry-quantity"
-                          type="number"
-                          min="1"
-                          step="1"
-                          placeholder="1"
-                          value={quantity}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setQuantity(val);
-                            const num = parseInt(val, 10);
-                            if (isNaN(num) || num < 3) {
-                              setPrototypePackage(false);
-                            }
-                          }}
-                          className="w-full pl-2 pr-7 py-1.5 bg-transparent text-center text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 pointer-events-none select-none">
-                          ks
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => adjustQuantity(1)}
-                        aria-label="Zvýšit počet kusů"
-                        className="px-2.5 py-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors rounded-r-md"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    {/* Prototypovací balíček - aktivní od 3 ks */}
-                    {(() => {
-                      const qtyNum = parseInt(quantity, 10);
-                      const isEligible = !isNaN(qtyNum) && qtyNum >= 3;
-                      const isTooltipOpen = openTooltip === "prototype";
-
-                      return (
-                        <div
-                          className={`inline-flex items-center gap-2 select-none py-1 transition-all ${
-                            isEligible
-                              ? "text-slate-800"
-                              : "text-slate-400 opacity-75"
-                          } ${
-                            highlightedField === "prototypePackage"
-                              ? "ring-1 ring-slate-900 rounded px-1.5 bg-slate-100"
-                              : ""
-                          }`}
-                        >
-                          <input
-                            id="prototype-pkg-checkbox"
-                            type="checkbox"
-                            disabled={!isEligible}
-                            checked={isEligible && prototypePackage}
-                            onChange={(e) => {
-                              if (isEligible) {
-                                setPrototypePackage(e.target.checked);
-                              }
-                            }}
-                            className={`w-3.5 h-3.5 rounded border-slate-300 ${
-                              isEligible
-                                ? "text-slate-900 focus:ring-slate-900 cursor-pointer"
-                                : "cursor-not-allowed opacity-50"
-                            }`}
-                          />
-                          <label
-                            htmlFor={isEligible ? "prototype-pkg-checkbox" : undefined}
-                            className={`text-xs font-medium flex items-center gap-1 ${
-                              isEligible ? "cursor-pointer text-slate-800" : "cursor-not-allowed text-slate-400"
-                            }`}
-                          >
-                            <span>Chci nejdříve</span>
-                          </label>
-
-                          <span
-                            role="button"
-                            tabIndex={0}
-                            aria-describedby="tooltip-prototype"
-                            onClick={(e) => toggleTooltip(e, "prototype")}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                toggleTooltip(e as unknown as React.MouseEvent, "prototype");
-                              }
-                            }}
-                            className="relative inline-flex items-center group cursor-pointer text-xs font-medium"
-                          >
-                            <span
-                              className={`font-semibold underline decoration-1 underline-offset-2 ${
-                                isEligible
-                                  ? "text-slate-900 decoration-slate-400 hover:text-blue-600"
-                                  : "text-slate-400 decoration-slate-300"
-                              }`}
-                            >
-                              Prototypovací balíček
-                            </span>
-                            {!isEligible && (
-                              <span className="ml-1 text-[11px] font-normal text-slate-400">
-                                (od 3 ks)
-                              </span>
-                            )}
-                            <HelpCircle className="w-3.5 h-3.5 ml-1 text-slate-400 group-hover:text-slate-700 transition-colors" />
-
-                            {/* Tooltip Popup (hover on desktop + click/tap on mobile) */}
-                            <span
-                              id="tooltip-prototype"
-                              role="tooltip"
-                              className={`pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
-                                isTooltipOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                              }`}
-                            >
-                              <strong className="block text-slate-100 font-semibold mb-0.5">
-                                Fyzický vzorek před sérií
-                              </strong>
-                              {isEligible
-                                ? "Při výrobě více kusů vám nejprve vyrobíme 1 zkušební vzorek k otestování. Sérii spustíme až po vašem odsouhlasení."
-                                : "Dostupné od 3 kusů. Nejprve vám vyrobíme 1 zkušební vzorek k fyzickému ověření rozměrů a lícování."}
-                              <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
-                            </span>
-                          </span>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
-
-                {/* Materiál */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
-                  <span
-                    id="inquiry-material-label"
-                    className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
-                  >
-                    Materiál
-                  </span>
-                  <div
-                    role="radiogroup"
-                    aria-labelledby="inquiry-material-label"
-                    className="flex-1 flex flex-wrap items-center gap-2"
-                  >
-                    {(["Nechám si poradit", "PETG", "PLA", "Jiné"] as const).map((mat) => (
-                      <button
-                        key={mat}
-                        type="button"
-                        role="radio"
-                        aria-checked={material === mat}
-                        onClick={() => setMaterial(mat)}
-                        className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-all border ${
-                          material === mat
-                            ? "bg-blue-50/50 text-blue-600 border-blue-600 ring-1 ring-blue-600 shadow-sm"
-                            : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                        }`}
-                      >
-                        <span>{mat}</span>
-                      </button>
-                    ))}
-
-                    {material === "Jiné" && (
-                      <input
-                        type="text"
-                        autoFocus
-                        aria-label="Vlastní materiál"
-                        placeholder="např. ASA, TPU..."
-                        value={customMaterial}
-                        onChange={(e) => setCustomMaterial(e.target.value)}
-                        className="flex-1 min-w-[180px] px-3.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-sans"
-                      />
-                    )}
-                  </div>
-                </div>
-
-                {/* Barva */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
-                  <span
-                    id="inquiry-color-label"
-                    className="text-xs sm:text-sm font-semibold text-slate-700 sm:w-40 shrink-0 flex items-center gap-1"
-                  >
-                    Barva
-                  </span>
-                  <div
-                    role="radiogroup"
-                    aria-labelledby="inquiry-color-label"
-                    className="flex-1 flex flex-wrap items-center gap-2"
-                  >
-                    {(["Černá", "Bílá", "Jiná"] as const).map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        role="radio"
-                        aria-checked={color === c}
-                        onClick={() => setColor(c)}
-                        className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-all border ${
-                          color === c
-                            ? "bg-blue-50/50 text-blue-600 border-blue-600 ring-1 ring-blue-600 shadow-sm"
-                            : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                        }`}
-                      >
-                        {c === "Černá" && (
-                          <span
-                            className={`w-2 h-2 rounded-full bg-slate-950 shrink-0 ${
-                              color === "Černá" ? "ring-1 ring-blue-600/30" : "border border-slate-700/50"
-                            }`}
-                          />
-                        )}
-                        {c === "Bílá" && (
-                          <span
-                            className={`w-2 h-2 rounded-full bg-white shrink-0 border ${
-                              color === "Bílá" ? "border-blue-400" : "border-slate-300"
-                            }`}
-                          />
-                        )}
-                        {c === "Jiná" && (
-                          <span
-                            className={`w-2 h-2 rounded-full bg-[conic-gradient(at_center,#ef4444,#f59e0b,#10b981,#3b82f6,#8b5cf6,#ef4444)] shrink-0 ${
-                              color === "Jiná" ? "ring-1 ring-blue-600/30" : "border border-slate-300"
-                            }`}
-                          />
-                        )}
-                        <span>{c}</span>
-                      </button>
-                    ))}
-
-                    {color === "Jiná" && (
-                      <input
-                        type="text"
-                        autoFocus
-                        aria-label="Vlastní barva"
-                        placeholder="např. Šedá, Oranžová, Nezáleží..."
-                        value={customColor}
-                        onChange={(e) => setCustomColor(e.target.value)}
-                        className="flex-1 min-w-[180px] px-3.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-sans"
-                      />
-                    )}
-                  </div>
-                </div>
-
-                {/* Description & Usage */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label
-                      htmlFor="inquiry-note"
-                      className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1"
-                    >
-                      Podrobný popis <span className="text-rose-600 font-bold">*</span>
+                  {/* Váš e-mail */}
+                  <div className={rowClass}>
+                    <label htmlFor="inquiry-email" className={labelClass}>
+                      Váš e-mail <RequiredMark />
                     </label>
-
-                    {/* Doporučený popis - tooltip vpravo nahoře */}
-                    <button
-                      type="button"
-                      onClick={(e) => toggleTooltip(e, "description")}
-                      aria-describedby="tooltip-description"
-                      className="relative inline-flex items-center group cursor-pointer select-none"
-                    >
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 transition-colors">
-                        <HelpCircle className="w-3.5 h-3.5 shrink-0" />
-                        <span className="underline decoration-blue-200 hover:decoration-blue-400 underline-offset-2">
-                          Doporučený popis
-                        </span>
-                      </span>
-
-                      {/* Tooltip okno */}
-                      <span
-                        id="tooltip-description"
-                        role="tooltip"
-                        className={`block pointer-events-none absolute bottom-full right-0 mb-2 w-72 p-3 bg-slate-900 text-white text-xs rounded-md shadow-xl transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
-                          openTooltip === "description" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                        }`}
-                      >
-                        <strong className="block text-slate-100 font-semibold mb-1 text-xs">
-                          Co nám pomůže v popisu upřesnit:
-                        </strong>
-                        <span className="block text-slate-300 text-[11px] space-y-1">
-                          <span className="block">
-                            • <strong className="text-slate-200">Prostředí:</strong> interiér / exteriér (UV záření, vlhkost)
-                          </span>
-                          <span className="block">
-                            • <strong className="text-slate-200">Zatížení:</strong> mechanické namáhání, otěr, rázy
-                          </span>
-                          <span className="block">
-                            • <strong className="text-slate-200">Teploty:</strong> běžná teplota vs. vystavení teplu (např. v autě)
-                          </span>
-                          <span className="block">
-                            • <strong className="text-slate-200">Termín:</strong> standardní posouzení nebo zda zakázka spěchá
-                          </span>
-                        </span>
-                        <span className="absolute top-full right-6 border-4 border-transparent border-t-slate-900" />
-                      </span>
-                    </button>
+                    <input
+                      id="inquiry-email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      placeholder="např. jan.novak@email.cz"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`${inputClass} w-full sm:flex-1`}
+                    />
                   </div>
 
-                  <textarea
-                    id="inquiry-note"
-                    ref={noteRef}
-                    rows={3}
-                    required
-                    placeholder={notePlaceholder}
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-md border border-slate-200 bg-white text-slate-900 text-xs sm:text-sm placeholder-slate-400 outline-none focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-colors font-sans"
-                  />
-                </div>
-
-                {/* File Upload Zone & External Link - Compact Technical Style */}
-                <div className="space-y-2.5">
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                        <span>
-                          {activeTab === "drawing"
-                            ? "Přílohy (fotka dílu, náčrt, výkres)"
-                            : activeTab === "model"
-                            ? "Přílohy (3D model .STEP, .STL, .3MF)"
-                            : "Přílohy"}
-                        </span>
-                        <span className="text-slate-400 font-normal font-sans text-xs">(volitelné)</span>
-
-                        {/* Tooltip pro podporované formáty */}
+                  {/* Počet kusů & Prototypovací balíček */}
+                  <div className={rowClass}>
+                    <label htmlFor="inquiry-quantity" className={labelClass}>
+                      Počet kusů
+                    </label>
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-3 flex-1">
+                      <div className="inline-flex items-center rounded-md border border-slate-300 bg-white focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 transition-colors">
                         <button
                           type="button"
-                          onClick={(e) => toggleTooltip(e, "formats")}
-                          className="relative inline-flex items-center group cursor-pointer"
-                          aria-label="Podporované formáty souborů"
-                          aria-describedby="tooltip-formats"
+                          onClick={() => adjustQuantity(-1)}
+                          aria-label="Snížit počet kusů"
+                          className="px-3 py-2.5 text-slate-500 hover:text-slate-900 transition-colors"
                         >
-                          <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
-                          <span
-                            id="tooltip-formats"
-                            role="tooltip"
-                            className={`pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
-                              openTooltip === "formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                            }`}
-                          >
-                            <strong className="block text-slate-100 font-semibold mb-1">
-                              Podporované formáty souborů
-                            </strong>
-                            <span className="block text-slate-300 font-mono text-[11px] mb-1.5 leading-snug">
-                              .STEP, .STP, .STL, .3MF, .PDF, .DWG, .DXF, .ZIP, .PNG, .JPG
-                            </span>
-                            <span className="block text-slate-400 text-[11px] leading-snug">
-                              Fotky z telefonu automaticky zmenšíme. Max. 4 MB přes formulář (větší soubory pošlete odkazem níže nebo e-mailem).
-                            </span>
-                            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <div className="relative w-20 border-x border-slate-200">
+                          <input
+                            id="inquiry-quantity"
+                            type="number"
+                            min="1"
+                            step="1"
+                            placeholder="1"
+                            value={quantity}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setQuantity(val);
+                              const num = parseInt(val, 10);
+                              if (isNaN(num) || num < 3) {
+                                setPrototypePackage(false);
+                              }
+                            }}
+                            className="w-full pl-2 pr-7 py-2.5 bg-transparent text-center text-slate-900 text-sm placeholder-slate-400 focus:outline-none font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none select-none">
+                            ks
                           </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => adjustQuantity(1)}
+                          aria-label="Zvýšit počet kusů"
+                          className="px-3 py-2.5 text-slate-500 hover:text-slate-900 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          max. 4 MB (fotky komprimujeme)
+                      {/* Prototypovací balíček - aktivní od 3 ks */}
+                      {(() => {
+                        const qtyNum = parseInt(quantity, 10);
+                        const isEligible = !isNaN(qtyNum) && qtyNum >= 3;
+                        const isTooltipOpen = openTooltip === "prototype";
+
+                        return (
+                          <div
+                            className={`inline-flex items-center gap-2 select-none py-1 rounded-md transition-all ${
+                              isEligible ? "text-slate-900" : "text-slate-400"
+                            } ${
+                              highlightedField === "prototypePackage"
+                                ? "px-2 -mx-2 bg-blue-50 ring-2 ring-blue-600"
+                                : ""
+                            }`}
+                          >
+                            <input
+                              id="prototype-pkg-checkbox"
+                              type="checkbox"
+                              disabled={!isEligible}
+                              checked={isEligible && prototypePackage}
+                              onChange={(e) => {
+                                if (isEligible) {
+                                  setPrototypePackage(e.target.checked);
+                                }
+                              }}
+                              className={`w-4 h-4 accent-blue-600 ${
+                                isEligible ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+                              }`}
+                            />
+                            <label
+                              htmlFor={isEligible ? "prototype-pkg-checkbox" : undefined}
+                              className={`text-sm ${isEligible ? "cursor-pointer" : "cursor-not-allowed"}`}
+                            >
+                              Chci nejdříve
+                            </label>
+
+                            <span
+                              role="button"
+                              tabIndex={0}
+                              aria-describedby="tooltip-prototype"
+                              onClick={(e) => toggleTooltip(e, "prototype")}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  toggleTooltip(e as unknown as React.MouseEvent, "prototype");
+                                }
+                              }}
+                              className="relative inline-flex items-center group cursor-pointer text-sm"
+                            >
+                              <span
+                                className={`font-semibold underline decoration-1 underline-offset-2 ${
+                                  isEligible
+                                    ? "text-slate-900 decoration-slate-400 hover:text-blue-600"
+                                    : "text-slate-400 decoration-slate-300"
+                                }`}
+                              >
+                                Prototypovací balíček
+                              </span>
+                              {!isEligible && (
+                                <span className="ml-1 text-xs text-slate-400">(od 3 ks)</span>
+                              )}
+                              <HelpCircle className="w-3.5 h-3.5 ml-1 text-slate-400 group-hover:text-slate-700 transition-colors" />
+
+                              {/* Tooltip (hover na desktopu, klik/tap na mobilu) */}
+                              <span
+                                id="tooltip-prototype"
+                                role="tooltip"
+                                className={`${tooltipClass} bottom-full left-1/2 -translate-x-1/2 w-64 ${
+                                  isTooltipOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                                }`}
+                              >
+                                <strong className="block text-white font-semibold mb-0.5">
+                                  Fyzický vzorek před sérií
+                                </strong>
+                                {isEligible
+                                  ? "Při výrobě více kusů vám nejdřív vyrobím jeden zkušební kus na vyzkoušení. Sérii spustím až po vašem schválení."
+                                  : "Dostupné od 3 kusů. Nejdřív vám vyrobím jeden zkušební kus, na kterém ověříte rozměry a lícování."}
+                              </span>
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* Materiál */}
+                  <div className={rowClass}>
+                    <span id="inquiry-material-label" className={labelClass}>
+                      Materiál
+                    </span>
+                    <div
+                      role="radiogroup"
+                      aria-labelledby="inquiry-material-label"
+                      className="flex-1 flex flex-wrap items-center gap-x-6 gap-y-2"
+                    >
+                      {(["Nechám si poradit", "PETG", "PLA", "Jiné"] as const).map((mat) => (
+                        <button
+                          key={mat}
+                          type="button"
+                          role="radio"
+                          aria-checked={material === mat}
+                          onClick={() => setMaterial(mat)}
+                          className={`${segmentClass} ${material === mat ? segmentOnClass : segmentOffClass}`}
+                        >
+                          {mat}
+                        </button>
+                      ))}
+
+                      {material === "Jiné" && (
+                        <input
+                          type="text"
+                          autoFocus
+                          aria-label="Vlastní materiál"
+                          placeholder="např. ASA, TPU..."
+                          value={customMaterial}
+                          onChange={(e) => setCustomMaterial(e.target.value)}
+                          className={`${inputClass} flex-1 min-w-[180px] py-2`}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Barva */}
+                  <div className={rowClass}>
+                    <span id="inquiry-color-label" className={labelClass}>
+                      Barva
+                    </span>
+                    <div
+                      role="radiogroup"
+                      aria-labelledby="inquiry-color-label"
+                      className="flex-1 flex flex-wrap items-center gap-x-6 gap-y-2"
+                    >
+                      {(["Černá", "Bílá", "Jiná"] as const).map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          role="radio"
+                          aria-checked={color === c}
+                          onClick={() => setColor(c)}
+                          className={`${segmentClass} ${color === c ? segmentOnClass : segmentOffClass}`}
+                        >
+                          <span
+                            aria-hidden="true"
+                            className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                              c === "Černá"
+                                ? "bg-slate-950"
+                                : c === "Bílá"
+                                ? "bg-white border border-slate-300"
+                                : "bg-[conic-gradient(at_center,#ef4444,#f59e0b,#10b981,#3b82f6,#8b5cf6,#ef4444)]"
+                            }`}
+                          />
+                          {c}
+                        </button>
+                      ))}
+
+                      {color === "Jiná" && (
+                        <input
+                          type="text"
+                          autoFocus
+                          aria-label="Vlastní barva"
+                          placeholder="např. Šedá, Oranžová, Nezáleží..."
+                          value={customColor}
+                          onChange={(e) => setCustomColor(e.target.value)}
+                          className={`${inputClass} flex-1 min-w-[180px] py-2`}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Podrobný popis */}
+                  <div className={rowTopClass}>
+                    <div className="sm:w-40 shrink-0 sm:pt-2.5 flex sm:flex-col items-center sm:items-start justify-between gap-1">
+                      <label htmlFor="inquiry-note" className="text-sm font-semibold text-slate-900">
+                        Podrobný popis <RequiredMark />
+                      </label>
+
+                      {/* Doporučený popis - tooltip */}
+                      <button
+                        type="button"
+                        onClick={(e) => toggleTooltip(e, "description")}
+                        aria-describedby="tooltip-description"
+                        className="relative inline-flex items-center group cursor-pointer select-none"
+                      >
+                        <span className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 transition-colors">
+                          <HelpCircle className="w-3.5 h-3.5 shrink-0" />
+                          <span className="underline decoration-blue-200 hover:decoration-blue-400 underline-offset-2">
+                            Doporučený popis
+                          </span>
                         </span>
-                      </div>
+
+                        <span
+                          id="tooltip-description"
+                          role="tooltip"
+                          className={`${tooltipClass} bottom-full right-0 sm:right-auto sm:left-0 w-72 ${
+                            openTooltip === "description" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                          }`}
+                        >
+                          <strong className="block text-white font-semibold mb-1">
+                            Co mi pomůže v popisu upřesnit:
+                          </strong>
+                          <span className="block text-slate-300 space-y-1">
+                            <span className="block">
+                              • <strong className="text-slate-100">Prostředí:</strong> interiér / exteriér (UV záření, vlhkost)
+                            </span>
+                            <span className="block">
+                              • <strong className="text-slate-100">Zatížení:</strong> mechanické namáhání, otěr, rázy
+                            </span>
+                            <span className="block">
+                              • <strong className="text-slate-100">Teploty:</strong> běžná teplota vs. vystavení teplu (např. v autě)
+                            </span>
+                            <span className="block">
+                              • <strong className="text-slate-100">Termín:</strong> standardní posouzení nebo zda zakázka spěchá
+                            </span>
+                          </span>
+                        </span>
+                      </button>
                     </div>
 
-                    <p id="dropzone-hint" className="sr-only">
-                      Povolené formáty: STEP, STP, STL, 3MF, PDF, DWG, DXF, ZIP, JPG, PNG. Maximálně 4 MB celkem.
-                    </p>
-                    <div
-                      ref={dropzoneRef}
-                      role="button"
-                      tabIndex={0}
-                      aria-label="Přiložit soubory – vybrat z disku"
-                      aria-describedby="dropzone-hint"
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      onClick={() => fileInputRef.current?.click()}
-                      onKeyDown={(e) => {
-                        // Reagovat jen na klávesy přímo na dropzone, ne na vnořené tlačítko
-                        if (e.target !== e.currentTarget) return;
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          fileInputRef.current?.click();
-                        }
-                      }}
-                      className={`border border-dashed rounded-md py-2.5 px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 cursor-pointer transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
-                        isDragging
-                          ? "border-slate-900 bg-slate-100"
-                          : "border-slate-300 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-400"
-                      }`}
-                    >
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        multiple
-                        accept={acceptedFormats}
-                        className="hidden"
-                        tabIndex={-1}
-                        aria-hidden="true"
-                        onChange={(e) => void handleFiles(e.target.files)}
-                      />
+                    <textarea
+                      id="inquiry-note"
+                      ref={noteRef}
+                      rows={4}
+                      required
+                      placeholder={notePlaceholder}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      className={`${inputClass} w-full sm:flex-1`}
+                    />
+                  </div>
 
-                      <div className="flex items-center gap-2">
-                        {isCompressing ? (
-                          <Loader2 className="w-4 h-4 text-blue-600 animate-spin shrink-0" />
-                        ) : (
-                          <UploadCloud className="w-4 h-4 text-slate-500 shrink-0" />
-                        )}
-                        <p className="text-xs text-slate-700">
-                          {isCompressing ? (
-                            <span>Optimalizuji velikost fotek...</span>
-                          ) : (
-                            <>
-                              Přetáhněte soubory nebo{" "}
-                              <span className="text-slate-900 font-semibold underline underline-offset-2">
-                                vyberte z disku
-                              </span>
-                            </>
-                          )}
-                        </p>
+                  {/* Přílohy a odkaz */}
+                  <div className={rowTopClass}>
+                    <div className="sm:w-40 shrink-0 sm:pt-2.5">
+                      <div className="text-sm font-semibold text-slate-900">
+                        {activeTab === "drawing"
+                          ? "Přílohy (fotka dílu, náčrt, výkres)"
+                          : activeTab === "model"
+                          ? "Přílohy (3D model .STEP, .STL, .3MF)"
+                          : "Přílohy"}{" "}
+                        <span className="text-slate-500 font-normal">(volitelné)</span>
                       </div>
+                      <div className="mt-1 text-xs text-slate-500">max. 4 MB (fotky se zmenší automaticky)</div>
+                    </div>
 
-                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-sans">
+                    <div className="flex-1 min-w-0 space-y-2.5">
+                      <p id="dropzone-hint" className="sr-only">
+                        Povolené formáty: STEP, STP, STL, 3MF, PDF, DWG, DXF, ZIP, JPG, PNG. Maximálně 4 MB celkem.
+                      </p>
+                      <div
+                        ref={dropzoneRef}
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Přiložit soubory – vybrat z disku"
+                        aria-describedby="dropzone-hint"
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => fileInputRef.current?.click()}
+                        onKeyDown={(e) => {
+                          // Reagovat jen na klávesy přímo na dropzone, ne na vnořené tlačítko
+                          if (e.target !== e.currentTarget) return;
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            fileInputRef.current?.click();
+                          }
+                        }}
+                        className={`border border-dashed rounded-md px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
+                          isDragging
+                            ? "border-blue-600 bg-blue-50"
+                            : "border-slate-300 hover:border-blue-600 hover:bg-blue-50/40"
+                        }`}
+                      >
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          accept={acceptedFormats}
+                          className="hidden"
+                          tabIndex={-1}
+                          aria-hidden="true"
+                          onChange={(e) => void handleFiles(e.target.files)}
+                        />
+
+                        <div className="flex items-center gap-2.5">
+                          {isCompressing ? (
+                            <Loader2 className="w-5 h-5 text-blue-600 animate-spin shrink-0" />
+                          ) : (
+                            <UploadCloud className="w-5 h-5 text-slate-400 shrink-0" />
+                          )}
+                          <p className="text-sm text-slate-700">
+                            {isCompressing ? (
+                              <span>Optimalizuji velikost fotek...</span>
+                            ) : (
+                              <>
+                                Přetáhněte soubory nebo{" "}
+                                <span className="text-blue-600 font-semibold underline underline-offset-2">
+                                  vyberte z disku
+                                </span>
+                              </>
+                            )}
+                          </p>
+                        </div>
+
                         <button
                           type="button"
                           onClick={(e) => toggleTooltip(e, "dropzone-formats")}
                           onKeyDown={(e) => e.stopPropagation()}
                           aria-describedby="tooltip-dropzone-formats"
-                          className="relative inline-flex items-center group cursor-pointer select-none"
+                          className="relative inline-flex items-center self-start sm:self-auto shrink-0 whitespace-nowrap group cursor-pointer select-none text-xs text-slate-500"
                         >
                           <span className="underline decoration-slate-300 decoration-dotted underline-offset-2 hover:text-slate-900 transition-colors">
                             Kompatibilní formáty
                           </span>
-                          {/* Tooltip v nahrávacím boxu */}
                           <span
                             id="tooltip-dropzone-formats"
                             role="tooltip"
-                            className={`pointer-events-none absolute bottom-full right-0 mb-2 w-64 p-2.5 bg-slate-900 text-white text-xs rounded-md shadow-lg transition-all duration-200 z-30 font-sans leading-relaxed text-left border border-slate-700 ${
+                            className={`${tooltipClass} bottom-full left-0 sm:left-auto sm:right-0 w-64 ${
                               openTooltip === "dropzone-formats" ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                             }`}
                           >
-                            <strong className="block text-slate-100 font-semibold mb-1">
-                              Podporované formáty
-                            </strong>
-                            <span className="block text-slate-300 font-mono text-[11px] mb-1 leading-snug">
+                            <strong className="block text-white font-semibold mb-1">Podporované formáty</strong>
+                            <span className="block text-slate-300 mb-1">
                               .STEP, .STP, .STL, .3MF, .PDF, .DWG, .DXF, .ZIP, .JPG, .PNG
                             </span>
-                            <span className="block text-slate-400 text-[11px] leading-snug">
+                            <span className="block text-slate-400">
                               Velké fotky z mobilu se automaticky zmenší. Pro objemnější 3D modely můžete vložit odkaz níže.
                             </span>
-                            <span className="absolute top-full right-4 border-4 border-transparent border-t-slate-900" />
                           </span>
                         </button>
                       </div>
-                    </div>
 
-                    {/* Upozornění při překročení 4 MB */}
-                    {fileSizeWarning && (
-                      <div role="status" className="mt-2 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
-                        <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                        <div className="leading-relaxed">
-                          <span>{fileSizeWarning} </span>
-                          <a
-                            href="mailto:info@3dspline.cz?subject=Popt%C3%A1vka%203D%20tisku%20-%20nadlimitn%C3%AD%20p%C5%99%C3%ADloha"
-                            className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
-                          >
-                            Poslat na info@3dspline.cz
-                          </a>
+                      {/* Upozornění při překročení 4 MB */}
+                      {fileSizeWarning && (
+                        <div
+                          role="status"
+                          className="p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-start gap-2.5"
+                        >
+                          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                          <div className="leading-relaxed">
+                            <span>{fileSizeWarning} </span>
+                            <a
+                              href="mailto:info@3dspline.cz?subject=Popt%C3%A1vka%203D%20tisku%20-%20nadlimitn%C3%AD%20p%C5%99%C3%ADloha"
+                              className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
+                            >
+                              Poslat na info@3dspline.cz
+                            </a>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {uploadedFiles.length > 0 && (
-                      <div className="mt-2 space-y-1.5">
-                        {uploadedFiles.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between p-2 rounded-md bg-white border border-slate-200 text-xs font-mono"
-                          >
-                            <div className="flex items-center gap-2.5 overflow-hidden pr-2">
-                              {/* File Preview Thumbnail / Icon */}
-                              {item.previewUrl ? (
-                                <div className="w-8 h-8 rounded border border-slate-200 overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                      {uploadedFiles.length > 0 && (
+                        <ul className="divide-y divide-slate-200 border border-slate-200 rounded-md">
+                          {uploadedFiles.map((item) => (
+                            <li key={item.id} className="flex items-center justify-between gap-2 px-3 py-2">
+                              <div className="flex items-center gap-3 overflow-hidden">
+                                {item.previewUrl ? (
+                                  // eslint-disable-next-line @next/next/no-img-element
                                   <img
                                     src={item.previewUrl}
                                     alt={item.file.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-9 h-9 object-cover shrink-0 bg-slate-100"
                                   />
-                                </div>
-                              ) : item.file.name.match(/\.(step|stp|stl|3mf)$/i) ? (
-                                <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
-                                  <FileBox className="w-4 h-4" />
-                                </div>
-                              ) : item.file.name.match(/\.(pdf|dwg|dxf)$/i) ? (
-                                <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
-                                  <FileText className="w-4 h-4" />
-                                </div>
-                              ) : (
-                                <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
-                                  <FileCheck2 className="w-4 h-4" />
-                                </div>
-                              )}
+                                ) : (
+                                  <span className="w-9 h-9 bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                                    {item.file.name.match(/\.(step|stp|stl|3mf)$/i) ? (
+                                      <FileBox className="w-4 h-4" />
+                                    ) : item.file.name.match(/\.(pdf|dwg|dxf)$/i) ? (
+                                      <FileText className="w-4 h-4" />
+                                    ) : (
+                                      <FileCheck2 className="w-4 h-4" />
+                                    )}
+                                  </span>
+                                )}
 
-                              <div className="truncate font-sans">
-                                <span className="truncate text-slate-800 font-medium block">
-                                  {item.file.name}
-                                </span>
-                                <span className="text-slate-400 text-[10px] block font-mono">
-                                  {(item.file.size / 1024).toFixed(1)} KB
-                                  {item.originalSize && item.originalSize > item.file.size && (
-                                    <span className="text-emerald-600 ml-1.5 font-sans">
-                                      (zmenšeno z {(item.originalSize / (1024 * 1024)).toFixed(1)} MB)
-                                    </span>
-                                  )}
-                                </span>
+                                <div className="min-w-0">
+                                  <span className="block truncate text-sm text-slate-900 font-medium">
+                                    {item.file.name}
+                                  </span>
+                                  <span className="block text-xs text-slate-500">
+                                    {(item.file.size / 1024).toFixed(1)} KB
+                                    {item.originalSize && item.originalSize > item.file.size && (
+                                      <span className="text-emerald-700 ml-1.5">
+                                        (zmenšeno z {(item.originalSize / (1024 * 1024)).toFixed(1)} MB)
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
                               </div>
-                            </div>
-                            <button
-                              type="button"
-                              aria-label={`Odebrat soubor ${item.file.name}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeFile(item.id);
-                              }}
-                              className="p-1 text-slate-400 hover:text-rose-600 transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
+                              <button
+                                type="button"
+                                aria-label={`Odebrat soubor ${item.file.name}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeFile(item.id);
+                                }}
+                                className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors shrink-0"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {/* Odkaz na model nebo úložiště */}
+                      <div className="flex items-center rounded-md border border-slate-300 bg-white focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 transition-colors">
+                        <span className="pl-3.5 pr-2 text-slate-400 shrink-0">
+                          <Link2 className="w-4 h-4" />
+                        </span>
+                        <input
+                          id="inquiry-model-url"
+                          name="modelUrl"
+                          type="text"
+                          aria-label="Odkaz na model nebo úložiště"
+                          placeholder="Nebo vložte odkaz na model či úložiště (Printables, MakerWorld, Úschovna, Google Drive...)"
+                          value={modelUrl}
+                          onChange={(e) => handleModelUrlChange(e.target.value)}
+                          className="w-full pr-3.5 py-2.5 bg-transparent text-slate-900 text-sm placeholder-slate-400 outline-none"
+                        />
                       </div>
-                    )}
-                  </div>
 
-                  {/* External Model / Storage URL Input */}
-                  <div className="flex items-center rounded-md border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-blue-600/20 focus-within:border-blue-600 transition-all overflow-hidden">
-                    <span className="pl-3 pr-2 py-2 text-slate-400 shrink-0">
-                      <Link2 className="w-4 h-4" />
-                    </span>
-                    <input
-                      id="inquiry-model-url"
-                      name="modelUrl"
-                      type="text"
-                      placeholder="Nebo vložte odkaz na model či úložiště (Printables, MakerWorld, Úschovna, Google Drive...)"
-                      value={modelUrl}
-                      onChange={(e) => handleModelUrlChange(e.target.value)}
-                      className="w-full pr-3.5 py-2 bg-transparent text-slate-900 text-xs placeholder-slate-400 outline-none focus:outline-none font-sans"
-                    />
-                  </div>
-
-                  {/* Garance diskrétnosti / mikro-text */}
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 pt-0.5">
-                    <Lock className="w-3 h-3 text-slate-400 shrink-0" />
-                    <span>Vaše modely a výkresy nikde nezveřejňujeme. Slouží výhradně pro posouzení a výrobu.</span>
+                      <p className="text-xs text-slate-500">
+                        Vaše modely a výkresy nikde nezveřejňuji. Slouží jen pro posouzení a výrobu.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                {status === "error" && (
-                  <div
-                    role="alert"
-                    aria-live="assertive"
-                    className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2"
-                  >
-                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" aria-hidden="true" />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
+                <div className="mt-6 space-y-5">
+                  {status === "error" && (
+                    <div
+                      role="alert"
+                      aria-live="assertive"
+                      className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-start gap-2"
+                    >
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" aria-hidden="true" />
+                      <span>{errorMessage}</span>
+                    </div>
+                  )}
 
-                {/* Licenční prohlášení */}
-                {requiresLicenseCheck && (
-                  <div className="pt-1">
-                    <label className="flex items-start gap-2.5 cursor-pointer select-none group">
+                  {/* Licenční prohlášení */}
+                  {requiresLicenseCheck && (
+                    <label className="flex items-start gap-2.5 cursor-pointer select-none">
                       <input
                         ref={licenseRef}
                         type="checkbox"
                         checked={licenseConfirmed}
                         onChange={(e) => setLicenseConfirmed(e.target.checked)}
-                        className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer"
+                        className="mt-0.5 w-4 h-4 accent-blue-600 cursor-pointer shrink-0"
                         required
                       />
-                      <span className="text-xs text-slate-600 leading-snug">
+                      <span className="text-sm text-slate-600 leading-snug">
                         Prohlašuji, že k zaslaným podkladům vlastním autorská práva nebo oprávnění (licenci) k jejich zakázkové výrobě.
                       </span>
                     </label>
-                  </div>
-                )}
+                  )}
 
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={status === "submitting" || isCompressing}
-                    className="w-full py-3 px-6 rounded-md bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {status === "submitting" ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Zpracováváme poptávku...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Odeslat nezávaznou poptávku</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                  <p className="mt-2.5 text-center text-[11px] text-slate-500 leading-relaxed font-sans">
-                    Odesláním poptávky souhlasíte s{" "}
-                    <Link
-                      href="/obchodni-podminky"
-                      className="text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors font-sans"
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={status === "submitting" || isCompressing}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-md bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white text-sm font-semibold transition-colors cursor-pointer"
                     >
-                      obchodními podmínkami
-                    </Link>
-                    . Osobní údaje zpracováváme podle{" "}
-                    <Link
-                      href="/ochrana-osobnich-udaju"
-                      className="text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors font-sans"
-                    >
-                      zásad ochrany osobních údajů
-                    </Link>
-                    . Poptávka je zcela nezávazná a bezplatná.
-                  </p>
+                      {status === "submitting" ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Poptávka se odesílá...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Odeslat nezávaznou poptávku</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                    <p className="mt-3 text-xs text-slate-500 leading-relaxed max-w-xl">
+                      Odesláním poptávky souhlasíte s{" "}
+                      <Link
+                        href="/obchodni-podminky"
+                        className="text-slate-700 hover:text-slate-900 underline underline-offset-2 transition-colors"
+                      >
+                        obchodními podmínkami
+                      </Link>
+                      . Osobní údaje zpracovávám podle{" "}
+                      <Link
+                        href="/ochrana-osobnich-udaju"
+                        className="text-slate-700 hover:text-slate-900 underline underline-offset-2 transition-colors"
+                      >
+                        zásad ochrany osobních údajů
+                      </Link>
+                      . Poptávka je zcela nezávazná a bezplatná.
+                    </p>
+                  </div>
                 </div>
               </form>
             )}
           </div>
 
-          {/* Right Direct Contact Sidebar */}
-          <div className="lg:col-span-4 space-y-4">
-            {/* Direct Contact Card */}
-            <div className="bg-gradient-to-b from-[#102338] to-[#0A1624] rounded-2xl p-6 text-white border border-slate-700/60 shadow-md">
-              <div className="flex items-center gap-2 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-2">
-                <Mail className="w-3.5 h-3.5 text-blue-400" />
-                <span>Rychlá konzultace</span>
-              </div>
-              <h3 className="text-base font-bold mb-2 text-white">
-                Přímý kontakt &amp; Konzultace
-              </h3>
-
-              <p className="text-slate-300 text-xs leading-relaxed mb-5">
-                Nevyhovuje vám formulář nebo chcete nejprve nezávazně zkonzultovat vyrobitelnost, pevnost či volbu materiálu? Napište nám přímo.
+          {/* Přímý kontakt a NDA */}
+          <aside className="lg:col-span-4 border-t border-slate-200 pt-10 lg:border-t-0 lg:pt-0 lg:border-l lg:pl-12 space-y-10">
+            <div>
+              <h3 className="text-base font-bold text-slate-900">Přímý kontakt a konzultace</h3>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                Nevyhovuje vám formulář nebo chcete nejprve nezávazně zkonzultovat vyrobitelnost, pevnost či volbu materiálu? Napište mi přímo.
               </p>
-
-              <div className="space-y-3 text-xs border-t border-slate-700/60 pt-4">
-                <a
-                  href="mailto:info@3dspline.cz"
-                  className="group flex items-center justify-between p-3 rounded-xl bg-slate-800/60 hover:bg-blue-600/20 border border-slate-700/80 hover:border-blue-500/50 text-white transition-all"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors shrink-0">
-                      <Mail className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="font-semibold text-xs tracking-wide truncate">info@3dspline.cz</span>
-                  </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 transition-colors shrink-0 ml-2" />
-                </a>
-
-                <div className="text-[11px] text-slate-400 leading-relaxed px-1">
-                  Můžete přiložit fotografie, náčrty s rozměry nebo odkaz na cloudové úložiště (Úschovna, Disk).
-                </div>
-              </div>
+              <a
+                href="mailto:info@3dspline.cz"
+                className="mt-4 inline-flex items-center gap-1.5 text-lg font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                <span>info@3dspline.cz</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+                Můžete přiložit fotografie, náčrty s rozměry nebo odkaz na cloudové úložiště (Úschovna, Disk).
+              </p>
             </div>
 
-            {/* NDA Card */}
-            <div className="bg-slate-50/70 rounded-2xl p-5 text-slate-800 border border-slate-200/60">
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
-                  <Lock className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 mb-1">
-                    Dohoda o mlčenlivosti (NDA)
-                  </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Máte nový výrobek nebo interní výkres podléhající utajení? Před zasláním CAD dat vám obratem podepíšeme vaše nebo naše standardní NDA.
-                  </p>
-                  <a
-                    href="mailto:info@3dspline.cz?subject=Žádost%20o%20podpis%20NDA%20před%20poptávkou"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 mt-2.5 cursor-pointer"
-                  >
-                    <span>Vyžádat podpis NDA</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </a>
-                </div>
-              </div>
+            <div className="pt-10 border-t border-slate-200">
+              <h3 className="text-base font-bold text-slate-900">Dohoda o mlčenlivosti (NDA)</h3>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                Máte nový výrobek nebo interní výkres podléhající utajení? Před zasláním CAD dat vám obratem podepíšu vaše NDA, případně pošlu svoje.
+              </p>
+              <a
+                href="mailto:info@3dspline.cz?subject=Žádost%20o%20podpis%20NDA%20před%20poptávkou"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+              >
+                <span>Vyžádat podpis NDA</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </section>

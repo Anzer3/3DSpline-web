@@ -1,15 +1,11 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import TechSpecs from "@/components/TechSpecs";
 import { faqJsonLd } from "@/lib/faqJsonLd";
-import CadModelingSection from "@/components/CadModelingSection";
-import HasModelSection from "@/components/HasModelSection";
+import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
 import Process from "@/components/Process";
-import Materials from "@/components/Materials";
-import PrototypeBeforeSeries from "@/components/PrototypeBeforeSeries";
 import InquiryForm from "@/components/InquiryForm";
-import WhyUs from "@/components/WhyUs";
+import About from "@/components/About";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import MobileFloatingCta from "@/components/MobileFloatingCta";
@@ -22,48 +18,33 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* Sticky Top Navigation */}
       <Navbar />
 
       <main className="flex-grow">
-        {/* SECTION A: Hero Section */}
         <Hero />
 
-        {/* SECTION A2: Technical Capabilities & Specs */}
-        <TechSpecs />
+        {/* Rozcestí: Nemáte model / Máte model + co nejčastěji vyrábím (#sluzby) */}
+        <Services />
 
-        {/* SECTION B2: Zakázkové CAD modelování od jednoduchých po atypické díly ("Nemám model") */}
-        <CadModelingSection />
-
-        {/* SECTION B3: Výroba z dodaných dat ("Mám model. Potřebuji jen tisk") */}
-        <HasModelSection />
-
-        {/* SECTION C: Příběhy z dílny a ukázky realizací (#pribehy-z-dilny) */}
+        {/* Příběhy z dílny (#pribehy-z-dilny) */}
         <Portfolio />
 
-        {/* SECTION F: How Collaboration & Pricing Works (#jak-to-funguje) */}
+        {/* Jak probíhá spolupráce + zkušební kus (#jak-to-funguje, #prototyp-balicek) */}
         <Process />
 
-        {/* SECTION E: Materials (#materialy) */}
-        <Materials />
+        {/* Kdo za tím stojí (#kdo-za-tim-stoji) */}
+        <About />
 
-        {/* SECTION B4: Nejprve prototyp a potom sériovka (#prototyp-balicek) */}
-        <PrototypeBeforeSeries />
-
-        {/* SECTION G: Interactive Two-Branch Inquiry Form (#poptavka) */}
+        {/* Poptávkový formulář (#poptavka) */}
         <InquiryForm />
 
-        {/* SECTION D: Why Choose 3dspline.cz */}
-        <WhyUs />
-
-        {/* SECTION FAQ: Často kladené otázky a limity FDM tisku (#caste-dotazy) */}
+        {/* Časté dotazy (#caste-dotazy) */}
         <FaqSection />
       </main>
 
-      {/* Floating CTA bar on mobile */}
+      {/* Plovoucí lišta s poptávkou na mobilu */}
       <MobileFloatingCta />
 
-      {/* SECTION H: Footer */}
       <Footer />
     </div>
   );
