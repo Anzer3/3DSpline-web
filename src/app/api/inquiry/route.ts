@@ -1,5 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+
+// E-maily posíláme přes HTTP API Resendu – SMTP (Nodemailer) na Cloudflare Workers nefunguje.
+// https://resend.com/docs/api-reference/emails/send-email
+interface ResendEmail {
+  from: string;
+  to: string | string[];
+  subject: string;
+  html: string;
+  text: string;
+  reply_to?: string;
+  attachments?: Array<{ filename: string; content: string; content_type?: string }>;
+}
+
+async function sendWithResend(apiKey: string, email: ResendEmail): Promise<void> {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`Resend API ${res.status}: ${detail.slice(0, 500)}`);
+  }
+}
 
 // Maximum total payload size: 4 MB (serverless-safe limit)
 const MAX_TOTAL_SIZE = 4 * 1024 * 1024;
@@ -192,8 +219,8 @@ export async function POST(req: NextRequest) {
     const fileEntries = formData.getAll("files") as (File | string)[];
     const attachments: Array<{
       filename: string;
-      content: Buffer;
-      contentType: string;
+      content: string; // base64
+      content_type: string;
     }> = [];
 
     let totalFileSize = 0;
@@ -229,8 +256,8 @@ export async function POST(req: NextRequest) {
         const buffer = Buffer.from(await entry.arrayBuffer());
         attachments.push({
           filename: safeFilename,
-          content: buffer,
-          contentType: entry.type || "application/octet-stream",
+          content: buffer.toString("base64"),
+          content_type: entry.type || "application/octet-stream",
         });
 
         const sizeKb = (entry.size / 1024).toFixed(1);
@@ -299,33 +326,22 @@ export async function POST(req: NextRequest) {
     const safeModelUrlHtml = sanitizeHtml(modelUrl);
     const isHttpUrl = /^https?:\/\//i.test(modelUrl);
 
-    // Check SMTP configuration
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    // Konfigurace odesílání (Resend)
+    const resendApiKey = process.env.RESEND_API_KEY;
     const notifyEmail = process.env.NOTIFY_EMAIL || "info@3dspline.cz";
-    const fromEmail = process.env.FROM_EMAIL || `"3dspline.cz Poptávky" <${smtpUser || "info@3dspline.cz"}>`;
+    const fromEmail = process.env.FROM_EMAIL || "3dspline.cz Poptávky <info@3dspline.cz>";
 
-    const isSmtpConfigured =
-      smtpHost &&
-      smtpHost !== "localhost" &&
-      smtpUser &&
-      smtpUser !== "test@3dspline.cz" &&
-      smtpPass &&
-      smtpPass !== "testpass";
-
-    if (!isSmtpConfigured) {
-      // V produkci by se poptávka bez SMTP tiše ztratila – zákazníkovi proto vrátíme chybu
+    if (!resendApiKey) {
+      // V produkci by se poptávka bez odesílání tiše ztratila – zákazníkovi proto vrátíme chybu
       if (process.env.NODE_ENV === "production") {
         console.error(
-          "❌ SMTP není nakonfigurováno – poptávku nelze doručit e-mailem. Údaje poptávky jsou výše v logu."
+          "❌ RESEND_API_KEY není nastavený – poptávku nelze doručit e-mailem. Údaje poptávky jsou výše v logu."
         );
         return NextResponse.json({ success: false, error: SEND_FAILED_ERROR }, { status: 503 });
       }
 
       console.log(
-        "ℹ️ SMTP není nakonfigurováno (lokální vývoj) – e-maily se neodesílají, poptávka je jen vypsaná v konzoli."
+        "ℹ️ RESEND_API_KEY není nastavený (lokální vývoj) – e-maily se neodesílají, poptávka je jen vypsaná v konzoli."
       );
       return NextResponse.json({
         success: true,
@@ -334,21 +350,6 @@ export async function POST(req: NextRequest) {
         simulated: true,
       });
     }
-
-    // Configure Nodemailer transporter (robust configuration for Seznam / Vercel)
-    const isSecure = process.env.SMTP_SECURE === "true" || smtpPort === 465;
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: isSecure,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 20000,
-    });
 
     // 1. Email to Site Owner / Engineer (with escaped HTML)
     const ownerHtml = `
@@ -537,14 +538,14 @@ info@3dspline.cz
 
     // E-mail majiteli je kritický – bez něj poptávka nikam nedorazí, proto při chybě vracíme chybu
     try {
-      await transporter.sendMail({
+      await sendWithResend(resendApiKey, {
         from: fromEmail,
         to: notifyEmail,
-        replyTo: email,
+        reply_to: email,
         subject: `Nová poptávka z webu: ${name || email} (${quantity}) [${tabLabel}]`,
         text: ownerText,
         html: ownerHtml,
-        attachments,
+        attachments: attachments.length > 0 ? attachments : undefined,
       });
     } catch (error: unknown) {
       console.error("❌ Poptávku se nepodařilo odeslat (údaje jsou výše v logu):", describeError(error));
@@ -555,9 +556,10 @@ info@3dspline.cz
     // jinak ji zákazník odešle znovu a vzniknou duplicity
     let confirmationSent = true;
     try {
-      await transporter.sendMail({
+      await sendWithResend(resendApiKey, {
         from: fromEmail,
         to: email,
+        reply_to: notifyEmail,
         subject: "Potvrzení přijetí poptávky • 3D Spline",
         text: clientText,
         html: clientHtml,
